@@ -1,0 +1,23 @@
+{
+  "projectName": "dress-doctor-client",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "npm",
+  "includeExamples": false,
+  "tailwind": true,
+  "projectPreset": "default",
+  "addOnOptions": {},
+  "git": true,
+  "install": true,
+  "intent": true,
+  "routerOnly": false,
+  "version": 1,
+  "framework": "react",
+  "chosenAddOns": [
+    "eslint",
+    "vercel",
+    "compiler",
+    "paraglide",
+    "tanstack-query"
+  ]
+}

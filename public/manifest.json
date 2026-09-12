@@ -1,0 +1,23 @@
+{
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "short_name": "Dress Doctor",
+  "background_color": "#ffffff",
+  "name": "Dress Doctor Laundry Service",
+  "description": "Laundry and dry-cleaning service in Douala with free pickup and delivery within 24 to 72 hours.",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
