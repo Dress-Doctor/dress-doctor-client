@@ -115,9 +115,33 @@ const darkSurface = {
   borderEmphasized: '#2A3547',
 } as const
 
+/**
+ * `heading` is Jost, not Figtree: the Dress Doctor design system names Jost the
+ * main face for both body copy and headings, and reserves Figtree for "impact
+ * moments" — stat counters, prices, plan figures. That third role is the
+ * `display` token, so a figure asks for `fontFamily="display"` rather than
+ * hard-coding the family.
+ */
+/**
+ * The public website's own ink and paper, taken verbatim from the design
+ * system's `tokens/colors.css`. Raw tokens rather than semantic ones on
+ * purpose: the marketing site is a single light composition — a navy section
+ * is navy in both modes — so these must not flip with the colour mode the
+ * signed-in portal uses.
+ */
+const site = {
+  ink: '#00171F',
+  'ink-muted': '#4D5D63',
+  'ink-subtle': '#7A8A90',
+  canvas: '#FBFDFD',
+  sunken: '#F6F9FA',
+  whatsapp: '#25D366',
+} as const
+
 const fonts = {
   body: `"jost", system-ui, sans-serif`,
-  heading: `"figtree", system-ui, sans-serif`,
+  heading: `"jost", system-ui, sans-serif`,
+  display: `"figtree", system-ui, sans-serif`,
   mono: 'monospace',
 }
 
@@ -180,18 +204,60 @@ const brandSemanticTokens = (
 export const chakraTheme = createSystem(
   defaultConfig,
   defineConfig({
-    globalCss: { html: { colorPalette: 'turquoise-blue' } },
+    globalCss: {
+      html: {
+        colorPalette: 'turquoise-blue',
+        // In-page anchors on the public site glide rather than jump — except
+        // for readers who have asked the system for less movement.
+        scrollBehavior: 'smooth',
+        _motionReduce: { scrollBehavior: 'auto' },
+      },
+      // Kills the 300ms double-tap delay and the grey flash iOS paints over
+      // every tap target.
+      'a, button, [role="button"], label, summary': {
+        touchAction: 'manipulation',
+        WebkitTapHighlightColor: 'transparent',
+      },
+    },
 
     theme: {
+      /**
+       * Ambient motion for the public website. Chakra ships the entrance
+       * keyframes (`fade-in`, `slide-from-bottom`); these four are the looping
+       * ones the marketing pages add — two hover bobs at different periods so
+       * the floating cards never move in lockstep, a slow drift for the
+       * background glows, and the hero's scroll hint.
+       */
+      keyframes: {
+        'dd-float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'dd-float-far': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-16px)' },
+        },
+        'dd-drift': {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+          '50%': { transform: 'translate(24px, -18px) scale(1.06)' },
+        },
+        'dd-bounce': {
+          '0%, 100%': { transform: 'translateY(0)', opacity: '0.7' },
+          '50%': { transform: 'translateY(7px)', opacity: '0.25' },
+        },
+      },
+
       tokens: {
         fonts: {
           body: { value: fonts.body },
           heading: { value: fonts.heading },
+          display: { value: fonts.display },
         },
         colors: {
           'turquoise-blue': toTokens(brand['turquoise-blue']),
           'dark-bluish-gray': toTokens(brand['dark-bluish-gray']),
           'amber-orange': toTokens(brand['amber-orange']),
+          site: toTokens(site),
         },
       },
       semanticTokens: {

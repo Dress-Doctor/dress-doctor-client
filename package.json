@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "vite dev --port 3001",
-    "i18n": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --emit-ts-declarations",
+    "i18n": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide --strategy url baseLocale --emit-ts-declarations",
     "chakra-theme": "npx @chakra-ui/cli typegen ./src/config/theme.ts",
     "postinstall": "npm run chakra-theme",
     "generate-routes": "tsr generate",

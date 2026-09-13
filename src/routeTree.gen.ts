@@ -9,50 +9,372 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as SiteRouteImport } from './routes/_site'
+import { Route as SiteIndexRouteImport } from './routes/_site/index'
+import { Route as SiteBookingRouteImport } from './routes/_site/booking'
+import { Route as SiteCatalogRouteImport } from './routes/_site/catalog'
+import { Route as SiteContactRouteImport } from './routes/_site/contact'
+import { Route as SiteCorporateRouteImport } from './routes/_site/corporate'
+import { Route as SiteDeliveryPolicyRouteImport } from './routes/_site/delivery-policy'
+import { Route as SiteLocationsRouteImport } from './routes/_site/locations'
+import { Route as SitePricingRouteImport } from './routes/_site/pricing'
+import { Route as SitePrivacyRouteImport } from './routes/_site/privacy'
+import { Route as SiteRefundPolicyRouteImport } from './routes/_site/refund-policy'
+import { Route as SiteResourcesRouteImport } from './routes/_site/resources'
+import { Route as SiteTermsRouteImport } from './routes/_site/terms'
+import { Route as SiteIndustriesHotelsRouteImport } from './routes/_site/industries/hotels'
+import { Route as SiteServicesIndexRouteImport } from './routes/_site/services/index'
+import { Route as SiteServicesWashAndFoldRouteImport } from './routes/_site/services/wash-and-fold'
 
-const IndexRoute = IndexRouteImport.update({
+const SiteRoute = SiteRouteImport.update({
+  id: '/_site',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteBookingRoute = SiteBookingRouteImport.update({
+  id: '/booking',
+  path: '/booking',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteCatalogRoute = SiteCatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteContactRoute = SiteContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteCorporateRoute = SiteCorporateRouteImport.update({
+  id: '/corporate',
+  path: '/corporate',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteDeliveryPolicyRoute = SiteDeliveryPolicyRouteImport.update({
+  id: '/delivery-policy',
+  path: '/delivery-policy',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteLocationsRoute = SiteLocationsRouteImport.update({
+  id: '/locations',
+  path: '/locations',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SitePricingRoute = SitePricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SitePrivacyRoute = SitePrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteRefundPolicyRoute = SiteRefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteResourcesRoute = SiteResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteTermsRoute = SiteTermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteIndustriesHotelsRoute = SiteIndustriesHotelsRouteImport.update({
+  id: '/industries/hotels',
+  path: '/industries/hotels',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteServicesIndexRoute = SiteServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteServicesWashAndFoldRoute = SiteServicesWashAndFoldRouteImport.update({
+  id: '/services/wash-and-fold',
+  path: '/services/wash-and-fold',
+  getParentRoute: () => SiteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof SiteIndexRoute
+  '/booking': typeof SiteBookingRoute
+  '/catalog': typeof SiteCatalogRoute
+  '/contact': typeof SiteContactRoute
+  '/corporate': typeof SiteCorporateRoute
+  '/delivery-policy': typeof SiteDeliveryPolicyRoute
+  '/locations': typeof SiteLocationsRoute
+  '/pricing': typeof SitePricingRoute
+  '/privacy': typeof SitePrivacyRoute
+  '/refund-policy': typeof SiteRefundPolicyRoute
+  '/resources': typeof SiteResourcesRoute
+  '/terms': typeof SiteTermsRoute
+  '/industries/hotels': typeof SiteIndustriesHotelsRoute
+  '/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/services/': typeof SiteServicesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/booking': typeof SiteBookingRoute
+  '/catalog': typeof SiteCatalogRoute
+  '/contact': typeof SiteContactRoute
+  '/corporate': typeof SiteCorporateRoute
+  '/delivery-policy': typeof SiteDeliveryPolicyRoute
+  '/locations': typeof SiteLocationsRoute
+  '/pricing': typeof SitePricingRoute
+  '/privacy': typeof SitePrivacyRoute
+  '/refund-policy': typeof SiteRefundPolicyRoute
+  '/resources': typeof SiteResourcesRoute
+  '/terms': typeof SiteTermsRoute
+  '/': typeof SiteIndexRoute
+  '/industries/hotels': typeof SiteIndustriesHotelsRoute
+  '/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/services': typeof SiteServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_site': typeof SiteRouteWithChildren
+  '/_site/booking': typeof SiteBookingRoute
+  '/_site/catalog': typeof SiteCatalogRoute
+  '/_site/contact': typeof SiteContactRoute
+  '/_site/corporate': typeof SiteCorporateRoute
+  '/_site/delivery-policy': typeof SiteDeliveryPolicyRoute
+  '/_site/locations': typeof SiteLocationsRoute
+  '/_site/pricing': typeof SitePricingRoute
+  '/_site/privacy': typeof SitePrivacyRoute
+  '/_site/refund-policy': typeof SiteRefundPolicyRoute
+  '/_site/resources': typeof SiteResourcesRoute
+  '/_site/terms': typeof SiteTermsRoute
+  '/_site/': typeof SiteIndexRoute
+  '/_site/industries/hotels': typeof SiteIndustriesHotelsRoute
+  '/_site/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/_site/services/': typeof SiteServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/booking'
+    | '/catalog'
+    | '/contact'
+    | '/corporate'
+    | '/delivery-policy'
+    | '/locations'
+    | '/pricing'
+    | '/privacy'
+    | '/refund-policy'
+    | '/resources'
+    | '/terms'
+    | '/industries/hotels'
+    | '/services/wash-and-fold'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/booking'
+    | '/catalog'
+    | '/contact'
+    | '/corporate'
+    | '/delivery-policy'
+    | '/locations'
+    | '/pricing'
+    | '/privacy'
+    | '/refund-policy'
+    | '/resources'
+    | '/terms'
+    | '/'
+    | '/industries/hotels'
+    | '/services/wash-and-fold'
+    | '/services'
+  id:
+    | '__root__'
+    | '/_site'
+    | '/_site/booking'
+    | '/_site/catalog'
+    | '/_site/contact'
+    | '/_site/corporate'
+    | '/_site/delivery-policy'
+    | '/_site/locations'
+    | '/_site/pricing'
+    | '/_site/privacy'
+    | '/_site/refund-policy'
+    | '/_site/resources'
+    | '/_site/terms'
+    | '/_site/'
+    | '/_site/industries/hotels'
+    | '/_site/services/wash-and-fold'
+    | '/_site/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  SiteRoute: typeof SiteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_site': {
+      id: '/_site'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof SiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_site/': {
+      id: '/_site/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof SiteIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/booking': {
+      id: '/_site/booking'
+      path: '/booking'
+      fullPath: '/booking'
+      preLoaderRoute: typeof SiteBookingRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/catalog': {
+      id: '/_site/catalog'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof SiteCatalogRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/contact': {
+      id: '/_site/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof SiteContactRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/corporate': {
+      id: '/_site/corporate'
+      path: '/corporate'
+      fullPath: '/corporate'
+      preLoaderRoute: typeof SiteCorporateRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/delivery-policy': {
+      id: '/_site/delivery-policy'
+      path: '/delivery-policy'
+      fullPath: '/delivery-policy'
+      preLoaderRoute: typeof SiteDeliveryPolicyRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/locations': {
+      id: '/_site/locations'
+      path: '/locations'
+      fullPath: '/locations'
+      preLoaderRoute: typeof SiteLocationsRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/pricing': {
+      id: '/_site/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof SitePricingRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/privacy': {
+      id: '/_site/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof SitePrivacyRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/refund-policy': {
+      id: '/_site/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof SiteRefundPolicyRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/resources': {
+      id: '/_site/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof SiteResourcesRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/terms': {
+      id: '/_site/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof SiteTermsRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/industries/hotels': {
+      id: '/_site/industries/hotels'
+      path: '/industries/hotels'
+      fullPath: '/industries/hotels'
+      preLoaderRoute: typeof SiteIndustriesHotelsRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/services/': {
+      id: '/_site/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof SiteServicesIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/services/wash-and-fold': {
+      id: '/_site/services/wash-and-fold'
+      path: '/services/wash-and-fold'
+      fullPath: '/services/wash-and-fold'
+      preLoaderRoute: typeof SiteServicesWashAndFoldRouteImport
+      parentRoute: typeof SiteRoute
     }
   }
 }
 
+interface SiteRouteChildren {
+  SiteBookingRoute: typeof SiteBookingRoute
+  SiteCatalogRoute: typeof SiteCatalogRoute
+  SiteContactRoute: typeof SiteContactRoute
+  SiteCorporateRoute: typeof SiteCorporateRoute
+  SiteDeliveryPolicyRoute: typeof SiteDeliveryPolicyRoute
+  SiteLocationsRoute: typeof SiteLocationsRoute
+  SitePricingRoute: typeof SitePricingRoute
+  SitePrivacyRoute: typeof SitePrivacyRoute
+  SiteRefundPolicyRoute: typeof SiteRefundPolicyRoute
+  SiteResourcesRoute: typeof SiteResourcesRoute
+  SiteTermsRoute: typeof SiteTermsRoute
+  SiteIndexRoute: typeof SiteIndexRoute
+  SiteIndustriesHotelsRoute: typeof SiteIndustriesHotelsRoute
+  SiteServicesWashAndFoldRoute: typeof SiteServicesWashAndFoldRoute
+  SiteServicesIndexRoute: typeof SiteServicesIndexRoute
+}
+
+const SiteRouteChildren: SiteRouteChildren = {
+  SiteBookingRoute: SiteBookingRoute,
+  SiteCatalogRoute: SiteCatalogRoute,
+  SiteContactRoute: SiteContactRoute,
+  SiteCorporateRoute: SiteCorporateRoute,
+  SiteDeliveryPolicyRoute: SiteDeliveryPolicyRoute,
+  SiteLocationsRoute: SiteLocationsRoute,
+  SitePricingRoute: SitePricingRoute,
+  SitePrivacyRoute: SitePrivacyRoute,
+  SiteRefundPolicyRoute: SiteRefundPolicyRoute,
+  SiteResourcesRoute: SiteResourcesRoute,
+  SiteTermsRoute: SiteTermsRoute,
+  SiteIndexRoute: SiteIndexRoute,
+  SiteIndustriesHotelsRoute: SiteIndustriesHotelsRoute,
+  SiteServicesWashAndFoldRoute: SiteServicesWashAndFoldRoute,
+  SiteServicesIndexRoute: SiteServicesIndexRoute,
+}
+
+const SiteRouteWithChildren = SiteRoute._addFileChildren(SiteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  SiteRoute: SiteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

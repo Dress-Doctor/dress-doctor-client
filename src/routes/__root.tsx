@@ -26,14 +26,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     head: () => ({
       meta: [
         { charSet: 'utf-8' },
-        { title: 'Laundry & Dry Cleaning Service in Douala' },
+        // Site-wide defaults. Pages set their own title, description,
+        // canonical and share tags in their route `head`.
+        { title: 'Dress Doctor' },
         { name: 'theme-color', content: '#202938' },
         { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Dress Doctor' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        {
-          property: 'og:site_name',
-          content: 'Laundry & Dry Cleaning Service in Douala',
-        },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
       links: [

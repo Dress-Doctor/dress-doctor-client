@@ -5,6 +5,7 @@ import {
   LuArrowLeft,
   LuArrowRight,
   LuBanknote,
+  LuBedDouble,
   LuBookMarked,
   LuBell,
   LuBuilding2,
@@ -15,6 +16,7 @@ import {
   LuCircleAlert,
   LuClipboardList,
   LuClock,
+  LuDroplet,
   LuDownload,
   LuEye,
   LuEyeOff,
@@ -29,8 +31,10 @@ import {
   LuLock,
   LuLogOut,
   LuMail,
+  LuMapPin,
   LuMessageCircle,
   LuTags,
+  LuMinus,
   LuMoon,
   LuPanelLeftClose,
   LuPanelLeftOpen,
@@ -45,6 +49,7 @@ import {
   LuShieldCheck,
   LuShirt,
   LuSparkles,
+  LuStar,
   LuSun,
   LuTrash2,
   LuTruck,
@@ -52,9 +57,10 @@ import {
   LuUsers,
   LuWallet,
   LuWashingMachine,
+  LuWeight,
 } from 'react-icons/lu'
-import { MdOutlineClose } from 'react-icons/md'
-import { PiFunnelLight } from 'react-icons/pi'
+import { MdOutlineClose, MdOutlineIron } from 'react-icons/md'
+import { PiFunnelLight, PiSneaker } from 'react-icons/pi'
 import { RxDashboard } from 'react-icons/rx'
 
 const icons = {
@@ -119,6 +125,18 @@ const icons = {
   user: LuUser,
   customers: LuUsers,
   laundry: LuWashingMachine,
+
+  // Public website. The six service marks lead the service cards, the nav's
+  // mega-menu and the footer, so each one has to be recognisable at 18px and
+  // distinct from the other five.
+  dryClean: LuDroplet,
+  ironing: MdOutlineIron,
+  bedding: LuBedDouble,
+  shoeCare: PiSneaker,
+  weight: LuWeight,
+  star: LuStar,
+  minus: LuMinus,
+  location: LuMapPin,
 } satisfies Record<string, IconType>
 
 export default icons
