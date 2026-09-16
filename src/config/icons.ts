@@ -1,5 +1,5 @@
 import { BsFiletypeCsv, BsFillFileEarmarkExcelFill } from 'react-icons/bs'
-import { FaWhatsapp } from 'react-icons/fa6'
+import { FaFacebookF, FaTiktok, FaWhatsapp } from 'react-icons/fa6'
 import type { IconType } from 'react-icons/lib'
 import {
   LuArrowLeft,
@@ -84,6 +84,8 @@ const icons = {
   back: LuArrowLeft,
   forward: LuArrowRight,
   whatsappBrand: FaWhatsapp,
+  facebookBrand: FaFacebookF,
+  tiktokBrand: FaTiktok,
   notifications: LuBell,
   office: LuBuilding2,
   chevronDown: LuChevronDown,

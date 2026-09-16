@@ -104,6 +104,7 @@ function PlanCard({ plan, mode, billing }: PlanCardProps) {
             fontSize="10.5px"
             fontWeight="bold"
             letterSpacing="0.09em"
+            fontFamily="label"
             textTransform="uppercase"
             whiteSpace="nowrap"
             {...tag}
@@ -207,6 +208,7 @@ function PlanCard({ plan, mode, billing }: PlanCardProps) {
               fontSize="11px"
               fontWeight="bold"
               letterSpacing="0.1em"
+              fontFamily="label"
               textTransform="uppercase"
               color="turquoise-blue.700"
             >
@@ -271,7 +273,7 @@ function PlanCard({ plan, mode, billing }: PlanCardProps) {
               billing,
             }}
           >
-            {m.home_plans_subscribe({ plan: name })}
+            {plan.cta()}
             <Icon aria-hidden boxSize={3.5} as={icons.forward} />
           </Link>
         </SiteButton>

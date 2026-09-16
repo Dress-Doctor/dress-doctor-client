@@ -70,8 +70,8 @@ function EstimatorSection({ mode, onModeChange }: EstimatorSectionProps) {
             />
 
             <Stack gap={3.5} mt={7} maxW="46ch">
+              <CheckItem tone="light" label={m.home_estimator_perkNoHidden()} />
               <CheckItem tone="light" label={m.home_estimator_perkPickup()} />
-              <CheckItem tone="light" label={m.home_estimator_perkApprove()} />
               <CheckItem tone="light" label={m.home_estimator_perkPay()} />
             </Stack>
 

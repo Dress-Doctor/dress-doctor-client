@@ -1,5 +1,5 @@
 import { businessFacts, homeFaqs } from '#/data/home.data'
-import { siteContact, siteServices } from '#/data/site.data'
+import { siteContact, siteServices, siteSocials } from '#/data/site.data'
 import { SITE_URL, localizedUrl, publicUrl } from '#/libs/seo'
 import { m } from '#/paraglide/messages'
 import { getLocale } from '#/paraglide/runtime'
@@ -59,6 +59,7 @@ export function homeStructuredData() {
         image: shareImages.openGraph,
         telephone: siteContact.phoneHref.replace('tel:', ''),
         email: siteContact.email,
+        sameAs: siteSocials.map((social) => social.href),
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Douala',

@@ -2,10 +2,18 @@ import icons from '#/config/icons'
 import type { FileRoutesByTo } from '#/routeTree.gen'
 import type {
   SiteLinkDto,
+  SiteSocialDto,
   SiteNavLinkDto,
   SiteServiceDto,
 } from '#/interfaces/site.dto'
 import { m } from '#/paraglide/messages'
+
+import washFoldImage from '#/assets/imagery/wash-and-fold.webp'
+import homeAndBeddingImage from '#/assets/imagery/home-and-bedding.webp'
+import washPerPieceImage from '#/assets/imagery/wash-per-piece.webp'
+import dryCleanImage from '#/assets/imagery/dry-cleaning.webp'
+import ironingImage from '#/assets/imagery/ironing.webp'
+import shoesImage from '#/assets/imagery/shoes.webp'
 
 /**
  * Every destination the public site links to, in one place.
@@ -55,6 +63,21 @@ export const siteContact = {
   emailHref: 'mailto:info@dressdoctor.io',
 } as const
 
+export const siteSocials: SiteSocialDto[] = [
+  {
+    id: 'facebook',
+    href: 'https://www.facebook.com/dressdoctor.io',
+    icon: icons.facebookBrand,
+    label: m.site_footer_social_facebook,
+  },
+  {
+    id: 'tiktok',
+    href: 'https://www.tiktok.com/@dressdoctor.io',
+    icon: icons.tiktokBrand,
+    label: m.site_footer_social_tiktok,
+  },
+]
+
 /**
  * The brand gradients the design repeats on every primary action and roundel.
  * Named here so a button and the roundel beside it cannot drift apart.
@@ -84,6 +107,7 @@ export const siteServices: SiteServiceDto[] = [
   {
     id: 'washFold',
     icon: icons.laundry,
+    image: washFoldImage,
     to: sitePaths.washAndFold,
     name: m.site_service_washFold_name,
     summary: m.site_service_washFold_summary,
@@ -93,6 +117,7 @@ export const siteServices: SiteServiceDto[] = [
     id: 'perPiece',
     icon: icons.garment,
     to: sitePaths.services,
+    image: washPerPieceImage,
     name: m.site_service_perPiece_name,
     summary: m.site_service_perPiece_summary,
     price: m.site_service_perPiece_price,
@@ -100,6 +125,7 @@ export const siteServices: SiteServiceDto[] = [
   {
     id: 'dryClean',
     icon: icons.dryClean,
+    image: dryCleanImage,
     to: sitePaths.services,
     name: m.site_service_dryClean_name,
     summary: m.site_service_dryClean_summary,
@@ -108,6 +134,7 @@ export const siteServices: SiteServiceDto[] = [
   {
     id: 'ironing',
     icon: icons.ironing,
+    image: ironingImage,
     to: sitePaths.services,
     name: m.site_service_ironing_name,
     summary: m.site_service_ironing_summary,
@@ -117,12 +144,14 @@ export const siteServices: SiteServiceDto[] = [
     id: 'bedding',
     icon: icons.bedding,
     to: sitePaths.services,
+    image: homeAndBeddingImage,
     name: m.site_service_bedding_name,
     summary: m.site_service_bedding_summary,
     price: m.site_service_bedding_price,
   },
   {
     id: 'shoeCare',
+    image: shoesImage,
     icon: icons.shoeCare,
     to: sitePaths.services,
     name: m.site_service_shoeCare_name,

@@ -41,6 +41,7 @@ function SectionHeading({
         fontSize="xs"
         fontWeight="bold"
         letterSpacing="0.14em"
+        fontFamily="label"
         textTransform="uppercase"
         color={onNavy ? 'turquoise-blue.500' : 'turquoise-blue.700'}
       >

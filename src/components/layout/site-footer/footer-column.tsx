@@ -17,6 +17,7 @@ function FooterColumn({ title, links }: FooterColumnProps) {
         fontSize="xs"
         fontWeight="bold"
         letterSpacing="0.12em"
+        fontFamily="label"
         textTransform="uppercase"
         color="whiteAlpha.400"
       >

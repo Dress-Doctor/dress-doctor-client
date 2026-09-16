@@ -116,11 +116,11 @@ const darkSurface = {
 } as const
 
 /**
- * `heading` is Jost, not Figtree: the Dress Doctor design system names Jost the
- * main face for both body copy and headings, and reserves Figtree for "impact
- * moments" — stat counters, prices, plan figures. That third role is the
- * `display` token, so a figure asks for `fontFamily="display"` rather than
- * hard-coding the family.
+ * Jost sets body copy, headings and, for now, figures too. `display` is kept as
+ * its own token for "impact moments" — stat counters, prices, plan figures,
+ * the wordmark — so those can switch face by changing one line here. It uses
+ * Jost because Jost renders numbers better; Figtree is still loaded in
+ * `__root.tsx` in case `display` goes back to it.
  */
 /**
  * The public website's own ink and paper, taken verbatim from the design
@@ -141,7 +141,9 @@ const site = {
 const fonts = {
   body: `"jost", system-ui, sans-serif`,
   heading: `"jost", system-ui, sans-serif`,
-  display: `"figtree", system-ui, sans-serif`,
+  display: `"jost", system-ui, sans-serif`,
+  /** Small uppercase labels: section eyebrows, badges and tags. */
+  label: `"figtree", system-ui, sans-serif`,
   mono: 'monospace',
 }
 
@@ -252,6 +254,7 @@ export const chakraTheme = createSystem(
           body: { value: fonts.body },
           heading: { value: fonts.heading },
           display: { value: fonts.display },
+          label: { value: fonts.label },
         },
         colors: {
           'turquoise-blue': toTokens(brand['turquoise-blue']),

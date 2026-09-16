@@ -37,10 +37,10 @@ function SiteBrand() {
           </Text>
           <Text
             as="span"
-            fontFamily="display"
             fontSize="11px"
             letterSpacing="0.14em"
             lineHeight="1"
+            fontFamily="label"
             textTransform="uppercase"
             color="site.ink-subtle"
           >

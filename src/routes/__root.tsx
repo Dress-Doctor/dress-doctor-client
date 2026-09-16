@@ -76,7 +76,7 @@ function RootDocument() {
         <HeadContent />
       </head>
       <body>
-        <ChakraAppProvider theme={chakraTheme}>
+        <ChakraAppProvider theme={chakraTheme} forcedTheme="light">
           <Toaster />
           <AntThemeSwitch>
             <Outlet />

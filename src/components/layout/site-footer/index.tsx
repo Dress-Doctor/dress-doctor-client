@@ -20,6 +20,7 @@ import {
   footerLegalLinks,
   siteContact,
   siteServices,
+  siteSocials,
 } from '#/data/site.data'
 import { m } from '#/paraglide/messages'
 import FooterColumn from './footer-column'
@@ -190,6 +191,51 @@ function SiteFooter() {
                 </ChakraLink>
               </Text>
             </Stack>
+
+            <HStack mt={5} gap={3} wrap="wrap">
+              <Text fontSize="13.5px" color="whiteAlpha.500">
+                {m.site_footer_followUs()}
+              </Text>
+
+              <HStack as="ul" gap={2} listStyleType="none">
+                {siteSocials.map((social) => (
+                  <li key={social.id}>
+                    <ChakraLink
+                      aria-label={social.label()}
+                      title={social.label()}
+                      target="_blank"
+                      rel="noopener"
+                      href={social.href}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      boxSize="40px"
+                      rounded="full"
+                      color="whiteAlpha.800"
+                      bg="whiteAlpha.100"
+                      borderWidth="1px"
+                      borderColor="whiteAlpha.200"
+                      textDecoration="none"
+                      transitionProperty="background, border-color, color, transform"
+                      transitionDuration="fast"
+                      _hover={{
+                        color: 'white',
+                        bg: 'whiteAlpha.200',
+                        borderColor: 'whiteAlpha.400',
+                        transform: 'translateY(-1px)',
+                      }}
+                      _focusVisible={{
+                        outline: '2px solid',
+                        outlineColor: 'turquoise-blue.500',
+                        outlineOffset: '2px',
+                      }}
+                    >
+                      <Icon aria-hidden boxSize={4} as={social.icon} />
+                    </ChakraLink>
+                  </li>
+                ))}
+              </HStack>
+            </HStack>
           </Stack>
 
           <FooterColumn

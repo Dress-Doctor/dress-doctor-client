@@ -1,6 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import PagePlaceholder from '#/routes/_site/-components/page-placeholder'
-import type { PlanBillingDto, PlanModeDto } from '#/interfaces/site.dto'
+import type {
+  KgServiceIdDto,
+  PlanBillingDto,
+  PlanModeDto,
+} from '#/interfaces/site.dto'
 import { m } from '#/paraglide/messages'
 import { noIndexHead } from '#/libs/seo'
 
@@ -10,7 +14,7 @@ import { noIndexHead } from '#/libs/seo'
  * billing options they had selected.
  */
 export interface BookingSearch {
-  service?: 'perkg' | 'perpiece' | 'plan'
+  service?: KgServiceIdDto | 'perpiece' | 'plan'
   plan?: string
   mode?: PlanModeDto
   billing?: PlanBillingDto
@@ -24,7 +28,12 @@ export const Route = createFileRoute('/_site/booking')({
   // does not exist yet, so an unknown value is dropped instead of throwing a
   // visitor out of a booking flow.
   validateSearch: (search: Record<string, unknown>): BookingSearch => ({
-    service: asOneOf(search.service, ['perkg', 'perpiece', 'plan'] as const),
+    service: asOneOf(search.service, [
+      'washFold',
+      'washIron',
+      'perpiece',
+      'plan',
+    ] as const),
     plan: typeof search.plan === 'string' ? search.plan : undefined,
     mode: asOneOf(search.mode, ['pieces', 'kg'] as const),
     billing: asOneOf(search.billing, ['monthly', 'quarterly'] as const),

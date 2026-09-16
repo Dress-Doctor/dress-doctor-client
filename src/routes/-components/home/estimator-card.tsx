@@ -1,4 +1,13 @@
-import { Box, Flex, Icon, SegmentGroup, Stack, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Icon,
+  RadioCard,
+  SegmentGroup,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import icons from '#/config/icons'
@@ -6,13 +15,12 @@ import SiteButton from '#/components/site/site-button'
 import {
   KG_DEFAULT,
   KG_MAX,
-  KG_MIN,
-  KG_RATE,
+  homeKgServices,
   homePieceDefaults,
   homePieces,
 } from '#/data/home.data'
 import { sitePaths } from '#/data/site.data'
-import type { EstimateModeDto } from '#/interfaces/site.dto'
+import type { EstimateModeDto, KgServiceIdDto } from '#/interfaces/site.dto'
 import utils from '#/libs/utils'
 import { m } from '#/paraglide/messages'
 import QuantityStepper from './quantity-stepper'
@@ -31,18 +39,31 @@ interface EstimatorCardProps {
  * is nothing to restore.
  */
 function EstimatorCard({ mode, onModeChange }: EstimatorCardProps) {
+  const [kgServiceId, setKgServiceId] = useState<KgServiceIdDto>('washFold')
   const [kg, setKg] = useState(KG_DEFAULT)
   const [counts, setCounts] = useState<Record<string, number>>(() => ({
     ...homePieceDefaults,
   }))
 
+  const kgService =
+    homeKgServices.find((service) => service.id === kgServiceId) ??
+    homeKgServices[0]
+
   const total =
     mode === 'kg'
-      ? Math.max(kg, KG_MIN) * KG_RATE
+      ? Math.max(kg, kgService.min) * kgService.rate
       : homePieces.reduce(
           (sum, piece) => sum + (counts[piece.id] ?? 0) * piece.price,
           0,
         )
+
+  // A smaller minimum never lowers the load; a larger one lifts it to fit.
+  const selectKgService = (id: KgServiceIdDto) => {
+    const next = homeKgServices.find((service) => service.id === id)
+    if (!next) return
+    setKgServiceId(id)
+    setKg((value) => Math.max(value, next.min))
+  }
 
   const setCount = (id: string, next: number) =>
     setCounts((current) => ({ ...current, [id]: Math.max(next, 0) }))
@@ -82,6 +103,7 @@ function EstimatorCard({ mode, onModeChange }: EstimatorCardProps) {
             flex="1"
             py={2.5}
             rounded="full"
+            cursor="pointer"
             justifyContent="center"
             fontSize="14.5px"
             fontWeight="semibold"
@@ -95,33 +117,114 @@ function EstimatorCard({ mode, onModeChange }: EstimatorCardProps) {
       </SegmentGroup.Root>
 
       {mode === 'kg' ? (
-        <Flex
-          mt="26px"
-          gap={4}
-          rowGap={5}
-          wrap="wrap"
-          align="center"
-          justify="space-between"
-        >
-          <Stack gap={0.5}>
-            <Text fontSize="15.5px" fontWeight="semibold" color="site.ink">
-              {m.home_estimator_kgQuestion()}
-            </Text>
-            <Text fontSize="13px" color="site.ink-muted">
-              {m.home_estimator_kgHint()}
-            </Text>
-          </Stack>
+        <>
+          <RadioCard.Root
+            mt={5}
+            value={kgServiceId}
+            aria-label={m.home_estimator_a11y_kgService()}
+            onValueChange={(event) =>
+              event.value && selectKgService(event.value as KgServiceIdDto)
+            }
+          >
+            <SimpleGrid columns={{ base: 1, sm: 2 }} gap={2.5}>
+              {homeKgServices.map((service) => (
+                <RadioCard.Item
+                  key={service.id}
+                  value={service.id}
+                  cursor="pointer"
+                  rounded="16px"
+                  bg="white"
+                  borderWidth="1.5px"
+                  borderColor="rgba(0, 23, 31, 0.1)"
+                  transitionProperty="border-color, background, box-shadow"
+                  transitionDuration="moderate"
+                  _hover={{ borderColor: 'rgba(0, 23, 31, 0.25)' }}
+                  _focusVisible={{
+                    outline: '2px solid',
+                    outlineColor: 'turquoise-blue.700',
+                    outlineOffset: '2px',
+                  }}
+                  _checked={{
+                    bg: 'rgba(46, 207, 220, 0.08)',
+                    borderColor: '#24B9C6',
+                    boxShadow: '0 4px 14px rgba(46, 207, 220, 0.2)',
+                  }}
+                >
+                  <RadioCard.ItemHiddenInput />
+                  <RadioCard.ItemControl
+                    p={3.5}
+                    gap={2}
+                    alignItems="flex-start"
+                  >
+                    <RadioCard.ItemContent gap={1}>
+                      <RadioCard.ItemText
+                        fontSize="14.5px"
+                        fontWeight="semibold"
+                        lineHeight="1.3"
+                        color="site.ink"
+                      >
+                        {service.name()}
+                      </RadioCard.ItemText>
+                      <RadioCard.ItemDescription
+                        fontFamily="display"
+                        fontSize="13px"
+                        fontVariantNumeric="tabular-nums"
+                        whiteSpace="nowrap"
+                        fontWeight="semibold"
+                        color="site.ink"
+                      >
+                        {m.home_estimator_kgRate({
+                          price: utils.toXaf(service.rate),
+                        })}
+                      </RadioCard.ItemDescription>
+                      <RadioCard.ItemDescription
+                        fontSize="12.5px"
+                        color="site.ink-muted"
+                      >
+                        {m.home_estimator_kgMin({ count: service.min })}
+                      </RadioCard.ItemDescription>
+                    </RadioCard.ItemContent>
+                    <RadioCard.ItemIndicator
+                      boxSize={4}
+                      borderColor="rgba(0, 23, 31, 0.25)"
+                      _checked={{ bg: '#24B9C6', borderColor: '#24B9C6' }}
+                    />
+                  </RadioCard.ItemControl>
+                </RadioCard.Item>
+              ))}
+            </SimpleGrid>
+          </RadioCard.Root>
 
-          <QuantityStepper
-            value={m.home_estimator_kgUnit({ count: kg })}
-            canDecrease={kg > KG_MIN}
-            canIncrease={kg < KG_MAX}
-            decreaseLabel={m.home_estimator_a11y_decreaseKg()}
-            increaseLabel={m.home_estimator_a11y_increaseKg()}
-            onDecrease={() => setKg((value) => Math.max(value - 1, KG_MIN))}
-            onIncrease={() => setKg((value) => Math.min(value + 1, KG_MAX))}
-          />
-        </Flex>
+          <Flex
+            mt="22px"
+            gap={4}
+            rowGap={5}
+            wrap="wrap"
+            align="center"
+            justify="space-between"
+          >
+            <Stack gap={0.5}>
+              <Text fontSize="15.5px" fontWeight="semibold" color="site.ink">
+                {m.home_estimator_kgQuestion()}
+              </Text>
+              <Text fontSize="13px" color="site.ink-muted">
+                {m.home_estimator_kgHint()}
+              </Text>
+            </Stack>
+
+            <QuantityStepper
+              value={m.home_estimator_kgUnit({ count: kg })}
+              canDecrease={kg > kgService.min}
+              canIncrease={kg < KG_MAX}
+              decreaseLabel={m.home_estimator_a11y_decreaseKg()}
+              increaseLabel={m.home_estimator_a11y_increaseKg()}
+              onDecrease={() =>
+                setKg((value) => Math.max(value - 1, kgService.min))
+              }
+              onIncrease={() => setKg((value) => Math.min(value + 1, KG_MAX))}
+            />
+          </Flex>
+        </>
       ) : (
         <Stack gap={0} mt={4}>
           {homePieces.map((piece) => {
@@ -181,6 +284,7 @@ function EstimatorCard({ mode, onModeChange }: EstimatorCardProps) {
           </Text>
           <Text
             aria-live="polite"
+            whiteSpace="nowrap"
             fontFamily="display"
             fontVariantNumeric="tabular-nums"
             fontSize={{ base: '32px', md: '38px' }}
@@ -206,7 +310,7 @@ function EstimatorCard({ mode, onModeChange }: EstimatorCardProps) {
       <SiteButton asChild w="full" mt={5} px={4} py={4} fontSize="md">
         <Link
           to={sitePaths.booking}
-          search={{ service: mode === 'kg' ? 'perkg' : 'perpiece' }}
+          search={{ service: mode === 'kg' ? kgServiceId : 'perpiece' }}
         >
           {m.home_estimator_cta()}
           <Icon aria-hidden boxSize={3.5} as={icons.forward} />

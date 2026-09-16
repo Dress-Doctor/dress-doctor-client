@@ -1,4 +1,5 @@
 import type {
+  KgServiceDto,
   HomeFaqDto,
   HomePieceDto,
   HomePlanDto,
@@ -8,10 +9,17 @@ import type {
 } from '#/interfaces/site.dto'
 import { m } from '#/paraglide/messages'
 
-/** Per-kilo rate and the smallest load the shop will run, in XAF and kg. */
-export const KG_RATE = 1000
-export const KG_MIN = 4
+/** The heaviest load the estimator counts up to, in kg. */
 export const KG_MAX = 60
+
+/**
+ * The per-kilo services. Ironing costs more per kilo but takes a smaller
+ * load, so each carries its own minimum.
+ */
+export const homeKgServices: KgServiceDto[] = [
+  { id: 'washFold', rate: 700, min: 5, name: m.home_estimator_washFold },
+  { id: 'washIron', rate: 1000, min: 3, name: m.home_estimator_washIron },
+]
 
 /** A quarterly subscription is billed at 90% of the monthly price. */
 export const QUARTERLY_MULTIPLIER = 0.9
@@ -111,6 +119,7 @@ export const homePlans: HomePlanDto[] = [
     name: m.home_plan_basic_name,
     tag: m.home_plan_basic_tag,
     best: m.home_plan_basic_best,
+    cta: m.home_plan_basic_cta,
     allowKg: m.home_plan_basic_allowKg,
     allowPieces: m.home_plan_basic_allowPieces,
     featuresPieces: [
@@ -120,9 +129,9 @@ export const homePlans: HomePlanDto[] = [
         note: m.home_planFeature_weeklyCadence,
       },
       {
-        id: 'washFold',
-        title: m.home_planFeature_washFold,
-        note: m.home_planFeature_washFoldSub,
+        id: 'washIron',
+        title: m.home_planFeature_washIron,
+        note: m.home_planFeature_washIronSub,
       },
       {
         id: 'turnaround',
@@ -147,9 +156,9 @@ export const homePlans: HomePlanDto[] = [
         note: m.home_planFeature_weeklyCadence,
       },
       {
-        id: 'washFold',
-        title: m.home_planFeature_washFold,
-        note: m.home_planFeature_washFoldSub,
+        id: 'washIron',
+        title: m.home_planFeature_washIron,
+        note: m.home_planFeature_washIronSub,
       },
       {
         id: 'turnaround',
@@ -166,6 +175,7 @@ export const homePlans: HomePlanDto[] = [
     name: m.home_plan_standard_name,
     tag: m.home_plan_standard_tag,
     best: m.home_plan_standard_best,
+    cta: m.home_plan_standard_cta,
     allowKg: m.home_plan_standard_allowKg,
     allowPieces: m.home_plan_standard_allowPieces,
     featuresPieces: [
@@ -226,6 +236,7 @@ export const homePlans: HomePlanDto[] = [
     name: m.home_plan_premium_name,
     tag: m.home_plan_premium_tag,
     best: m.home_plan_premium_best,
+    cta: m.home_plan_premium_cta,
     allowKg: m.home_plan_premium_allowKg,
     allowPieces: m.home_plan_premium_allowPieces,
     featuresPieces: [

@@ -24,6 +24,7 @@ const segmentItem = {
   px: 4,
   py: 2.5,
   rounded: 'full',
+  cursor: 'pointer',
   fontSize: 'sm',
   fontWeight: 'semibold',
   justifyContent: 'center',
@@ -142,6 +143,7 @@ function PlansToolbar({
             fontSize="10px"
             fontWeight="extrabold"
             letterSpacing="0.06em"
+            fontFamily="label"
             textTransform="uppercase"
             color="amber-orange.700"
             bg="rgba(255, 137, 74, 0.14)"

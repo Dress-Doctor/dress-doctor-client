@@ -27,6 +27,20 @@ export interface SiteServiceDto {
   summary: () => string
   /** Entry price, already formatted with its unit ("From 1 000 XAF / kg"). */
   price: () => string
+  /**
+   * Illustration for the home service card, imported from `src/assets`.
+   * Optional: without one, the card shows a placeholder tile.
+   */
+  image?: string
+}
+
+/** A profile on a social network, shown as an icon link in the footer. */
+export interface SiteSocialDto {
+  id: 'facebook' | 'tiktok'
+  href: string
+  icon: IconType
+  /** Accessible name — the link shows the icon alone. */
+  label: () => string
 }
 
 export interface SiteLinkDto {
@@ -37,6 +51,18 @@ export interface SiteLinkDto {
 
 /** Whether the estimator is pricing a weight or a list of garments. */
 export type EstimateModeDto = 'kg' | 'piece'
+
+/** The two ways to have laundry washed per kilo. */
+export type KgServiceIdDto = 'washFold' | 'washIron'
+
+export interface KgServiceDto {
+  id: KgServiceIdDto
+  /** Price per kilo, in XAF. */
+  rate: number
+  /** Smallest load we take for this service, in kg. */
+  min: number
+  name: () => string
+}
 
 /** Whether plan allowances are read as garments or as kilos. */
 export type PlanModeDto = 'pieces' | 'kg'
@@ -98,6 +124,8 @@ export interface HomePlanDto {
   name: () => string
   tag: () => string
   best: () => string
+  /** Label on the card's sign-up button. */
+  cta: () => string
   allowKg: () => string
   allowPieces: () => string
   featuresKg: HomePlanFeatureDto[]

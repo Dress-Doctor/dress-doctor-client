@@ -88,6 +88,7 @@ function HeroSection() {
               fontSize="12.5px"
               fontWeight="semibold"
               letterSpacing="0.1em"
+              fontFamily="label"
               textTransform="uppercase"
               color="turquoise-blue.700"
               bg="rgba(255, 255, 255, 0.7)"
