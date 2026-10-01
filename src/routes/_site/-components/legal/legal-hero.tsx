@@ -71,15 +71,15 @@ function MetaChip({
   )
 }
 
+interface Props {
+  doc: LegalDocumentDto
+}
+
 /**
  * The top of a legal page: where you are, what it is called, when it took
  * effect, and the key promises in a card so a visitor who reads nothing
  * else still knows the important part.
  */
-interface Props {
-  doc: LegalDocumentDto
-}
-
 function LegalHero({ doc }: Props) {
   return (
     <Box as="section" position="relative" overflow="hidden" bgImage={bloom}>
@@ -87,6 +87,7 @@ function LegalHero({ doc }: Props) {
         <Box as="nav" aria-label={m.legal_a11y_breadcrumb()}>
           <HStack
             as="ol"
+            role="list"
             listStyleType="none"
             wrap="wrap"
             gap={2}
@@ -169,7 +170,14 @@ function LegalHero({ doc }: Props) {
               {doc.lead()}
             </Text>
 
-            <HStack as="ul" listStyleType="none" mt={6} wrap="wrap" gap={2.5}>
+            <HStack
+              as="ul"
+              role="list"
+              listStyleType="none"
+              mt={6}
+              wrap="wrap"
+              gap={2.5}
+            >
               <MetaChip
                 icon={icons.calendar}
                 label={m.legal_hero_effectiveLabel()}
@@ -233,12 +241,13 @@ function LegalHero({ doc }: Props) {
                 fontSize="lg"
                 fontWeight="semibold"
                 lineHeight="1.3"
+                textWrap="balance"
                 color="site.ink"
               >
                 {doc.highlightsTitle()}
               </Heading>
 
-              <Stack as="ul" listStyleType="none" mt={4} gap={3}>
+              <Stack as="ul" role="list" listStyleType="none" mt={4} gap={3}>
                 {doc.highlights.map((highlight, index) => (
                   <CheckItem key={index} as="li" label={highlight()} />
                 ))}

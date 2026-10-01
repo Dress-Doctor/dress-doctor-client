@@ -102,7 +102,8 @@ const contactLines: Record<
   },
   address: {
     term: m.legal_contact_addressTerm,
-    value: m.legal_contact_addressValue,
+    // The company name is a brand; keep translation tools off it.
+    value: () => <span translate="no">{m.legal_contact_addressValue()}</span>,
   },
 }
 
@@ -156,7 +157,7 @@ function Block({ block }: { block: LegalBlockDto }) {
 
     case 'list':
       return (
-        <List.Root variant="plain" gap={2.5}>
+        <List.Root variant="plain" role="list" gap={2.5}>
           {block.items.map((item, index) => (
             <Bullet key={index}>
               {item.term && (
@@ -208,6 +209,7 @@ function Block({ block }: { block: LegalBlockDto }) {
               </Box>
               <Box
                 as="dd"
+                minW={0}
                 fontSize="15px"
                 lineHeight="1.55"
                 color="site.ink-muted"
@@ -281,7 +283,7 @@ function Block({ block }: { block: LegalBlockDto }) {
 
     case 'contact':
       return (
-        <List.Root variant="plain" gap={2.5}>
+        <List.Root variant="plain" role="list" gap={2.5}>
           {block.kinds.map((kind) => {
             const line = contactLines[kind]
 

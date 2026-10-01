@@ -49,6 +49,7 @@ function LegalToc({ path, sections, active }: Props) {
 
       <Stack
         as="ol"
+        role="list"
         gap={0}
         listStyleType="none"
         borderStartWidth="1.5px"
@@ -93,7 +94,7 @@ function LegalToc({ path, sections, active }: Props) {
                       fontSize="11px"
                       fontWeight="bold"
                       letterSpacing="0.04em"
-                      color={current ? 'turquoise-blue.700' : 'site.ink-subtle'}
+                      color={current ? 'turquoise-blue.700' : 'site.ink-muted'}
                     >
                       {String(index + 1).padStart(2, '0')}
                     </Text>

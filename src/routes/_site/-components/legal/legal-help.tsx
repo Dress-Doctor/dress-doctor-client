@@ -17,14 +17,15 @@ import { siteContact } from '#/data/site.data'
 import type { LegalDocumentDto } from '#/interfaces/legal.dto'
 import { m } from '#/paraglide/messages'
 
-/**
- * What closes the policy: a navy card for a visitor who still has a question,
- * then a quiet link to the sibling document, which is the one most often read next.
- */
 interface Props {
   related: LegalDocumentDto['related']
 }
 
+/**
+ * What closes a legal page: a navy card for a visitor who still has a
+ * question, then a quiet link to the sibling document, which is the one most
+ * often read next.
+ */
 function LegalHelp({ related }: Props) {
   return (
     <>
@@ -58,6 +59,7 @@ function LegalHelp({ related }: Props) {
               fontSize="22px"
               fontWeight="semibold"
               letterSpacing="-0.01em"
+              textWrap="balance"
               color="white"
             >
               {m.legal_help_title()}
