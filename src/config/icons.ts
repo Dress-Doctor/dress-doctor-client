@@ -13,6 +13,7 @@ import {
   LuChevronDown,
   LuChevronsUpDown,
   LuCircleDollarSign,
+  LuCalendar,
   LuCircleAlert,
   LuClipboardList,
   LuClock,
@@ -20,9 +21,11 @@ import {
   LuDownload,
   LuEye,
   LuEyeOff,
+  LuFileText,
   LuFlag,
   LuGlobe,
   LuHistory,
+  LuHouse,
   LuInfo,
   LuLanguages,
   LuLayers,
@@ -139,6 +142,9 @@ const icons = {
   star: LuStar,
   minus: LuMinus,
   location: LuMapPin,
+  home: LuHouse,
+  calendar: LuCalendar,
+  document: LuFileText,
 } satisfies Record<string, IconType>
 
 export default icons

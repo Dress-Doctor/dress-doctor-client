@@ -1,6 +1,12 @@
 import { businessFacts, homeFaqs } from '#/data/home.data'
 import { siteContact, siteServices, siteSocials } from '#/data/site.data'
-import { SITE_URL, localizedUrl, publicUrl } from '#/libs/seo'
+import {
+  SITE_URL,
+  localizedLinks,
+  localizedUrl,
+  ogLocaleMeta,
+  publicUrl,
+} from '#/libs/seo'
 import { m } from '#/paraglide/messages'
 import { getLocale } from '#/paraglide/runtime'
 
@@ -22,6 +28,51 @@ const openingHours = {
   days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
   opens: '08:00',
   closes: '19:00',
+}
+
+interface PageHeadOptions {
+  /** Router path of the page, such as `/privacy`. */
+  path: string
+  title: string
+  description: string
+}
+
+/**
+ * Head for an ordinary indexable page: title, description, canonical and
+ * `hreflang` links, and the Open Graph and Twitter cards.
+ *
+ * The home page builds its own because it also carries structured data; every
+ * other page that simply wants to be found can use this one.
+ */
+export function pageHead({ path, title, description }: PageHeadOptions) {
+  const url = localizedUrl(path)
+
+  return {
+    meta: [
+      { title },
+      { name: 'description', content: description },
+      { name: 'robots', content: 'index, follow, max-image-preview:large' },
+
+      { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: SITE_NAME },
+      { property: 'og:url', content: url },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:image', content: shareImages.openGraph },
+      { property: 'og:image:width', content: String(shareImages.width) },
+      { property: 'og:image:height', content: String(shareImages.height) },
+      { property: 'og:image:alt', content: m.home_meta_ogImageAlt() },
+      ...ogLocaleMeta(),
+
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:url', content: url },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+      { name: 'twitter:image', content: shareImages.twitter },
+      { name: 'twitter:image:alt', content: m.home_meta_ogImageAlt() },
+    ],
+    links: localizedLinks(path),
+  }
 }
 
 const ids = {

@@ -12,4 +12,16 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/" />
   </url>
+  <url>
+    <loc>https://www.dressdoctor.io/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/privacy" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/fr/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/privacy" />
+  </url>
 </urlset>
