@@ -34,6 +34,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: 'og:site_name', content: 'Dress Doctor' },
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        // Proves domain ownership to Meta Business Manager.
+        {
+          name: 'facebook-domain-verification',
+          content: 'pbsnftyr8pobkiqv0ug6kka62r6glt',
+        },
       ],
       links: [
         // PNG icons: the bundled favicon.ico is PNG data, so declaring it as
