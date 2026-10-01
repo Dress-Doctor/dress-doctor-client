@@ -1,11 +1,13 @@
 import { Box, HStack, Link as ChakraLink, Stack, Text } from '@chakra-ui/react'
 import { Link } from '@tanstack/react-router'
-import { sitePaths } from '#/data/site.data'
-import type { PrivacySectionDto } from '#/interfaces/privacy.dto'
+import type { LegalSectionDto } from '#/interfaces/legal.dto'
+import type { FileRoutesByTo } from '#/routeTree.gen'
 import { m } from '#/paraglide/messages'
 
 interface Props {
-  sections: PrivacySectionDto[]
+  /** The page's own route, so each entry can jump within it. */
+  path: keyof FileRoutesByTo
+  sections: LegalSectionDto[]
   /** Id of the section the reader is in. */
   active: string
 }
@@ -18,11 +20,11 @@ interface Props {
  * with. Every entry is a router `Link` with a `hash`, so the jump and the
  * address bar stay in step and a section can be shared by its URL.
  */
-function PrivacyToc({ sections, active }: Props) {
+function LegalToc({ path, sections, active }: Props) {
   return (
     <Box
       as="nav"
-      aria-label={m.privacy_a11y_toc()}
+      aria-label={m.legal_a11y_toc()}
       alignSelf="start"
       position={{ lg: 'sticky' }}
       top={{ lg: '112px' }}
@@ -42,7 +44,7 @@ function PrivacyToc({ sections, active }: Props) {
         textTransform="uppercase"
         color="site.ink-muted"
       >
-        {m.privacy_toc_title()}
+        {m.legal_toc_title()}
       </Text>
 
       <Stack
@@ -76,7 +78,7 @@ function PrivacyToc({ sections, active }: Props) {
                 _hover={{ color: 'site.ink', textDecoration: 'none' }}
               >
                 <Link
-                  to={sitePaths.privacy}
+                  to={path}
                   hash={section.id}
                   replace
                   aria-current={current ? 'location' : undefined}
@@ -107,4 +109,4 @@ function PrivacyToc({ sections, active }: Props) {
   )
 }
 
-export default PrivacyToc
+export default LegalToc

@@ -24,4 +24,16 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/privacy" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/privacy" />
   </url>
+  <url>
+    <loc>https://www.dressdoctor.io/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/terms" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/fr/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/terms" />
+  </url>
 </urlset>

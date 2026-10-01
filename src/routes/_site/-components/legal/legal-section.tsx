@@ -10,13 +10,14 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
+import { Link } from '@tanstack/react-router'
 import icons from '#/config/icons'
 import { siteContact } from '#/data/site.data'
 import type {
-  PrivacyBlockDto,
-  PrivacyContactKindDto,
-  PrivacySectionDto,
-} from '#/interfaces/privacy.dto'
+  LegalBlockDto,
+  LegalContactKindDto,
+  LegalSectionDto,
+} from '#/interfaces/legal.dto'
 import { m } from '#/paraglide/messages'
 
 /**
@@ -74,11 +75,11 @@ const callouts = {
 
 /** The contact lines a `contact` block can list. */
 const contactLines: Record<
-  PrivacyContactKindDto,
+  LegalContactKindDto,
   { term: () => string; value: () => React.ReactNode }
 > = {
   email: {
-    term: m.privacy_contact_emailTerm,
+    term: m.legal_contact_emailTerm,
     value: () => (
       <ChakraLink {...inlineLink} href={siteContact.emailHref}>
         {siteContact.email}
@@ -86,7 +87,7 @@ const contactLines: Record<
     ),
   },
   whatsapp: {
-    term: m.privacy_contact_whatsappTerm,
+    term: m.legal_contact_whatsappTerm,
     value: () => (
       <ChakraLink
         {...inlineLink}
@@ -100,8 +101,8 @@ const contactLines: Record<
     ),
   },
   address: {
-    term: m.privacy_contact_addressTerm,
-    value: m.privacy_contact_addressValue,
+    term: m.legal_contact_addressTerm,
+    value: m.legal_contact_addressValue,
   },
 }
 
@@ -130,7 +131,7 @@ function Bullet({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Block({ block }: { block: PrivacyBlockDto }) {
+function Block({ block }: { block: LegalBlockDto }) {
   switch (block.type) {
     case 'paragraph':
       return (
@@ -261,6 +262,23 @@ function Block({ block }: { block: PrivacyBlockDto }) {
       )
     }
 
+    case 'link':
+      return (
+        <ChakraLink
+          asChild
+          alignSelf="flex-start"
+          gap={1.5}
+          fontWeight="semibold"
+          color="turquoise-blue.700"
+          _hover={{ color: 'turquoise-blue.800' }}
+        >
+          <Link to={block.to}>
+            {block.label()}
+            <Icon aria-hidden boxSize={3.5} as={icons.forward} />
+          </Link>
+        </ChakraLink>
+      )
+
     case 'contact':
       return (
         <List.Root variant="plain" gap={2.5}>
@@ -283,18 +301,18 @@ function Block({ block }: { block: PrivacyBlockDto }) {
 }
 
 interface Props {
-  section: PrivacySectionDto
+  section: LegalSectionDto
   /** Zero-based; shown as "01", "02"… above the title. */
   index: number
 }
 
 /**
- * One numbered section of the policy.
+ * One numbered section of a legal document.
  *
  * `scrollMarginTop` clears the sticky header, so a jump from the contents list
  * lands with the title in view rather than under the bar.
  */
-function PrivacySection({ section, index }: Props) {
+function LegalSection({ section, index }: Props) {
   return (
     <Box
       as="section"
@@ -327,7 +345,7 @@ function PrivacySection({ section, index }: Props) {
         >
           {String(index + 1).padStart(2, '0')}
         </Center>
-        <Text as="span">{m.privacy_section_label()}</Text>
+        <Text as="span">{m.legal_section_label()}</Text>
       </HStack>
 
       <Heading
@@ -352,4 +370,4 @@ function PrivacySection({ section, index }: Props) {
   )
 }
 
-export default PrivacySection
+export default LegalSection

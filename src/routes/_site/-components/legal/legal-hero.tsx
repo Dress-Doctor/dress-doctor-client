@@ -16,12 +16,8 @@ import icons from '#/config/icons'
 import CheckItem from '#/components/site/check-item'
 import Reveal from '#/components/site/reveal'
 import SiteContainer from '#/components/site/site-container'
-import {
-  PRIVACY_EFFECTIVE_DATE,
-  PRIVACY_VERSION,
-  privacyHighlights,
-} from '#/data/privacy.data'
 import { sitePaths } from '#/data/site.data'
+import type { LegalDocumentDto } from '#/interfaces/legal.dto'
 import { m } from '#/paraglide/messages'
 import { getLocale } from '#/paraglide/runtime'
 import type { Locale } from '#/paraglide/runtime'
@@ -76,15 +72,19 @@ function MetaChip({
 }
 
 /**
- * The top of the policy: where you are, what it is called, when it took
- * effect, and the four promises in a card so a visitor who reads nothing
+ * The top of a legal page: where you are, what it is called, when it took
+ * effect, and the key promises in a card so a visitor who reads nothing
  * else still knows the important part.
  */
-function PrivacyHero() {
+interface Props {
+  doc: LegalDocumentDto
+}
+
+function LegalHero({ doc }: Props) {
   return (
     <Box as="section" position="relative" overflow="hidden" bgImage={bloom}>
       <SiteContainer py={{ base: 10, md: 16 }}>
-        <Box as="nav" aria-label={m.privacy_a11y_breadcrumb()}>
+        <Box as="nav" aria-label={m.legal_a11y_breadcrumb()}>
           <HStack
             as="ol"
             listStyleType="none"
@@ -102,14 +102,14 @@ function PrivacyHero() {
               >
                 <Link to={sitePaths.home}>
                   <Icon aria-hidden boxSize={3.5} as={icons.home} />
-                  {m.privacy_breadcrumb_home()}
+                  {m.legal_breadcrumb_home()}
                 </Link>
               </ChakraLink>
             </HStack>
             <Text as="li" aria-hidden color="site.ink-subtle">
               /
             </Text>
-            <Text as="li">{m.privacy_breadcrumb_legal()}</Text>
+            <Text as="li">{m.legal_breadcrumb_legal()}</Text>
             <Text as="li" aria-hidden color="site.ink-subtle">
               /
             </Text>
@@ -119,7 +119,7 @@ function PrivacyHero() {
               fontWeight="semibold"
               color="site.ink"
             >
-              {m.privacy_breadcrumb_current()}
+              {doc.breadcrumb()}
             </Text>
           </HStack>
         </Box>
@@ -141,7 +141,7 @@ function PrivacyHero() {
               color="turquoise-blue.700"
               boxShadow="0 4px 14px rgba(0, 23, 31, 0.05)"
             >
-              <Icon aria-hidden boxSize={6} as={icons.secure} />
+              <Icon aria-hidden boxSize={6} as={doc.icon} />
             </Center>
 
             <Heading
@@ -155,7 +155,7 @@ function PrivacyHero() {
               textWrap="balance"
               color="site.ink"
             >
-              {m.privacy_hero_title()}
+              {doc.title()}
             </Heading>
 
             <Text
@@ -166,30 +166,30 @@ function PrivacyHero() {
               textWrap="pretty"
               color="site.ink-muted"
             >
-              {m.privacy_hero_lead()}
+              {doc.lead()}
             </Text>
 
             <HStack as="ul" listStyleType="none" mt={6} wrap="wrap" gap={2.5}>
               <MetaChip
                 icon={icons.calendar}
-                label={m.privacy_hero_effectiveLabel()}
+                label={m.legal_hero_effectiveLabel()}
                 value={
-                  <time dateTime={PRIVACY_EFFECTIVE_DATE}>
-                    {formatDate(PRIVACY_EFFECTIVE_DATE)}
+                  <time dateTime={doc.effectiveDate}>
+                    {formatDate(doc.effectiveDate)}
                   </time>
                 }
               />
               <MetaChip
                 icon={icons.sync}
-                label={m.privacy_hero_versionLabel()}
-                value={PRIVACY_VERSION}
+                label={m.legal_hero_versionLabel()}
+                value={doc.version}
               />
               <MetaChip
                 icon={icons.location}
-                label={m.privacy_hero_countryLabel()}
+                label={m.legal_hero_countryLabel()}
                 value={
                   <>
-                    {m.privacy_hero_countryValue()}
+                    {m.legal_hero_countryValue()}
                     <span aria-hidden>🇨🇲</span>
                   </>
                 }
@@ -224,7 +224,7 @@ function PrivacyHero() {
                 color="turquoise-blue.700"
               >
                 <Icon aria-hidden boxSize={3} as={icons.sparkles} />
-                {m.privacy_tldr_tag()}
+                {m.legal_tldr_tag()}
               </HStack>
 
               <Heading
@@ -235,11 +235,11 @@ function PrivacyHero() {
                 lineHeight="1.3"
                 color="site.ink"
               >
-                {m.privacy_tldr_title()}
+                {doc.highlightsTitle()}
               </Heading>
 
               <Stack as="ul" listStyleType="none" mt={4} gap={3}>
-                {privacyHighlights.map((highlight, index) => (
+                {doc.highlights.map((highlight, index) => (
                   <CheckItem key={index} as="li" label={highlight()} />
                 ))}
               </Stack>
@@ -251,4 +251,4 @@ function PrivacyHero() {
   )
 }
 
-export default PrivacyHero
+export default LegalHero

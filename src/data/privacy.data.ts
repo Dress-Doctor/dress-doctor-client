@@ -1,25 +1,13 @@
-import type { PrivacySectionDto } from '#/interfaces/privacy.dto'
+import icons from '#/config/icons'
+import { sitePaths } from '#/data/site.data'
+import type { LegalDocumentDto, LegalSectionDto } from '#/interfaces/legal.dto'
 import { m } from '#/paraglide/messages'
-
-/** The four promises in the summary card beside the page title. */
-export const privacyHighlights: (() => string)[] = [
-  m.privacy_tldr_collect,
-  m.privacy_tldr_sell,
-  m.privacy_tldr_payment,
-  m.privacy_tldr_delete,
-]
-
-/** Shown as "Version" under the title. Raise it with the effective date. */
-export const PRIVACY_VERSION = 'v1.0'
-
-/** The day this version took effect, as `YYYY-MM-DD`. */
-export const PRIVACY_EFFECTIVE_DATE = '2026-10-01'
 
 /**
  * The policy, section by section. Each `id` is also the in-page anchor, so
  * renaming one changes a link that visitors may have saved.
  */
-export const privacySections: PrivacySectionDto[] = [
+const sections: LegalSectionDto[] = [
   {
     id: 'about',
     title: m.privacy_intro_title,
@@ -180,6 +168,7 @@ export const privacySections: PrivacySectionDto[] = [
     blocks: [
       { type: 'paragraph', text: m.privacy_messages_p1 },
       { type: 'paragraph', text: m.privacy_messages_p2 },
+      { type: 'paragraph', text: m.privacy_messages_p3 },
     ],
   },
   {
@@ -194,6 +183,7 @@ export const privacySections: PrivacySectionDto[] = [
             label: m.privacy_keep_ordersLabel,
             text: m.privacy_keep_ordersText,
           },
+          { label: m.privacy_keep_taxLabel, text: m.privacy_keep_taxText },
           {
             label: m.privacy_keep_photosLabel,
             text: m.privacy_keep_photosText,
@@ -203,7 +193,6 @@ export const privacySections: PrivacySectionDto[] = [
             label: m.privacy_keep_offersLabel,
             text: m.privacy_keep_offersText,
           },
-          { label: m.privacy_keep_taxLabel, text: m.privacy_keep_taxText },
         ],
       },
     ],
@@ -288,3 +277,27 @@ export const privacySections: PrivacySectionDto[] = [
     ],
   },
 ]
+
+/** Raise `version` and `effectiveDate` together when the policy changes. */
+export const privacyDocument: LegalDocumentDto = {
+  path: sitePaths.privacy,
+  icon: icons.secure,
+  breadcrumb: m.privacy_breadcrumb_current,
+  title: m.privacy_hero_title,
+  lead: m.privacy_hero_lead,
+  effectiveDate: '2026-10-01',
+  version: 'v1.0',
+  highlightsTitle: m.privacy_tldr_title,
+  highlights: [
+    m.privacy_tldr_collect,
+    m.privacy_tldr_sell,
+    m.privacy_tldr_payment,
+    m.privacy_tldr_delete,
+  ],
+  related: {
+    to: sitePaths.terms,
+    title: m.terms_hero_title,
+    icon: icons.document,
+  },
+  sections,
+}

@@ -13,14 +13,19 @@ import { Link } from '@tanstack/react-router'
 import icons from '#/config/icons'
 import Reveal from '#/components/site/reveal'
 import SiteButton from '#/components/site/site-button'
-import { siteContact, sitePaths } from '#/data/site.data'
+import { siteContact } from '#/data/site.data'
+import type { LegalDocumentDto } from '#/interfaces/legal.dto'
 import { m } from '#/paraglide/messages'
 
 /**
  * What closes the policy: a navy card for a visitor who still has a question,
- * then a quiet link to the Terms, which is the document most often read next.
+ * then a quiet link to the sibling document, which is the one most often read next.
  */
-function PrivacyHelp() {
+interface Props {
+  related: LegalDocumentDto['related']
+}
+
+function LegalHelp({ related }: Props) {
   return (
     <>
       <Reveal
@@ -55,7 +60,7 @@ function PrivacyHelp() {
               letterSpacing="-0.01em"
               color="white"
             >
-              {m.privacy_help_title()}
+              {m.legal_help_title()}
             </Heading>
             <Text
               maxW="50ch"
@@ -63,7 +68,7 @@ function PrivacyHelp() {
               lineHeight="1.6"
               color="whiteAlpha.700"
             >
-              {m.privacy_help_body()}
+              {m.legal_help_body()}
             </Text>
           </Stack>
 
@@ -75,7 +80,7 @@ function PrivacyHelp() {
                 rel="noopener noreferrer"
               >
                 <Icon aria-hidden boxSize={4.5} as={icons.whatsappBrand} />
-                {m.privacy_help_whatsapp()}
+                {m.legal_help_whatsapp()}
               </ChakraLink>
             </SiteButton>
 
@@ -88,7 +93,7 @@ function PrivacyHelp() {
             >
               <ChakraLink href={siteContact.emailHref}>
                 <Icon aria-hidden boxSize={4} as={icons.email} />
-                {m.privacy_help_email()}
+                {m.legal_help_email()}
               </ChakraLink>
             </SiteButton>
           </HStack>
@@ -118,7 +123,7 @@ function PrivacyHelp() {
             borderColor="rgba(0, 23, 31, 0.08)"
             color="site.ink"
           >
-            <Icon aria-hidden boxSize={5} as={icons.document} />
+            <Icon aria-hidden boxSize={5} as={related.icon} />
           </Center>
 
           <Stack gap={0.5}>
@@ -130,10 +135,10 @@ function PrivacyHelp() {
               textTransform="uppercase"
               color="site.ink-muted"
             >
-              {m.privacy_related_label()}
+              {m.legal_related_label()}
             </Text>
             <Text fontSize="md" fontWeight="semibold" color="site.ink">
-              {m.privacy_related_title()}
+              {related.title()}
             </Text>
           </Stack>
         </HStack>
@@ -147,8 +152,8 @@ function PrivacyHelp() {
           color="turquoise-blue.700"
           _hover={{ color: 'turquoise-blue.800' }}
         >
-          <Link to={sitePaths.terms}>
-            {m.privacy_related_action()}
+          <Link to={related.to}>
+            {m.legal_related_action()}
             <Icon aria-hidden boxSize={3.5} as={icons.forward} />
           </Link>
         </ChakraLink>
@@ -157,4 +162,4 @@ function PrivacyHelp() {
   )
 }
 
-export default PrivacyHelp
+export default LegalHelp

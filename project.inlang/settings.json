@@ -11,7 +11,9 @@
       "./messages/common/{locale}.json",
       "./messages/site/{locale}.json",
       "./messages/home/{locale}.json",
-      "./messages/privacy/{locale}.json"
+      "./messages/legal/{locale}.json",
+      "./messages/privacy/{locale}.json",
+      "./messages/terms/{locale}.json"
     ]
   }
 }

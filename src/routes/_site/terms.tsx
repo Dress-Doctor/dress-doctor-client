@@ -1,9 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
-import PagePlaceholder from '#/routes/_site/-components/page-placeholder'
+import { pageHead } from '#/data/seo.data'
+import { termsDocument } from '#/data/terms.data'
 import { m } from '#/paraglide/messages'
-import { noIndexHead } from '#/libs/seo'
+import LegalPage from '#/routes/_site/-components/legal/legal-page'
 
 export const Route = createFileRoute('/_site/terms')({
-  head: noIndexHead,
-  component: () => <PagePlaceholder title={m.site_footer_legal_terms()} />,
+  head: () =>
+    pageHead({
+      path: termsDocument.path,
+      title: m.terms_meta_title(),
+      description: m.terms_meta_description(),
+    }),
+
+  component: () => <LegalPage doc={termsDocument} />,
 })
