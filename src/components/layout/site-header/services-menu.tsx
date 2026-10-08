@@ -74,17 +74,21 @@ function ServiceItem({ service }: { service: SiteServiceDto }) {
  *
  * A disclosure button rather than a link: the panel is what the entry is for,
  * and "View all services" inside it is the link to the index page. Hover opens
- * it for a pointer, focus and Enter for a keyboard — and the content is not
+ * it for a pointer, Enter for a keyboard — and the content is not
  * portalled, so tabbing out of the trigger walks straight into the six
  * services rather than jumping to the end of the document.
  */
 function ServicesMenu() {
   const [open, setOpen] = useState(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const matchRoute = useMatchRoute()
   const active = Boolean(matchRoute({ to: sitePaths.services, fuzzy: true }))
 
-  const cancelClose = () => clearTimeout(closeTimer.current)
+  const cancelClose = () => {
+    clearTimeout(closeTimer.current)
+    closeTimer.current = undefined
+  }
 
   useEffect(() => cancelClose, [])
 
@@ -97,14 +101,60 @@ function ServicesMenu() {
   // corner on its way to a service does not snap the panel shut.
   const handleMouseLeave = () => {
     cancelClose()
-    closeTimer.current = setTimeout(() => setOpen(false), CLOSE_DELAY)
+    closeTimer.current = setTimeout(() => {
+      closeTimer.current = undefined
+      setOpen(false)
+    }, CLOSE_DELAY)
   }
+
+  // `mouseleave` is not enough on its own: after a fresh load the pointer can
+  // already be over the header before the page is interactive, so the wrapper
+  // never sees it arrive and never sees it go. While the panel is open, watch
+  // the pointer on the document instead — off the menu starts the close timer,
+  // back on it stops the timer, and a press outside closes at once.
+  useEffect(() => {
+    if (!open) return
+
+    const isInside = (target: EventTarget | null) =>
+      target instanceof Node && Boolean(wrapperRef.current?.contains(target))
+
+    const handleMove = (event: PointerEvent) => {
+      if (isInside(event.target)) cancelClose()
+      else if (closeTimer.current === undefined) {
+        closeTimer.current = setTimeout(() => {
+          closeTimer.current = undefined
+          setOpen(false)
+        }, CLOSE_DELAY)
+      }
+    }
+
+    const handleDown = (event: PointerEvent) => {
+      if (!isInside(event.target)) {
+        cancelClose()
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('pointermove', handleMove)
+    document.addEventListener('pointerdown', handleDown)
+    return () => {
+      document.removeEventListener('pointermove', handleMove)
+      document.removeEventListener('pointerdown', handleDown)
+    }
+  }, [open])
 
   return (
     <Box
+      ref={wrapperRef}
       position="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      // Closes when keyboard focus leaves the wrapper.
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          handleMouseLeave()
+        }
+      }}
     >
       <Popover.Root
         open={open}

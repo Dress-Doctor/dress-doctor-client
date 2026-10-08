@@ -18,7 +18,7 @@ import {
   siteServices,
 } from '#/data/site.data'
 import { m } from '#/paraglide/messages'
-import ServiceCard from './service-card'
+import ServiceCard from '#/components/site/service-card'
 
 /** Stagger across the three columns, restarting on each row. */
 const REVEAL_DELAYS = [0, 80, 160]

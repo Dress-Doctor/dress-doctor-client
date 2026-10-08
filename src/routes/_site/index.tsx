@@ -12,7 +12,7 @@ import {
 } from '#/libs/seo'
 import { m } from '#/paraglide/messages'
 import CoverageSection from '#/routes/-components/home/coverage-section'
-import CtaSection from '#/routes/-components/home/cta-section'
+import CtaSection from '#/components/site/cta-section'
 import EstimatorSection from '#/routes/-components/home/estimator-section'
 import FaqSection from '#/routes/-components/home/faq-section'
 import HeroSection from '#/routes/-components/home/hero-section'

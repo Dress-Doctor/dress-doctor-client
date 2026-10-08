@@ -104,6 +104,7 @@ function ServiceCard({ service }: { service: SiteServiceDto }) {
       boxShadow="0 1px 2px rgba(0, 23, 31, 0.03), 0 12px 32px rgba(0, 23, 31, 0.04)"
       transitionProperty="box-shadow, transform, border-color"
       transitionDuration="moderate"
+      _motionReduce={{ transition: 'none', _hover: { transform: 'none' } }}
       _hover={{
         transform: 'translateY(-4px)',
         borderColor: 'rgba(46, 207, 220, 0.35)',
