@@ -25,6 +25,14 @@ export const homeKgServices: KgServiceDto[] = [
 export const QUARTERLY_MULTIPLIER = 0.9
 
 /**
+ * What the plan cards, and the plan form that opens over them, show when the
+ * address says nothing. Both read these, so the form can never start on a
+ * different count or billing than the cards behind it.
+ */
+export const DEFAULT_PLAN_MODE = 'kg'
+export const DEFAULT_PLAN_BILLING = 'monthly'
+
+/**
  * Confirmed business figures. Update these only from real data — they are
  * shown to customers and the rating is also sent as structured data.
  */
@@ -290,6 +298,10 @@ export const homePlans: HomePlanDto[] = [
     ],
   },
 ]
+
+/** The plan the form starts on when the address names none: the recommended one. */
+export const DEFAULT_PLAN_ID =
+  homePlans.find((plan) => plan.featured)?.id ?? homePlans[0].id
 
 /**
  * Three of Dress Doctor's genuine 5-star Google reviews, word for word. A

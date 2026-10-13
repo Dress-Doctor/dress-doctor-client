@@ -11,6 +11,8 @@
       "./messages/common/{locale}.json",
       "./messages/site/{locale}.json",
       "./messages/home/{locale}.json",
+      "./messages/booking/{locale}.json",
+      "./messages/subscribe/{locale}.json",
       "./messages/services/{locale}.json",
       "./messages/legal/{locale}.json",
       "./messages/privacy/{locale}.json",

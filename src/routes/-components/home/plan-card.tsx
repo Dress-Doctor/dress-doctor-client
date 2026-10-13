@@ -1,9 +1,9 @@
 import { Box, Center, Flex, HStack, Icon, Stack, Text } from '@chakra-ui/react'
-import { Link } from '@tanstack/react-router'
 import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
 import { QUARTERLY_MULTIPLIER } from '#/data/home.data'
-import { siteGradients, sitePaths } from '#/data/site.data'
+import { siteGradients } from '#/data/site.data'
+import { useSiteModals } from '#/hooks/use-site-modals'
 import type {
   HomePlanDto,
   PlanBillingDto,
@@ -53,6 +53,7 @@ const tagPalette = (plan: HomePlanDto) => {
  * overflow the border at the bottom.
  */
 function PlanCard({ plan, mode, billing }: PlanCardProps) {
+  const { openSubscribe } = useSiteModals()
   const isKg = mode === 'kg'
   const isQuarterly = billing === 'quarterly'
   const monthly = Math.round(
@@ -250,13 +251,14 @@ function PlanCard({ plan, mode, billing }: PlanCardProps) {
         </Stack>
 
         <SiteButton
-          asChild
           w="full"
           mt={6}
           px="15px"
           py="15px"
           fontSize="15px"
           variant={plan.featured ? 'primary' : 'solidDark'}
+          aria-haspopup="dialog"
+          onClick={() => openSubscribe({ plan: plan.id })}
           // Spread rather than a conditional prop: `boxShadow={undefined}`
           // still lands in the props object and wipes the variant's own.
           {...(plan.featured && {
@@ -264,18 +266,8 @@ function PlanCard({ plan, mode, billing }: PlanCardProps) {
               '0 12px 28px rgba(46, 207, 220, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
           })}
         >
-          <Link
-            to={sitePaths.booking}
-            search={{
-              service: 'plan',
-              plan: plan.id,
-              mode,
-              billing,
-            }}
-          >
-            {plan.cta()}
-            <Icon aria-hidden boxSize={3.5} as={icons.forward} />
-          </Link>
+          {plan.cta()}
+          <Icon aria-hidden boxSize={3.5} as={icons.forward} />
         </SiteButton>
       </Stack>
     </Flex>

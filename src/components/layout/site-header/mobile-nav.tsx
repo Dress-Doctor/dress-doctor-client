@@ -19,6 +19,7 @@ import {
   sitePaths,
   siteServices,
 } from '#/data/site.data'
+import { useSiteModals } from '#/hooks/use-site-modals'
 import { m } from '#/paraglide/messages'
 import LocaleSwitch from './locale-switch'
 import NavLink from './nav-link'
@@ -33,6 +34,7 @@ import NavLink from './nav-link'
  */
 function MobileNav() {
   const [open, setOpen] = useState(false)
+  const { openBooking } = useSiteModals()
 
   return (
     <Drawer.Root
@@ -113,11 +115,17 @@ function MobileNav() {
 
             <Drawer.Footer justifyContent="stretch">
               <Stack gap={4} w="full">
-                <SiteButton asChild w="full">
-                  <Link to={sitePaths.booking}>
-                    {m.site_nav_bookPickup()}
-                    <Icon aria-hidden boxSize={3.5} as={icons.forward} />
-                  </Link>
+                {/* The menu closes first, so the form is the only thing open. */}
+                <SiteButton
+                  w="full"
+                  aria-haspopup="dialog"
+                  onClick={() => {
+                    setOpen(false)
+                    openBooking()
+                  }}
+                >
+                  {m.site_nav_bookPickup()}
+                  <Icon aria-hidden boxSize={3.5} as={icons.forward} />
                 </SiteButton>
 
                 <HStack justify="space-between">

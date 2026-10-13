@@ -6,16 +6,18 @@ import {
   Link as ChakraLink,
   Text,
 } from '@chakra-ui/react'
-import { Link } from '@tanstack/react-router'
 import icons from '#/config/icons'
 import Reveal from '#/components/site/reveal'
 import SiteButton from '#/components/site/site-button'
 import SiteContainer from '#/components/site/site-container'
-import { siteContact, sitePaths } from '#/data/site.data'
+import { siteContact } from '#/data/site.data'
+import { useSiteModals } from '#/hooks/use-site-modals'
 import { m } from '#/paraglide/messages'
 
 /** The closing ask, on the same navy panel the estimator uses. */
 function CtaSection() {
+  const { openBooking } = useSiteModals()
+
   return (
     <SiteContainer
       as="section"
@@ -86,14 +88,13 @@ function CtaSection() {
           justify="center"
         >
           <SiteButton
-            asChild
             px="34px"
+            aria-haspopup="dialog"
             boxShadow="0 16px 40px rgba(46, 207, 220, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4)"
+            onClick={() => openBooking()}
           >
-            <Link to={sitePaths.booking}>
-              {m.home_cta_primary()}
-              <Icon aria-hidden boxSize={4} as={icons.forward} />
-            </Link>
+            {m.home_cta_primary()}
+            <Icon aria-hidden boxSize={4} as={icons.forward} />
           </SiteButton>
 
           <SiteButton asChild variant="onDark" px="30px">

@@ -174,5 +174,7 @@
   "common_forbidden_title": "Vous n’avez pas accès à cette page",
   "common_forbidden_body": "Votre rôle ne couvre pas cette partie du panneau. Si vous en avez besoin, demandez à un responsable de vous le donner.",
   "common_forbidden_attempted": "Vous avez tenté d’ouvrir {path}",
-  "common_forbidden_backToDashboard": "Retour au tableau de bord"
+  "common_forbidden_backToDashboard": "Retour au tableau de bord",
+  "common_phone_placeholderOther": "Votre numéro",
+  "common_phone_country_empty": "Aucun pays trouvé."
 }

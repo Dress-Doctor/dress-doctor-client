@@ -1,4 +1,5 @@
 import SiteLayout from '#/components/layout/site-layout'
+import { validateSiteSearch } from '#/libs/site-search'
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 
 /**
@@ -8,8 +9,15 @@ import { Outlet, createFileRoute } from '@tanstack/react-router'
  *
  * Pathless, so the pages below keep their own URLs — `/_site/index.tsx` is
  * still `/`.
+ *
+ * It also owns the query parameters every page shares: which form is open
+ * (`modal`) and the choices inside it. They are declared here, not on each
+ * page, because a button in the header can open a form from anywhere.
  */
-export const Route = createFileRoute('/_site')({ component: SiteShell })
+export const Route = createFileRoute('/_site')({
+  validateSearch: validateSiteSearch,
+  component: SiteShell,
+})
 
 function SiteShell() {
   return (

@@ -1,6 +1,17 @@
-import { Link as ChakraLink, Stack, Text } from '@chakra-ui/react'
+import { Button, Link as ChakraLink, Stack, Text } from '@chakra-ui/react'
 import { Link } from '@tanstack/react-router'
+import { useSiteModals } from '#/hooks/use-site-modals'
 import type { SiteLinkDto } from '#/interfaces/site.dto'
+
+/** The footer's links are quiet grey text that turns turquoise on hover. */
+const linkLook = {
+  fontSize: 'sm',
+  color: 'whiteAlpha.700',
+  textDecoration: 'none',
+  transitionProperty: 'color',
+  transitionDuration: 'fast',
+  _hover: { color: 'turquoise-blue.500' },
+} as const
 
 interface FooterColumnProps {
   title: string
@@ -9,6 +20,8 @@ interface FooterColumnProps {
 
 /** One titled column of the footer's link grid. */
 function FooterColumn({ title, links }: FooterColumnProps) {
+  const { openBooking } = useSiteModals()
+
   return (
     <Stack gap={0}>
       <Text
@@ -27,17 +40,24 @@ function FooterColumn({ title, links }: FooterColumnProps) {
       <Stack as="ul" gap={2.5} listStyleType="none">
         {links.map((link) => (
           <li key={link.id}>
-            <ChakraLink
-              asChild
-              fontSize="sm"
-              color="whiteAlpha.700"
-              textDecoration="none"
-              transitionProperty="color"
-              transitionDuration="fast"
-              _hover={{ color: 'turquoise-blue.500' }}
-            >
-              <Link to={link.to}>{link.label()}</Link>
-            </ChakraLink>
+            {link.opens === 'booking' ? (
+              <Button
+                variant="plain"
+                h="auto"
+                minW={0}
+                p={0}
+                fontWeight="normal"
+                aria-haspopup="dialog"
+                {...linkLook}
+                onClick={() => openBooking()}
+              >
+                {link.label()}
+              </Button>
+            ) : (
+              <ChakraLink asChild {...linkLook}>
+                <Link to={link.to}>{link.label()}</Link>
+              </ChakraLink>
+            )}
           </li>
         ))}
       </Stack>

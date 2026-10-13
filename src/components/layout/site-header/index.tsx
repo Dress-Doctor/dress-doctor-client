@@ -5,12 +5,12 @@ import {
   IconButton,
   Link as ChakraLink,
 } from '@chakra-ui/react'
-import { Link } from '@tanstack/react-router'
 import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
 import SiteContainer from '#/components/site/site-container'
-import { siteContact, siteNavLinks, sitePaths } from '#/data/site.data'
+import { siteContact, siteNavLinks } from '#/data/site.data'
 import { useScrolled } from '#/hooks/use-scrolled'
+import { useSiteModals } from '#/hooks/use-site-modals'
 import { m } from '#/paraglide/messages'
 import InfoBar from './info-bar'
 import LocaleSwitch from './locale-switch'
@@ -30,6 +30,7 @@ import SiteBrand from './site-brand'
  */
 function SiteHeader() {
   const scrolled = useScrolled()
+  const { openBooking } = useSiteModals()
 
   return (
     <Box
@@ -96,17 +97,16 @@ function SiteHeader() {
             </IconButton>
 
             <SiteButton
-              asChild
               px={6}
               py={3}
               fontSize="14.5px"
+              aria-haspopup="dialog"
               display={{ base: 'none', sm: 'inline-flex' }}
               boxShadow="0 8px 20px rgba(46, 207, 220, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35)"
+              onClick={() => openBooking()}
             >
-              <Link to={sitePaths.booking}>
-                {m.site_nav_bookPickup()}
-                <Icon aria-hidden boxSize={3.5} as={icons.forward} />
-              </Link>
+              {m.site_nav_bookPickup()}
+              <Icon aria-hidden boxSize={3.5} as={icons.forward} />
             </SiteButton>
 
             <MobileNav />

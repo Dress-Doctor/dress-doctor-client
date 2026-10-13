@@ -9,7 +9,6 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
 import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
 import {
@@ -19,7 +18,7 @@ import {
   homePieceDefaults,
   homePieces,
 } from '#/data/home.data'
-import { sitePaths } from '#/data/site.data'
+import { useSiteModals } from '#/hooks/use-site-modals'
 import type { EstimateModeDto, KgServiceIdDto } from '#/interfaces/site.dto'
 import utils from '#/libs/utils'
 import { m } from '#/paraglide/messages'
@@ -39,6 +38,7 @@ interface EstimatorCardProps {
  * is nothing to restore.
  */
 function EstimatorCard({ mode, onModeChange }: EstimatorCardProps) {
+  const { openBooking } = useSiteModals()
   const [kgServiceId, setKgServiceId] = useState<KgServiceIdDto>('washFold')
   const [kg, setKg] = useState(KG_DEFAULT)
   const [counts, setCounts] = useState<Record<string, number>>(() => ({
@@ -307,14 +307,19 @@ function EstimatorCard({ mode, onModeChange }: EstimatorCardProps) {
         </Text>
       </Flex>
 
-      <SiteButton asChild w="full" mt={5} px={4} py={4} fontSize="md">
-        <Link
-          to={sitePaths.booking}
-          search={{ service: mode === 'kg' ? kgServiceId : 'perpiece' }}
-        >
-          {m.home_estimator_cta()}
-          <Icon aria-hidden boxSize={3.5} as={icons.forward} />
-        </Link>
+      <SiteButton
+        w="full"
+        mt={5}
+        px={4}
+        py={4}
+        fontSize="md"
+        aria-haspopup="dialog"
+        onClick={() =>
+          openBooking({ service: mode === 'kg' ? kgServiceId : 'perpiece' })
+        }
+      >
+        {m.home_estimator_cta()}
+        <Icon aria-hidden boxSize={3.5} as={icons.forward} />
       </SiteButton>
     </Box>
   )

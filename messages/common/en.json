@@ -136,7 +136,7 @@
   "common_pagination_showLabel": "Showing",
   "common_paymentStatusSelector_label": "Payment status",
   "common_paymentStatusSelector_placeholder": "Select payment status…",
-  "common_phone_country_label": "Country dial code",
+  "common_phone_country_label": "Country code",
   "common_pickupStatusSelector_label": "Pickup status",
   "common_pickupStatusSelector_placeholder": "Select pickup status…",
   "common_pickupTime_afternoon": "Afternoon (12pm – 5pm)",
@@ -174,5 +174,7 @@
   "common_forbidden_title": "You do not have access to this page",
   "common_forbidden_body": "Your role does not include this part of the panel. If you need it, ask a manager to give it to you.",
   "common_forbidden_attempted": "You tried to open {path}",
-  "common_forbidden_backToDashboard": "Back to the dashboard"
+  "common_forbidden_backToDashboard": "Back to the dashboard",
+  "common_phone_placeholderOther": "Your number",
+  "common_phone_country_empty": "No country found."
 }

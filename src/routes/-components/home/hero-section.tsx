@@ -18,7 +18,8 @@ import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
 import SiteContainer from '#/components/site/site-container'
 import StarRating from '#/components/site/star-rating'
-import { homeAnchors, siteContact, sitePaths } from '#/data/site.data'
+import { homeAnchors, siteContact } from '#/data/site.data'
+import { useSiteModals } from '#/hooks/use-site-modals'
 import { m } from '#/paraglide/messages'
 import FloatingCard from './floating-card'
 
@@ -48,6 +49,8 @@ function Glow(props: BoxProps) {
 }
 
 function HeroSection() {
+  const { openBooking } = useSiteModals()
+
   return (
     <Box as="section" position="relative">
       <Glow
@@ -152,11 +155,9 @@ function HeroSection() {
               alignSelf="flex-start"
               {...entrance('0.24s')}
             >
-              <SiteButton asChild>
-                <Link to={sitePaths.booking}>
-                  {m.home_hero_ctaPrimary()}
-                  <Icon aria-hidden boxSize={4} as={icons.forward} />
-                </Link>
+              <SiteButton aria-haspopup="dialog" onClick={() => openBooking()}>
+                {m.home_hero_ctaPrimary()}
+                <Icon aria-hidden boxSize={4} as={icons.forward} />
               </SiteButton>
 
               <SiteButton asChild variant="glass" px="30px">

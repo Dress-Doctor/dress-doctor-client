@@ -43,11 +43,24 @@ export interface SiteSocialDto {
   label: () => string
 }
 
-export interface SiteLinkDto {
+interface SiteLinkBaseDto {
   id: string
-  to: keyof FileRoutesByTo
   label: () => string
 }
+
+/** A link to another page. */
+export interface SitePageLinkDto extends SiteLinkBaseDto {
+  to: keyof FileRoutesByTo
+  opens?: never
+}
+
+/** A link that opens a form over the current page instead of leaving it. */
+export interface SiteFormLinkDto extends SiteLinkBaseDto {
+  opens: 'booking'
+  to?: never
+}
+
+export type SiteLinkDto = SitePageLinkDto | SiteFormLinkDto
 
 /** Whether the estimator is pricing a weight or a list of garments. */
 export type EstimateModeDto = 'kg' | 'piece'

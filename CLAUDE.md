@@ -128,13 +128,48 @@ Chakra component through `asChild`, as the admin does:
 </ChakraLink>
 
 <SiteButton asChild>
-  <Link to={sitePaths.booking} search={{ service: 'perkg' }}>…</Link>
+  <Link to={sitePaths.pricing}>…</Link>
 </SiteButton>
 ```
 
 Destinations are typed `keyof FileRoutesByTo` and live in `sitePaths`, so a
 dead link fails the build. Active state comes from `useMatchRoute`. Only
 external targets (`wa.me`, `tel:`, `mailto:`) use `href`.
+
+**The pickup form and the plan form are modals, not pages.** There is no
+`/booking` route. A button that wants one calls `useSiteModals()` and its
+`openBooking()` or `openSubscribe()`, and carries `aria-haspopup="dialog"`.
+Both forms are rendered once, by `SiteLayout`.
+
+**The address is the state.** Which form is open and its main choices live in
+the query string, declared once on the `_site` layout so every page reads them:
+`modal` (`booking` or `subscribe`), `service`, `tier` (`basic`, `standard`,
+`premium`), and the plan cards' `plan` (`pieces` or `kg`) and `billing`. So
+`/?modal=booking&service=washFold` and `/services?modal=subscribe&tier=premium`
+open the right form, and a refresh, a shared link and the back button all land
+on the same screen. Rules:
+
+- Never write a path to change them — navigate with `to: '.'` and a `search`
+  function, so nothing redirects, reloads or scrolls.
+- Opening a form pushes a history entry; a choice made inside it replaces the
+  current one; closing replaces and drops the form's own params (`modal`,
+  `service` or `tier`).
+- Nothing clears a param on its own after reading it. It changes only when the
+  visitor does something.
+- Names, phone numbers, dates and notes never go in the address.
+
+**A phone number can be from any country.** The forms hold a number as the
+country (an ISO code, `CM` by default) and the national digits, and `PhoneInput`
+draws the country picker in front of the number. It goes to the API as `+` and
+the country code, then the digits — `+237689688248` — never as bare digits: the
+`+` is what stops a short number from another country being read as a
+Cameroonian one. The list is `src/data/countries.data.ts`, read through
+`src/libs/phone.ts`. Country names are not in it, they come from
+`Intl.DisplayNames`, so there is nothing to translate and no phone library to
+ship. A visitor who types a code or a leading `0` in front is understood; one
+who pastes `+33 6…` moves the country with it. The box stops taking digits at
+the country's longest number while someone types, but a pasted number is kept
+whole and flagged as wrong rather than cut short into a different one.
 
 **Text shown to visitors must be translated.** Never hardcode a visible string.
 Add it to `messages/<namespace>/en.json` _and_ `fr.json`, run `npm run i18n`,

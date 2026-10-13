@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as SiteIndexRouteImport } from './routes/_site/index'
-import { Route as SiteBookingRouteImport } from './routes/_site/booking'
 import { Route as SiteCatalogRouteImport } from './routes/_site/catalog'
 import { Route as SiteContactRouteImport } from './routes/_site/contact'
 import { Route as SiteCorporateRouteImport } from './routes/_site/corporate'
@@ -33,11 +32,6 @@ const SiteRoute = SiteRouteImport.update({
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteBookingRoute = SiteBookingRouteImport.update({
-  id: '/booking',
-  path: '/booking',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteCatalogRoute = SiteCatalogRouteImport.update({
@@ -108,7 +102,6 @@ const SiteServicesWashAndFoldRoute = SiteServicesWashAndFoldRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
-  '/booking': typeof SiteBookingRoute
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
@@ -124,7 +117,6 @@ export interface FileRoutesByFullPath {
   '/services/': typeof SiteServicesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/booking': typeof SiteBookingRoute
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
@@ -143,7 +135,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_site': typeof SiteRouteWithChildren
-  '/_site/booking': typeof SiteBookingRoute
   '/_site/catalog': typeof SiteCatalogRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/corporate': typeof SiteCorporateRoute
@@ -163,7 +154,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/booking'
     | '/catalog'
     | '/contact'
     | '/corporate'
@@ -179,7 +169,6 @@ export interface FileRouteTypes {
     | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/booking'
     | '/catalog'
     | '/contact'
     | '/corporate'
@@ -197,7 +186,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_site'
-    | '/_site/booking'
     | '/_site/catalog'
     | '/_site/contact'
     | '/_site/corporate'
@@ -232,13 +220,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof SiteIndexRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/booking': {
-      id: '/_site/booking'
-      path: '/booking'
-      fullPath: '/booking'
-      preLoaderRoute: typeof SiteBookingRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/catalog': {
@@ -336,7 +317,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface SiteRouteChildren {
-  SiteBookingRoute: typeof SiteBookingRoute
   SiteCatalogRoute: typeof SiteCatalogRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteCorporateRoute: typeof SiteCorporateRoute
@@ -354,7 +334,6 @@ interface SiteRouteChildren {
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
-  SiteBookingRoute: SiteBookingRoute,
   SiteCatalogRoute: SiteCatalogRoute,
   SiteContactRoute: SiteContactRoute,
   SiteCorporateRoute: SiteCorporateRoute,

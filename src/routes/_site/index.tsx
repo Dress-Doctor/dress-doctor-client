@@ -1,8 +1,7 @@
-import type {
-  EstimateModeDto,
-  PlanBillingDto,
-  PlanModeDto,
-} from '#/interfaces/site.dto'
+import { DEFAULT_PLAN_BILLING, DEFAULT_PLAN_MODE } from '#/data/home.data'
+import type { EstimateModeDto } from '#/interfaces/site.dto'
+import { oneOf } from '#/libs/site-search'
+import type { SiteSearchDto } from '#/interfaces/booking.dto'
 import { SITE_NAME, homeStructuredData, shareImages } from '#/data/seo.data'
 import {
   jsonLdScript,
@@ -24,32 +23,22 @@ import TestimonialsSection from '#/routes/-components/home/testimonials-section'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 /**
- * The three choices on the page that change what a visitor is looking at.
+ * The home page's own choice: whether the price calculator counts a weight or
+ * a list of garments.
  *
- * They live in the URL rather than in component state so a price someone was
+ * It lives in the URL rather than in component state so a price someone was
  * shown can be sent to someone else, and so coming back to the page does not
- * silently re-price their laundry.
+ * silently re-price their laundry. The plan cards' `plan` and `billing` work
+ * the same way but are declared once, with the form parameters, on the site
+ * layout (`/_site`) — the plan form shows the same two choices.
  */
 export interface HomeSearch {
   estimate?: EstimateModeDto
-  plan?: PlanModeDto
-  billing?: PlanBillingDto
 }
-
-/** Reads one search value, falling back rather than throwing on nonsense. */
-const oneOf = <T extends string>(
-  value: unknown,
-  allowed: readonly T[],
-): T | undefined =>
-  typeof value === 'string' && allowed.includes(value as T)
-    ? (value as T)
-    : undefined
 
 export const Route = createFileRoute('/_site/')({
   validateSearch: (search: Record<string, unknown>): HomeSearch => ({
     estimate: oneOf(search.estimate, ['kg', 'piece'] as const),
-    plan: oneOf(search.plan, ['pieces', 'kg'] as const),
-    billing: oneOf(search.billing, ['monthly', 'quarterly'] as const),
   }),
 
   head: () => ({
@@ -84,19 +73,23 @@ export const Route = createFileRoute('/_site/')({
 })
 
 /**
- * The public home page. Composition, plus the three toggles that are shared
- * with the URL — every section owns its own copy, data and local state.
+ * The public home page. Composition, plus the toggles that are shared with the
+ * URL — every section owns its own copy, data and local state.
  */
 function Home() {
   const navigate = useNavigate({ from: Route.fullPath })
   const {
     estimate = 'kg',
-    plan = 'kg',
-    billing = 'monthly',
+    plan = DEFAULT_PLAN_MODE,
+    billing = DEFAULT_PLAN_BILLING,
   } = Route.useSearch()
 
-  /** `replace` so flipping a toggle does not fill the back button with steps. */
-  const update = (next: HomeSearch) =>
+  /**
+   * `replace` so flipping a toggle does not fill the back button with steps.
+   * Only what changed is written; the rest of the address — including an open
+   * form — is carried over untouched.
+   */
+  const update = (next: HomeSearch & SiteSearchDto) =>
     navigate({
       replace: true,
       resetScroll: false,

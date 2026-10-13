@@ -2,6 +2,7 @@ import icons from '#/config/icons'
 import type { FileRoutesByTo } from '#/routeTree.gen'
 import type {
   SiteLinkDto,
+  SitePageLinkDto,
   SiteSocialDto,
   SiteNavLinkDto,
   SiteServiceDto,
@@ -24,7 +25,6 @@ import shoesImage from '#/assets/imagery/shoes.webp'
  */
 export const sitePaths = {
   home: '/',
-  booking: '/booking',
   services: '/services',
   washAndFold: '/services/wash-and-fold',
   pricing: '/pricing',
@@ -160,7 +160,7 @@ export const siteServices: SiteServiceDto[] = [
   },
 ]
 
-export const footerCompanyLinks: SiteLinkDto[] = [
+export const footerCompanyLinks: SitePageLinkDto[] = [
   {
     id: 'pricing',
     to: sitePaths.pricing,
@@ -182,7 +182,7 @@ export const footerCompanyLinks: SiteLinkDto[] = [
 
 export const footerExploreLinks: SiteLinkDto[] = [
   { id: 'catalog', to: sitePaths.catalog, label: m.site_footer_link_catalog },
-  { id: 'booking', to: sitePaths.booking, label: m.site_footer_link_booking },
+  { id: 'booking', opens: 'booking', label: m.site_footer_link_booking },
   {
     id: 'guides',
     to: sitePaths.resources,
@@ -196,7 +196,7 @@ export const footerExploreLinks: SiteLinkDto[] = [
   { id: 'plans', to: sitePaths.pricing, label: m.site_footer_link_plans },
 ]
 
-export const footerLegalLinks: SiteLinkDto[] = [
+export const footerLegalLinks: SitePageLinkDto[] = [
   {
     id: 'privacy',
     to: sitePaths.privacy,
