@@ -1,6 +1,6 @@
 import icons from '#/config/icons'
 import { pickupAddressData } from '#/data/pick-up-form.data'
-import { homeKgServices, homePlans } from '#/data/home.data'
+import { homeKgServices } from '#/data/home.data'
 import type {
   BookingServiceOptionDto,
   PickupWindowDto,
@@ -48,9 +48,6 @@ export const pickupWindows: PickupWindowDto[] = [
 const kgRate = (id: 'washFold' | 'washIron') =>
   homeKgServices.find((service) => service.id === id)!.rate
 
-/** The cheapest plan, for the "From …" line on the monthly plan option. */
-const cheapestPlanPrice = Math.min(...homePlans.map((plan) => plan.price))
-
 /**
  * What a visitor can ask us to pick up. The per-kilo prices come from the same
  * list the home page's price calculator uses, so a rate is only written once.
@@ -76,13 +73,6 @@ export const bookingServices: BookingServiceOptionDto[] = [
     description: m.booking_service_perPiece_desc,
     price: m.site_service_perPiece_price,
   },
-  {
-    id: 'plan',
-    name: m.booking_service_plan_name,
-    description: m.booking_service_plan_desc,
-    price: () =>
-      m.booking_service_plan_price({ price: utils.toXaf(cheapestPlanPrice) }),
-  },
 ]
 
 /** One mark per service, for the round badge on each option. */
@@ -90,7 +80,6 @@ export const bookingServiceIcons = {
   washFold: icons.laundry,
   washIron: icons.ironing,
   perpiece: icons.garment,
-  plan: icons.calendar,
 } as const
 
 /**

@@ -22,7 +22,7 @@ export interface SiteSearchDto {
 }
 
 /** What a visitor can ask us to pick up. */
-export type BookingServiceIdDto = KgServiceIdDto | 'perpiece' | 'plan'
+export type BookingServiceIdDto = KgServiceIdDto | 'perpiece'
 
 export type PickupWindowIdDto = 'morning' | 'afternoon' | 'evening'
 
