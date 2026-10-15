@@ -58,5 +58,7 @@
   "site_footer_legal_refund": "Refunds & damage",
   "site_footer_legal_delivery": "Delivery",
   "site_footer_copyright": "© {year} Dress Doctor · Douala, Cameroon",
-  "site_placeholder_body": "This page is coming soon."
+  "site_placeholder_body": "This page is coming soon.",
+  "site_nav_logIn": "Log in",
+  "site_nav_account": "My account"
 }

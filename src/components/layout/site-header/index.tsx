@@ -15,6 +15,7 @@ import { m } from '#/paraglide/messages'
 import InfoBar from './info-bar'
 import LocaleSwitch from './locale-switch'
 import MobileNav from './mobile-nav'
+import AccountLink from './account-link'
 import NavLink from './nav-link'
 import ServicesMenu from './services-menu'
 import SiteBrand from './site-brand'
@@ -95,6 +96,10 @@ function SiteHeader() {
                 <Icon as={icons.whatsappBrand} boxSize={5} />
               </ChakraLink>
             </IconButton>
+
+            <Box display={{ base: 'none', md: 'block' }}>
+              <AccountLink />
+            </Box>
 
             <SiteButton
               px={6}

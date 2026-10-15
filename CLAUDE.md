@@ -141,6 +141,23 @@ external targets (`wa.me`, `tel:`, `mailto:`) use `href`.
 `openBooking()` or `openSubscribe()`, and carries `aria-haspopup="dialog"`.
 Both forms are rendered once, by `SiteLayout`.
 
+**Customers log in with a code, never a password.** `/login` takes an email or
+a WhatsApp number, asks the API for a 6-digit code (`/v1/auth/initiate-login`),
+then checks it (`/v1/auth/complete-login`). The session is an HttpOnly cookie
+the API sets, so no token is ever read or kept in JavaScript. `/account` is the
+first signed-in page; it and any page like it guard themselves in `beforeLoad`
+with `meQueryOptions()` and `isCustomer()`, and send a visitor to
+`/login?redirect=<where they were>`. A `redirect` must pass `sameSitePath`.
+The API keeps staff and customers as separate accounts, even on one number, so
+every request carries `x-portal: customer` and every sign-in body carries
+`portal: 'customer'` (`src/libs/api-client/api-instances.ts`,
+`src/libs/auth.api.ts`). That is what makes the API look only among customer
+accounts, read only the `dd_c_*` cookies, and refuse a staff session. Never
+drop it from a call. The
+flow lives in `src/hooks/use-login-flow.ts`; failures are turned into words by
+`src/libs/auth-errors.ts` and the API's own text is never shown. The phone goes
+to the API as `+` and the country code, like the other forms.
+
 **The address is the state.** Which form is open and its main choices live in
 the query string, declared once on the `_site` layout so every page reads them:
 `modal` (`booking` or `subscribe`), `service`, `tier` (`basic`, `standard`,

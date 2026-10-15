@@ -21,6 +21,7 @@ import {
 } from '#/data/site.data'
 import { useSiteModals } from '#/hooks/use-site-modals'
 import { m } from '#/paraglide/messages'
+import AccountLink from './account-link'
 import LocaleSwitch from './locale-switch'
 import NavLink from './nav-link'
 
@@ -110,6 +111,8 @@ function MobileNav() {
                       {link.label()}
                     </NavLink>
                   ))}
+
+                <AccountLink />
               </Stack>
             </Drawer.Body>
 

@@ -7,6 +7,7 @@ import type {
   SiteNavLinkDto,
   SiteServiceDto,
 } from '#/interfaces/site.dto'
+import { ACCOUNT_PATH, LOGIN_PATH } from '#/libs/redirect'
 import { m } from '#/paraglide/messages'
 
 import washFoldImage from '#/assets/imagery/wash-and-fold.webp'
@@ -38,6 +39,8 @@ export const sitePaths = {
   terms: '/terms',
   refund: '/refund-policy',
   delivery: '/delivery-policy',
+  login: LOGIN_PATH,
+  account: ACCOUNT_PATH,
 } as const satisfies Record<string, keyof FileRoutesByTo>
 
 /**

@@ -11,11 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as SiteIndexRouteImport } from './routes/_site/index'
+import { Route as SiteAccountRouteImport } from './routes/_site/account'
 import { Route as SiteCatalogRouteImport } from './routes/_site/catalog'
 import { Route as SiteContactRouteImport } from './routes/_site/contact'
 import { Route as SiteCorporateRouteImport } from './routes/_site/corporate'
 import { Route as SiteDeliveryPolicyRouteImport } from './routes/_site/delivery-policy'
 import { Route as SiteLocationsRouteImport } from './routes/_site/locations'
+import { Route as SiteLoginRouteImport } from './routes/_site/login'
 import { Route as SitePricingRouteImport } from './routes/_site/pricing'
 import { Route as SitePrivacyRouteImport } from './routes/_site/privacy'
 import { Route as SiteRefundPolicyRouteImport } from './routes/_site/refund-policy'
@@ -32,6 +34,11 @@ const SiteRoute = SiteRouteImport.update({
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteAccountRoute = SiteAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteCatalogRoute = SiteCatalogRouteImport.update({
@@ -57,6 +64,11 @@ const SiteDeliveryPolicyRoute = SiteDeliveryPolicyRouteImport.update({
 const SiteLocationsRoute = SiteLocationsRouteImport.update({
   id: '/locations',
   path: '/locations',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteLoginRoute = SiteLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => SiteRoute,
 } as any)
 const SitePricingRoute = SitePricingRouteImport.update({
@@ -102,11 +114,13 @@ const SiteServicesWashAndFoldRoute = SiteServicesWashAndFoldRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
+  '/account': typeof SiteAccountRoute
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
   '/delivery-policy': typeof SiteDeliveryPolicyRoute
   '/locations': typeof SiteLocationsRoute
+  '/login': typeof SiteLoginRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
   '/refund-policy': typeof SiteRefundPolicyRoute
@@ -117,11 +131,13 @@ export interface FileRoutesByFullPath {
   '/services/': typeof SiteServicesIndexRoute
 }
 export interface FileRoutesByTo {
+  '/account': typeof SiteAccountRoute
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
   '/delivery-policy': typeof SiteDeliveryPolicyRoute
   '/locations': typeof SiteLocationsRoute
+  '/login': typeof SiteLoginRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
   '/refund-policy': typeof SiteRefundPolicyRoute
@@ -135,11 +151,13 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_site': typeof SiteRouteWithChildren
+  '/_site/account': typeof SiteAccountRoute
   '/_site/catalog': typeof SiteCatalogRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/corporate': typeof SiteCorporateRoute
   '/_site/delivery-policy': typeof SiteDeliveryPolicyRoute
   '/_site/locations': typeof SiteLocationsRoute
+  '/_site/login': typeof SiteLoginRoute
   '/_site/pricing': typeof SitePricingRoute
   '/_site/privacy': typeof SitePrivacyRoute
   '/_site/refund-policy': typeof SiteRefundPolicyRoute
@@ -154,11 +172,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/catalog'
     | '/contact'
     | '/corporate'
     | '/delivery-policy'
     | '/locations'
+    | '/login'
     | '/pricing'
     | '/privacy'
     | '/refund-policy'
@@ -169,11 +189,13 @@ export interface FileRouteTypes {
     | '/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/account'
     | '/catalog'
     | '/contact'
     | '/corporate'
     | '/delivery-policy'
     | '/locations'
+    | '/login'
     | '/pricing'
     | '/privacy'
     | '/refund-policy'
@@ -186,11 +208,13 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_site'
+    | '/_site/account'
     | '/_site/catalog'
     | '/_site/contact'
     | '/_site/corporate'
     | '/_site/delivery-policy'
     | '/_site/locations'
+    | '/_site/login'
     | '/_site/pricing'
     | '/_site/privacy'
     | '/_site/refund-policy'
@@ -220,6 +244,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof SiteIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/account': {
+      id: '/_site/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof SiteAccountRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/catalog': {
@@ -255,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/locations'
       fullPath: '/locations'
       preLoaderRoute: typeof SiteLocationsRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/login': {
+      id: '/_site/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof SiteLoginRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/pricing': {
@@ -317,11 +355,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface SiteRouteChildren {
+  SiteAccountRoute: typeof SiteAccountRoute
   SiteCatalogRoute: typeof SiteCatalogRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteCorporateRoute: typeof SiteCorporateRoute
   SiteDeliveryPolicyRoute: typeof SiteDeliveryPolicyRoute
   SiteLocationsRoute: typeof SiteLocationsRoute
+  SiteLoginRoute: typeof SiteLoginRoute
   SitePricingRoute: typeof SitePricingRoute
   SitePrivacyRoute: typeof SitePrivacyRoute
   SiteRefundPolicyRoute: typeof SiteRefundPolicyRoute
@@ -334,11 +374,13 @@ interface SiteRouteChildren {
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
+  SiteAccountRoute: SiteAccountRoute,
   SiteCatalogRoute: SiteCatalogRoute,
   SiteContactRoute: SiteContactRoute,
   SiteCorporateRoute: SiteCorporateRoute,
   SiteDeliveryPolicyRoute: SiteDeliveryPolicyRoute,
   SiteLocationsRoute: SiteLocationsRoute,
+  SiteLoginRoute: SiteLoginRoute,
   SitePricingRoute: SitePricingRoute,
   SitePrivacyRoute: SitePrivacyRoute,
   SiteRefundPolicyRoute: SiteRefundPolicyRoute,

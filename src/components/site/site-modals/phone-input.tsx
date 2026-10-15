@@ -166,6 +166,11 @@ function PhoneInput({
   return (
     <Combobox.Root
       openOnClick
+      // The rows are only drawn while the list is open. Drawn closed, on a
+      // page that is rendered on the server, they are 240 country names that
+      // the server and the browser spell differently, which fails hydration.
+      lazyMount
+      unmountOnExit
       width="full"
       collection={collection}
       inputBehavior="autohighlight"
