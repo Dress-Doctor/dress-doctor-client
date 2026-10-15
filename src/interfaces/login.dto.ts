@@ -28,33 +28,3 @@ export interface CompleteLoginResponseDto {
   accessToken: string
   refreshToken: string
 }
-
-/** CASL rule as serialised by the API (`ability.rules`). */
-export interface AbilityRuleDto {
-  action: string | string[]
-  subject: string | string[]
-  conditions?: Record<string, unknown>
-  inverted?: boolean
-}
-
-export interface UserTypeDto {
-  _id: string
-  userTypeName: string
-}
-
-export interface MeUserDto {
-  _id: string
-  firstName: string
-  lastName: string
-  email?: string
-  phone: string
-  whatsappPhone?: string
-  preferredLanguage?: string
-  isActive: boolean
-  userTypeId: UserTypeDto | string
-}
-
-export interface MeResponseDto {
-  user: MeUserDto
-  abilities: AbilityRuleDto[]
-}
