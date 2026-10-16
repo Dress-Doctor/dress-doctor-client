@@ -4,21 +4,14 @@ import type {
   BookingAnswersDto,
   BookingDraftDto,
   BookingErrorsDto,
-  BookingStepDto,
+  BookingStepIdDto,
   PickupDayDto,
   PickupWindowDto,
   PickupWindowIdDto,
-  SchedulePickupDataDto,
 } from '#/interfaces/booking.dto'
 import type { SelfPickupDataDto } from '#/interfaces/signup.dto'
 import type { PlanBillingDto } from '#/interfaces/site.dto'
-import {
-  contactEmail,
-  contactPhone,
-  contactWhatsapp,
-  emptyContact,
-  validateContact,
-} from '#/libs/contact'
+import { emptyContact, validateContact } from '#/libs/contact'
 import { getLocale } from '#/paraglide/runtime'
 
 /** The pickup's own answers before the visitor has given any. */
@@ -114,6 +107,24 @@ export function formatPickup(day: PickupDayDto, window: PickupWindowDto) {
   return `${date} · ${window.label()}`
 }
 
+/**
+ * A pickup the API already holds, in the words of the form: "Wed, 8 Oct ·
+ * Morning". The day and the window come back as the API stores them — an ISO
+ * time and the window's own string — so the window is found by that string.
+ */
+export function formatHeldPickup(pickupDate: string, pickupTime: string) {
+  const date = new Intl.DateTimeFormat(getLocale(), {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  }).format(new Date(pickupDate))
+  const window = pickupWindows.find(
+    (candidate) => candidate.apiValue === pickupTime,
+  )
+
+  return `${date} · ${window ? window.label() : pickupTime}`
+}
+
 /** What a plan costs each month once the billing choice is counted in. */
 export const monthlyPlanPrice = (price: number, billing: PlanBillingDto) =>
   Math.round(price * (billing === 'quarterly' ? QUARTERLY_MULTIPLIER : 1))
@@ -121,24 +132,34 @@ export const monthlyPlanPrice = (price: number, billing: PlanBillingDto) =>
 export const windowById = (id: PickupWindowIdDto | null) =>
   pickupWindows.find((window) => window.id === id)
 
+/**
+ * The steps a visitor goes through, in order. Someone who is signed in has
+ * already given their details and proved them, so they skip the last two and
+ * the request goes from the address step.
+ */
+export const bookingSteps = (signedIn: boolean): BookingStepIdDto[] =>
+  signedIn
+    ? ['service', 'time', 'address']
+    : ['service', 'time', 'address', 'contact', 'verify']
+
 /** Which fields of one step are missing or wrong. */
 export function validateStep(
-  step: BookingStepDto,
+  step: BookingStepIdDto,
   draft: BookingDraftDto,
 ): BookingErrorsDto {
   const errors: BookingErrorsDto = {}
 
-  if (step === 0 && !draft.service) errors.service = true
+  if (step === 'service' && !draft.service) errors.service = true
 
-  if (step === 1) {
+  if (step === 'time') {
     if (!draft.date) errors.date = true
     if (!draft.windowId) errors.windowId = true
   }
 
-  if (step === 2 && !draft.area.trim()) errors.area = true
+  if (step === 'address' && !draft.area.trim()) errors.area = true
 
   // Who the visitor is: the same check the plan form uses.
-  if (step === 3) Object.assign(errors, validateContact(draft))
+  if (step === 'contact') Object.assign(errors, validateContact(draft))
 
   return errors
 }
@@ -146,31 +167,6 @@ export function validateStep(
 /** The street and the area as one line, the way a driver reads an address. */
 export const buildAddress = (draft: BookingDraftDto) =>
   [draft.street.trim(), draft.area.trim()].filter(Boolean).join(', ')
-
-/**
- * The request body. Only the fields the API knows: it refuses the rest, so the
- * service and the notes travel in the WhatsApp message instead. The WhatsApp
- * number and the email are left out when empty — the API checks any it is
- * given, and an empty string fails that check.
- */
-export function buildPickupPayload(
-  draft: BookingDraftDto,
-): SchedulePickupDataDto {
-  const whatsappPhone = contactWhatsapp(draft)
-  const email = contactEmail(draft)
-
-  return {
-    firstName: draft.firstName.trim(),
-    lastName: draft.lastName.trim(),
-    ...(draft.gender && { gender: draft.gender }),
-    phone: contactPhone(draft),
-    ...(whatsappPhone && { whatsappPhone }),
-    ...(email && { email }),
-    pickupAddress: buildAddress(draft),
-    pickupTime: windowById(draft.windowId)!.apiValue,
-    pickupDate: toPickupDate(draft.date!),
-  }
-}
 
 /**
  * The body for a customer who has signed in: where and when, nothing more.

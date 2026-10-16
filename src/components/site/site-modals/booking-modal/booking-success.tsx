@@ -10,10 +10,13 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
+import { Link } from '@tanstack/react-router'
 import type { IconType } from 'react-icons/lib'
 import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
+import { sitePaths } from '#/data/site.data'
 import type { BookingFlow } from '#/hooks/use-booking-flow'
+import { formatHeldPickup } from '#/libs/booking'
 import { whatsappUrl } from '#/libs/whatsapp'
 import { m } from '#/paraglide/messages'
 import { describeBooking } from './describe-booking'
@@ -70,11 +73,76 @@ function Detail({
   )
 }
 
+/** The status of a pickup already in hand, in words a customer uses. */
+function statusText(status: string) {
+  switch (status) {
+    case 'PENDING':
+      return m.booking_success_statusPending()
+    case 'CONFIRMED':
+      return m.booking_success_statusConfirmed()
+    case 'ASSIGNED':
+      return m.booking_success_statusAssigned()
+    default:
+      return status
+  }
+}
+
+/**
+ * Tells a visitor what signing up did: a new account, or a login to the one
+ * they had. A customer who was signed in already needs neither, so there is no
+ * card for them.
+ */
+function AccountCard({
+  outcome,
+}: {
+  outcome: NonNullable<BookingFlow['placed']>['outcome']
+}) {
+  if (!outcome) return null
+  const created = outcome === 'CREATED'
+
+  return (
+    <HStack {...card} mt={3.5} gap={3.5} align="flex-start" flexWrap="wrap">
+      <Center
+        flex="none"
+        boxSize="38px"
+        rounded="10px"
+        bg="white"
+        color="turquoise-blue.700"
+      >
+        <Icon aria-hidden boxSize="17px" as={icons.user} />
+      </Center>
+
+      <Box flex="1" minW="220px">
+        <Text {...cardTitle} mb={1}>
+          {created
+            ? m.booking_success_accountTitle()
+            : m.booking_success_loggedInTitle()}
+        </Text>
+        <Text fontSize="13.5px" lineHeight="1.55" color="site.ink-muted">
+          {created
+            ? m.booking_success_accountBody()
+            : m.booking_success_loggedInBody()}
+        </Text>
+      </Box>
+
+      <SiteButton asChild px={5} py="10px" fontSize="14px">
+        <Link to={sitePaths.account}>
+          {m.booking_success_accountAction()}
+          <Icon aria-hidden boxSize={3.5} as={icons.forward} />
+        </Link>
+      </SiteButton>
+    </HStack>
+  )
+}
+
 /**
  * Shown once the request has gone. It is honest about what has happened: we
  * have the request, and we will confirm it — nothing here says it is booked
  * until a person has said so. The WhatsApp button carries the details the API
  * has no place for, the service and the notes.
+ *
+ * A customer who already had a pickup open is shown that one instead, with the
+ * reference they already have: asking twice does not make two.
  */
 function BookingSuccess({
   flow,
@@ -83,17 +151,24 @@ function BookingSuccess({
   flow: BookingFlow
   onClose: () => void
 }) {
-  const { draft, reference } = flow
+  const { draft, reference, placed } = flow
   const summary = describeBooking(flow)
   const dash = '—'
+  const existing = placed?.existing ?? null
 
-  const notes = draft.notes.trim()
+  // What the visitor typed this time is not what is on the pickup already in
+  // hand, so the message and the card name only what that pickup holds.
+  const when = existing
+    ? formatHeldPickup(existing.pickupDate, existing.pickupTime)
+    : summary.pickup
+
+  const notes = existing ? '' : draft.notes.trim()
   const message =
     m.booking_whatsapp_message({
       reference,
-      service: summary.service ?? dash,
-      when: summary.pickup ?? dash,
-      area: summary.address ?? dash,
+      service: existing ? dash : (summary.service ?? dash),
+      when: when ?? dash,
+      area: existing ? dash : (summary.address ?? dash),
       name: summary.contact ?? dash,
     }) + (notes ? m.booking_whatsapp_notes({ notes }) : '')
 
@@ -106,8 +181,14 @@ function BookingSuccess({
   return (
     <>
       <SuccessHero
-        title={m.booking_success_title()}
-        body={m.booking_success_body()}
+        title={
+          existing
+            ? m.booking_success_existingTitle()
+            : m.booking_success_title()
+        }
+        body={
+          existing ? m.booking_success_existingBody() : m.booking_success_body()
+        }
       >
         {reference && (
           <HStack
@@ -151,21 +232,38 @@ function BookingSuccess({
           <Stack {...card} gap={0}>
             <Text {...cardTitle}>{m.booking_success_yourPickup()}</Text>
             <Stack gap={3}>
-              <Detail
-                icon={icons.garment}
-                label={m.booking_summary_service()}
-                value={summary.service ?? dash}
-              />
-              <Detail
-                icon={icons.calendar}
-                label={m.booking_summary_pickup()}
-                value={summary.pickup ?? dash}
-              />
-              <Detail
-                icon={icons.location}
-                label={m.booking_summary_address()}
-                value={summary.address ?? dash}
-              />
+              {existing ? (
+                <>
+                  <Detail
+                    icon={icons.calendar}
+                    label={m.booking_summary_pickup()}
+                    value={when ?? dash}
+                  />
+                  <Detail
+                    icon={icons.check}
+                    label={m.booking_success_existingStatus()}
+                    value={statusText(existing.status)}
+                  />
+                </>
+              ) : (
+                <>
+                  <Detail
+                    icon={icons.garment}
+                    label={m.booking_summary_service()}
+                    value={summary.service ?? dash}
+                  />
+                  <Detail
+                    icon={icons.calendar}
+                    label={m.booking_summary_pickup()}
+                    value={summary.pickup ?? dash}
+                  />
+                  <Detail
+                    icon={icons.location}
+                    label={m.booking_summary_address()}
+                    value={summary.address ?? dash}
+                  />
+                </>
+              )}
             </Stack>
           </Stack>
 
@@ -201,6 +299,8 @@ function BookingSuccess({
             </Stack>
           </Stack>
         </SimpleGrid>
+
+        <AccountCard outcome={placed?.outcome ?? null} />
       </Dialog.Body>
 
       <Dialog.Footer

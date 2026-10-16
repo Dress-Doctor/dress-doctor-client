@@ -80,5 +80,18 @@
   "auth_aside_pillTurnaround": "Rendu en 48 heures",
   "auth_aside_pillCancel": "Annulable à tout moment",
   "auth_aside_pillExpire": "Chaque code vaut 5 minutes",
-  "auth_aside_pillPrivate": "Vos données restent privées"
+  "auth_aside_pillPrivate": "Vos données restent privées",
+  "auth_signup_error_rateLimited": "Trop de codes ont été demandés depuis cette connexion. Veuillez réessayer plus tard.",
+  "auth_signup_error_busy": "Nous avons beaucoup de demandes en ce moment. Veuillez réessayer dans quelques minutes.",
+  "auth_signup_error_numberHasAccount": "Ce numéro de téléphone a déjà un compte. Pour l’utiliser, nous devons envoyer un code à ce numéro sur WhatsApp.",
+  "auth_signup_action_codeToPhone": "Envoyer le code au {phone}",
+  "auth_signup_error_contactInUse": "Nous ne pouvons pas utiliser ces informations pour créer un compte. Écrivez-nous sur WhatsApp et nous vous aiderons.",
+  "auth_signup_error_sessionEnded": "Vous avez été déconnecté. Veuillez entrer de nouveau vos informations.",
+  "auth_signup_action_chat": "Écrivez-nous sur WhatsApp",
+  "auth_verify_leadWhatsapp": "Nous avons envoyé un code à 6 chiffres au {contact} sur WhatsApp. Entrez-le ci-dessous.",
+  "auth_verify_leadEmail": "Nous avons envoyé un code à 6 chiffres à {contact} par e-mail. Entrez-le ci-dessous.",
+  "auth_verify_sending": "Envoi de votre code…",
+  "auth_verify_confirmed": "Vos informations sont confirmées.",
+  "auth_verify_confirmedSending": "Nous envoyons votre demande…",
+  "auth_signup_chatMessage": "Bonjour Dress Doctor, je n’ai pas pu créer mon compte sur le site. Pouvez-vous m’aider ?"
 }

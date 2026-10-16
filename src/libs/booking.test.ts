@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest'
 import type { BookingDraftDto } from '#/interfaces/booking.dto'
 import { pickupWindows } from '#/data/booking.data'
 import {
-  buildPickupPayload,
+  bookingSteps,
   buildSelfPickupPayload,
   emptyDraft,
+  formatHeldPickup,
   validateStep,
 } from './booking'
 
@@ -22,24 +23,48 @@ const done: BookingDraftDto = {
   consent: true,
 }
 
+describe('bookingSteps', () => {
+  it('takes a visitor who is not signed in all the way to the code', () => {
+    expect(bookingSteps(false)).toEqual([
+      'service',
+      'time',
+      'address',
+      'contact',
+      'verify',
+    ])
+  })
+
+  it('stops a signed-in customer after the address', () => {
+    // Their details are on the account and proved already, so the request goes
+    // from the address step.
+    expect(bookingSteps(true)).toEqual(['service', 'time', 'address'])
+  })
+
+  it('starts the same way for both, so a form begun signed out can carry on', () => {
+    expect(bookingSteps(true).slice(0, 3)).toEqual(
+      bookingSteps(false).slice(0, 3),
+    )
+  })
+})
+
 describe('validateStep', () => {
   it('asks for the service first, then the day and time, then the area', () => {
-    expect(validateStep(0, emptyDraft)).toEqual({ service: true })
-    expect(validateStep(1, emptyDraft)).toEqual({
+    expect(validateStep('service', emptyDraft)).toEqual({ service: true })
+    expect(validateStep('time', emptyDraft)).toEqual({
       date: true,
       windowId: true,
     })
-    expect(validateStep(2, emptyDraft)).toEqual({ area: true })
+    expect(validateStep('address', emptyDraft)).toEqual({ area: true })
   })
 
   it('accepts a finished form at every step', () => {
-    for (const step of [0, 1, 2, 3] as const) {
+    for (const step of bookingSteps(false)) {
       expect(validateStep(step, done)).toEqual({})
     }
   })
 
-  it('checks who the visitor is on the last step, as the plan form does', () => {
-    expect(Object.keys(validateStep(3, emptyDraft)).sort()).toEqual([
+  it('checks who the visitor is on the details step, as the plan form does', () => {
+    expect(Object.keys(validateStep('contact', emptyDraft)).sort()).toEqual([
       'consent',
       'firstName',
       'lastName',
@@ -48,55 +73,13 @@ describe('validateStep', () => {
   })
 
   it('does not ask for contact details on the earlier steps', () => {
-    for (const step of [0, 1, 2] as const) {
+    for (const step of ['service', 'time', 'address'] as const) {
       expect(validateStep(step, { ...done, firstName: '' })).toEqual({})
     }
   })
-})
 
-describe('buildPickupPayload', () => {
-  it('sends only what the public form takes, tidied', () => {
-    const morning = pickupWindows.find((window) => window.id === 'morning')!
-
-    const payload = buildPickupPayload(done)
-
-    expect(payload).toMatchObject({
-      firstName: 'Ada',
-      lastName: 'Deo',
-      phone: '+237698765294',
-      pickupAddress: 'Near Carrefour, Akwa',
-      pickupTime: morning.apiValue,
-    })
-    expect(Object.keys(payload).sort()).toEqual([
-      'firstName',
-      'lastName',
-      'phone',
-      'pickupAddress',
-      'pickupDate',
-      'pickupTime',
-    ])
-  })
-
-  it('adds the gender, the WhatsApp number and the email when given', () => {
-    const payload = buildPickupPayload({
-      ...done,
-      gender: 'Female',
-      whatsapp: '677 112 233',
-      email: ' ada@example.com ',
-    })
-
-    expect(payload.gender).toBe('Female')
-    expect(payload.whatsappPhone).toBe('+237677112233')
-    expect(payload.email).toBe('ada@example.com')
-  })
-
-  it('reads the day at midday, so a server in another zone keeps the date', () => {
-    const date = new Date(buildPickupPayload(done).pickupDate)
-
-    expect(date.getFullYear()).toBe(2026)
-    expect(date.getMonth()).toBe(9)
-    expect(date.getDate()).toBe(20)
-    expect(date.getHours()).toBe(12)
+  it('has nothing to check on the code step: the code is checked by the API', () => {
+    expect(validateStep('verify', emptyDraft)).toEqual({})
   })
 })
 
@@ -116,12 +99,46 @@ describe('buildSelfPickupPayload', () => {
     expect(payload.pickupAddress).toBe('Near Carrefour, Akwa')
   })
 
-  it('writes the day and time the way the public form does', () => {
-    const own = buildSelfPickupPayload(done)
-    const form = buildPickupPayload(done)
+  it('writes the time as the API takes it', () => {
+    const morning = pickupWindows.find((window) => window.id === 'morning')!
 
-    expect(own.pickupTime).toBe(form.pickupTime)
-    expect(own.pickupDate).toBe(form.pickupDate)
-    expect(own.pickupAddress).toBe(form.pickupAddress)
+    expect(buildSelfPickupPayload(done).pickupTime).toBe(morning.apiValue)
+  })
+
+  it('reads the day at midday, so a server in another zone keeps the date', () => {
+    const date = new Date(buildSelfPickupPayload(done).pickupDate)
+
+    expect(date.getFullYear()).toBe(2026)
+    expect(date.getMonth()).toBe(9)
+    expect(date.getDate()).toBe(20)
+    expect(date.getHours()).toBe(12)
+  })
+
+  it('tidies the address', () => {
+    expect(
+      buildSelfPickupPayload({ ...done, area: ' Akwa ', street: '' })
+        .pickupAddress,
+    ).toBe('Akwa')
+  })
+})
+
+describe('formatHeldPickup', () => {
+  const afternoon = pickupWindows.find((window) => window.id === 'afternoon')!
+
+  it('names the day and the window the API holds', () => {
+    const text = formatHeldPickup(
+      '2026-10-20T11:00:00.000Z',
+      afternoon.apiValue,
+    )
+
+    expect(text).toContain('20')
+    expect(text).toContain('Oct')
+    expect(text.endsWith(` · ${afternoon.label()}`)).toBe(true)
+  })
+
+  it('shows a time it does not know as it came, rather than hide it', () => {
+    expect(
+      formatHeldPickup('2026-10-20T11:00:00.000Z', 'LATE NIGHT'),
+    ).toContain('LATE NIGHT')
   })
 })

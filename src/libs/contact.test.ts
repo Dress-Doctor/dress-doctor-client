@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ContactDraftDto } from '#/interfaces/contact.dto'
 import {
-  contactEmail,
   contactPhone,
-  contactWhatsapp,
   emptyContact,
   splitContactPatch,
   validateContact,
@@ -130,35 +128,12 @@ describe('validateContact', () => {
   })
 })
 
-describe('how the contact goes to the API', () => {
+describe('how the phone goes to the API', () => {
   it('writes the phone as + and the country code, then the digits', () => {
     expect(contactPhone(filled)).toBe('+237698765294')
     expect(
       contactPhone(withChange({ phone: '6 12 34 56 78', phoneCountry: 'FR' })),
     ).toBe('+33612345678')
-  })
-
-  it('leaves the WhatsApp number out when there is none', () => {
-    expect(contactWhatsapp(filled)).toBeUndefined()
-    expect(contactWhatsapp(withChange({ whatsapp: ' ' }))).toBeUndefined()
-  })
-
-  it('writes the WhatsApp number in its own country', () => {
-    expect(contactWhatsapp(withChange({ whatsapp: '677 112 233' }))).toBe(
-      '+237677112233',
-    )
-    expect(
-      contactWhatsapp(
-        withChange({ whatsapp: '6 12 34 56 78', whatsappCountry: 'FR' }),
-      ),
-    ).toBe('+33612345678')
-  })
-
-  it('trims the email, and leaves it out when empty', () => {
-    expect(contactEmail(withChange({ email: ' ada@example.com ' }))).toBe(
-      'ada@example.com',
-    )
-    expect(contactEmail(filled)).toBeUndefined()
   })
 })
 

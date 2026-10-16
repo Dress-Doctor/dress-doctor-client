@@ -1,19 +1,23 @@
-import { isAxiosError } from 'axios'
+import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import type { ContactDraft } from '#/hooks/use-contact-draft'
-import { useSchedulePickup } from '#/hooks/use-schedule-pickup'
+import { useContactVerification } from '#/hooks/use-contact-verification'
+import { useLogout } from '#/hooks/use-logout'
+import { meQueryKey, useCustomer } from '#/hooks/use-me'
+import { useRequestPickup } from '#/hooks/use-request-pickup'
 import type {
   BookingAnswersDto,
   BookingDraftDto,
   BookingErrorsDto,
   BookingFieldDto,
   BookingServiceIdDto,
-  BookingStepDto,
+  BookingStepIdDto,
 } from '#/interfaces/booking.dto'
-import type { ErrorResponseDto } from '#/interfaces/api-client.dto'
+import type { SelfPickupDto, SignupOutcomeDto } from '#/interfaces/signup.dto'
 import {
+  bookingSteps,
   buildPickupDays,
-  buildPickupPayload,
+  buildSelfPickupPayload,
   emptyAnswers,
   isDayOpen,
   isWindowOpen,
@@ -21,23 +25,22 @@ import {
   windowById,
 } from '#/libs/booking'
 import { splitContactPatch } from '#/libs/contact'
-import { m } from '#/paraglide/messages'
+import { buildSignupProfile, phoneTarget, verifyTargets } from '#/libs/signup'
+import { signupErrorFrom } from '#/libs/signup-errors'
+import type { SignupErrorDto } from '#/libs/signup-errors'
 
-export const LAST_BOOKING_STEP = 3
-
-/**
- * The words to show when sending failed. The API answers in the visitor's
- * language, so its message is used as it is — except for a validation failure,
- * whose text is for developers and says nothing a visitor can act on.
- */
-function submitMessage(error: unknown) {
-  if (isAxiosError<ErrorResponseDto>(error)) {
-    const body = error.response?.data
-    if (body?.message && body.error.code !== 'VALIDATION_ERROR') {
-      return body.message
-    }
-  }
-  return m.booking_error_submit()
+/** A pickup request that went through, and how the visitor got there. */
+export interface PlacedPickupDto {
+  reference: string
+  /** `false` when the customer already had a pickup open, and this is it. */
+  created: boolean
+  /**
+   * How the visitor got in just now: a new account, or one they already had.
+   * `null` for a customer who was signed in before they started.
+   */
+  outcome: SignupOutcomeDto | null
+  /** The pickup already in hand, when `created` is `false`. */
+  existing: SelfPickupDto['pickupRequest'] | null
 }
 
 interface BookingFlowOptions {
@@ -55,14 +58,20 @@ interface BookingFlowOptions {
 }
 
 /**
- * Everything the booking form remembers: the step, what has been typed, and
- * the outcome of sending it.
+ * Everything the booking form remembers: the step, what has been typed, the
+ * code that proves the visitor's contact, and the outcome of sending.
  *
  * Whether the form is open, and which service is picked, are not kept here —
  * they are in the address, and this reads them from there. That is what lets a
  * link, a refresh or the back button all land on the same screen. The rest
- * (dates, names, a phone number) stays out of the address on purpose: it is
- * personal, and long.
+ * (dates, names, a phone number, the code) stays out of the address on
+ * purpose: it is personal, and long.
+ *
+ * **A visitor who is not signed in** goes through all five steps. The last
+ * proves their contact with a code, which also makes their account and signs
+ * them in; the pickup is asked for the moment the code is accepted.
+ * **A customer who is signed in** skips the last two and asks for the pickup
+ * from the address step.
  *
  * It lives above the dialog on purpose. Closing the form half way keeps the
  * answers, so a visitor who taps outside by mistake does not start again;
@@ -74,14 +83,21 @@ export function useBookingFlow({
   setService,
   contact,
 }: BookingFlowOptions) {
-  const schedule = useSchedulePickup()
+  const queryClient = useQueryClient()
+  const customer = useCustomer()
+  const requestPickup = useRequestPickup()
+  const { logout, loggingOut } = useLogout()
 
-  const [step, setStep] = useState<BookingStepDto>(0)
+  const [stepId, setStepId] = useState<BookingStepIdDto>('service')
   const [answers, setAnswers] = useState<BookingAnswersDto>(emptyAnswers)
   const [errors, setErrors] = useState<BookingErrorsDto>({})
   /** Fixed when the form opens, so the day list does not shift under a click. */
   const [now, setNow] = useState(() => new Date())
-  const [reference, setReference] = useState<string | null>(null)
+  const [placed, setPlaced] = useState<PlacedPickupDto | null>(null)
+  /** Why the request could not be sent, once the visitor's contact is proven. */
+  const [sendError, setSendError] = useState<SignupErrorDto | null>(null)
+  /** How the visitor got in, kept so a failed request can be sent again. */
+  const [outcome, setOutcome] = useState<SignupOutcomeDto | null>(null)
   /**
    * The service picked. The address is where it is written and where a link
    * puts it, but the address drops it when the form closes — and the form
@@ -104,8 +120,61 @@ export function useBookingFlow({
     ...contact.contact,
     service: chosen ?? null,
   }
-  const submitted = reference !== null
+  const submitted = placed !== null
   const days = buildPickupDays(now)
+
+  // A signed-in customer skips the details and the code. The code step itself
+  // is kept in the list while it is on screen: the moment a code is accepted
+  // the visitor becomes a signed-in customer, and the step they are on must
+  // not vanish from under them.
+  const steps = bookingSteps(customer !== null && stepId !== 'verify')
+  // A step that is no longer in the list (the visitor signed in from another
+  // tab while on the details step) falls back to the last one, which sends.
+  const step = steps.includes(stepId) ? stepId : steps[steps.length - 1]
+  const stepIndex = steps.indexOf(step)
+  const isLast = stepIndex === steps.length - 1
+
+  const verification = useContactVerification({
+    profile: buildSignupProfile(draft),
+    onVerified: (result) => {
+      setOutcome(result)
+      sendRequest(result)
+    },
+  })
+
+  /** Asks for the pickup. The session says who is asking. */
+  function sendRequest(result: SignupOutcomeDto | null) {
+    setSendError(null)
+    requestPickup.mutate(buildSelfPickupPayload(draft), {
+      onSuccess: (response) => {
+        const data = response.data
+        setPlaced({
+          reference: data?.pickupRequest.reference ?? '',
+          created: data?.created ?? true,
+          outcome: result,
+          existing: data && !data.created ? data.pickupRequest : null,
+        })
+      },
+      onError: (caught) => {
+        const error = signupErrorFrom(caught, 'send')
+        setSendError(error)
+        if (error.kind === 'sessionEnded') {
+          // The session is gone, so the visitor is not a customer any more:
+          // ask again who they are, and prove it.
+          void queryClient.invalidateQueries({ queryKey: meQueryKey })
+          verification.changeContact()
+          setOutcome(null)
+          setStepId('contact')
+        }
+      },
+    })
+  }
+
+  const busy =
+    requestPickup.isPending ||
+    verification.sending ||
+    verification.verifying ||
+    loggingOut
 
   /** Brings the form up to date each time it opens. */
   const refresh = () => {
@@ -119,7 +188,8 @@ export function useBookingFlow({
     const windowStillOpen =
       window !== undefined && isWindowOpen(window, day, opened)
 
-    schedule.reset()
+    requestPickup.reset()
+    setSendError(null)
     setNow(opened)
     setErrors({})
     setAnswers((current) => ({
@@ -131,7 +201,7 @@ export function useBookingFlow({
     // Put a service the form remembers back in the address; without any
     // service there is nothing to carry on from.
     if (chosen && !service) setService(chosen)
-    else if (!chosen) setStep(0)
+    else if (!chosen) setStepId('service')
   }
 
   useEffect(() => {
@@ -147,8 +217,11 @@ export function useBookingFlow({
     if (!submitted) return
     setAnswers(emptyAnswers)
     contact.clear()
-    setStep(0)
-    setReference(null)
+    setStepId('service')
+    setPlaced(null)
+    setOutcome(null)
+    setSendError(null)
+    verification.changeContact()
     setChosen(undefined)
   }
 
@@ -182,49 +255,101 @@ export function useBookingFlow({
     })
   }
 
-  const submit = () => {
-    schedule.mutate(buildPickupPayload(draft), {
-      onSuccess: (response) =>
-        setReference(response.data?.pickupRequest.reference ?? ''),
-    })
+  /**
+   * Sends a code to the visitor, unless one is already out for a contact they
+   * still have — going back to fix a typo and forward again must not use up
+   * the codes the API allows.
+   */
+  const startVerification = () => {
+    const targets = verifyTargets(draft)
+    const kept =
+      verification.target !== null &&
+      !verification.expired &&
+      targets.some(
+        (target) => target.identifier === verification.target?.identifier,
+      )
+    if (!kept) verification.send(targets[0])
   }
 
   /** Moves on, and answers with the first wrong field when it cannot. */
   const next = (): BookingFieldDto | undefined => {
-    if (schedule.isPending) return
+    if (busy) return
+
+    // The last step of a visitor who is not signed in: the code. Once it was
+    // accepted, pressing the button again sends the request again.
+    if (step === 'verify') {
+      if (verification.outcome) sendRequest(outcome)
+      else verification.submitCode()
+      return
+    }
 
     const found = validateStep(step, draft)
     setErrors(found)
     const firstWrong = Object.keys(found)[0] as BookingFieldDto | undefined
     if (firstWrong) return firstWrong
 
-    if (step < LAST_BOOKING_STEP) {
-      setStep((step + 1) as BookingStepDto)
+    setSendError(null)
+
+    if (step === 'contact') {
+      setStepId('verify')
+      startVerification()
       return
     }
-    submit()
+
+    // A signed-in customer asks from the last step.
+    if (isLast) {
+      sendRequest(null)
+      return
+    }
+
+    setStepId(steps[stepIndex + 1])
   }
 
   const back = () => {
-    if (step === 0 || schedule.isPending) return
+    // Once the code is accepted there is no un-proving it.
+    if (stepIndex === 0 || busy || verification.outcome) return
     setErrors({})
-    setStep((step - 1) as BookingStepDto)
+    setSendError(null)
+    setStepId(steps[stepIndex - 1])
+  }
+
+  /** Sends the request again after it failed, without asking for a new code. */
+  const retry = () => {
+    if (busy) return
+    sendRequest(outcome)
   }
 
   return {
     step,
+    steps,
+    stepIndex,
+    isLast,
     draft,
     errors,
     days,
     now,
-    reference: reference ?? '',
+    customer,
+    /** Where a code can be sent for this visitor, best first. */
+    targets: verifyTargets(draft),
+    /** WhatsApp on the phone itself, for a phone that already has an account. */
+    phoneTarget: phoneTarget(draft),
+    verification,
+    placed,
+    reference: placed?.reference ?? '',
     submitted,
-    sending: schedule.isPending,
-    submitError: schedule.isError ? submitMessage(schedule.error) : null,
+    /** A code, a check or the request is on its way. */
+    sending: busy,
+    sendError,
+    /** The code was accepted but the request did not go. */
+    canRetry: verification.outcome !== null && sendError !== null,
+    loggingOut,
     finish,
     update,
     next,
     back,
+    retry,
+    /** Logs out and stays on the form, which asks for the details again. */
+    logoutHere: () => logout({ stay: true }),
   }
 }
 

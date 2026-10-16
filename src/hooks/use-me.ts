@@ -1,7 +1,8 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import type { QueryClient } from '@tanstack/react-query'
-import type { MeDto } from '#/interfaces/auth.dto'
+import type { MeDto, MeUserDto } from '#/interfaces/auth.dto'
 import authApi from '#/libs/auth.api'
+import { isUnauthenticated } from '#/libs/auth-errors'
 
 /** The one key for "who is signed in". Sign-in and sign-out reset it. */
 export const meQueryKey = ['auth', 'me'] as const
@@ -43,13 +44,26 @@ export function isCustomer(me: MeDto): boolean {
 }
 
 /**
+ * The customer who is signed in, or `null`.
+ *
+ * It is `null` until the answer arrives, so the server and the first paint
+ * agree, and `null` again when nobody is signed in. The answer is kept for a
+ * few minutes, so a refresh that finds the session gone (a 401 or 403) counts
+ * as signed out even though the old answer is still held; any other failure,
+ * such as a dropped connection, does not sign anybody out.
+ */
+export function useCustomer(): MeUserDto | null {
+  const { data, error } = useQuery(meQueryOptions())
+
+  if (!data || !isCustomer(data)) return null
+  if (error && isUnauthenticated(error)) return null
+  return data.user
+}
+
+/**
  * Whether a customer is signed in, for pages that only change a link or a
  * label — the header — and have no reason to wait or to show an error.
- *
- * It is `false` until the answer arrives, so the server and the first paint
- * agree, and `false` again when the visitor is not signed in or the call fails.
  */
 export function useIsSignedIn(): boolean {
-  const { data } = useQuery(meQueryOptions())
-  return data ? isCustomer(data) : false
+  return useCustomer() !== null
 }

@@ -1,4 +1,4 @@
-import type { ContactDraftDto, ContactFieldDto, GenderDto } from './contact.dto'
+import type { ContactDraftDto, ContactFieldDto } from './contact.dto'
 import type { KgServiceIdDto, PlanBillingDto, PlanModeDto } from './site.dto'
 
 /** The two forms that open over a page. */
@@ -27,8 +27,13 @@ export type BookingServiceIdDto = KgServiceIdDto | 'perpiece'
 
 export type PickupWindowIdDto = 'morning' | 'afternoon' | 'evening'
 
-/** The four steps of the booking form, in order. */
-export type BookingStepDto = 0 | 1 | 2 | 3
+/**
+ * The steps of the booking form. A visitor who is not signed in goes through
+ * all five, ending in a code that proves their contact; a customer who is
+ * signed in goes through the first three.
+ */
+export type BookingStepIdDto =
+  'service' | 'time' | 'address' | 'contact' | 'verify'
 
 /** The pickup itself: what, when and where. */
 export interface BookingAnswersDto {
@@ -92,28 +97,4 @@ export interface BookingServiceOptionDto {
   name: () => string
   description: () => string
   price: () => string
-}
-
-/** The body of the public `POST /v1/pickups` — the API rejects any other field. */
-export interface SchedulePickupDataDto {
-  firstName: string
-  lastName: string
-  /** Only sent when the visitor picked one. */
-  gender?: GenderDto
-  /** `+` and the country code, then the number: `+237689688248`. */
-  phone: string
-  /** Written like `phone`. Only sent when the visitor gave one; the API refuses an empty string. */
-  whatsappPhone?: string
-  /** Only sent when the visitor gave one; the API refuses an empty string. */
-  email?: string
-  pickupAddress: string
-  pickupTime: string
-  pickupDate: string
-}
-
-export interface PickupScheduledDto {
-  pickupRequest: {
-    _id: string
-    reference: string
-  }
 }

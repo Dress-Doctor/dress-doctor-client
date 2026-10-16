@@ -1,45 +1,74 @@
 import { Box, Button, Dialog, Flex, Icon, Text } from '@chakra-ui/react'
 import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
-import { LAST_BOOKING_STEP } from '#/hooks/use-booking-flow'
 import type { BookingFlow } from '#/hooks/use-booking-flow'
+import type { BookingStepIdDto } from '#/interfaces/booking.dto'
 import { focusField } from '#/libs/focus-field'
 import { m } from '#/paraglide/messages'
 import ModalForm from '../modal-form'
 import ModalFrame from '../modal-frame'
 import ModalHeader, { modalPadX } from '../modal-header'
+import SignupError from '../signup-error'
+import AccountNote from './account-note'
 import AddressStep from './address-step'
 import BookingAside from './booking-aside'
 import BookingSuccess from './booking-success'
 import ContactStep from './contact-step'
 import ServiceStep from './service-step'
 import TimeStep from './time-step'
+import VerifyStep from './verify-step'
 
-const TOTAL_STEPS = LAST_BOOKING_STEP + 1
+/** The question and the line of help for each step. */
+function stepText(step: BookingStepIdDto, flow: BookingFlow) {
+  switch (step) {
+    case 'service':
+      return {
+        title: m.booking_step_service_title(),
+        sub: m.booking_step_service_sub(),
+      }
+    case 'time':
+      return {
+        title: m.booking_step_time_title(),
+        sub: m.booking_step_time_sub(),
+      }
+    case 'address':
+      return {
+        title: m.booking_step_address_title(),
+        sub: m.booking_step_address_sub(),
+      }
+    case 'contact':
+      return {
+        title: m.booking_step_contact_title(),
+        sub: m.booking_step_contact_sub(),
+      }
+    case 'verify':
+      return {
+        // The code goes where the visitor chose: say which, in the title.
+        title:
+          flow.verification.target?.channel === 'email'
+            ? m.booking_step_verify_titleEmail()
+            : m.booking_step_verify_titleWhatsapp(),
+        sub: m.booking_step_verify_sub(),
+      }
+  }
+}
 
-const steps = [
-  { title: m.booking_step_service_title, sub: m.booking_step_service_sub },
-  { title: m.booking_step_time_title, sub: m.booking_step_time_sub },
-  { title: m.booking_step_address_title, sub: m.booking_step_address_sub },
-  { title: m.booking_step_contact_title, sub: m.booking_step_contact_sub },
-]
-
-/** Four bars, filled up to the step the visitor is on. */
-function Progress({ step }: { step: number }) {
+/** One bar for each step, filled up to the step the visitor is on. */
+function Progress({ total, step }: { total: number; step: number }) {
   return (
     <Flex
       gap={1.5}
       role="progressbar"
       aria-label={m.booking_a11y_dialog()}
       aria-valuemin={1}
-      aria-valuemax={TOTAL_STEPS}
+      aria-valuemax={total}
       aria-valuenow={step + 1}
       aria-valuetext={m.booking_a11y_progress({
         step: step + 1,
-        total: TOTAL_STEPS,
+        total,
       })}
     >
-      {steps.map((_, index) => (
+      {Array.from({ length: total }, (_, index) => (
         <Box
           key={index}
           flex="1"
@@ -65,6 +94,13 @@ function Progress({ step }: { step: number }) {
   )
 }
 
+/** What the button says: ask for the code, send the request, or go on. */
+function nextLabel({ step, isLast, canRetry }: BookingFlow) {
+  if (canRetry) return m.common_action_tryAgain()
+  if (step === 'contact') return m.booking_action_sendCode()
+  return isLast ? m.booking_action_submit() : m.booking_action_next()
+}
+
 interface BookingModalProps {
   flow: BookingFlow
   /** Whether the address says this form is open. */
@@ -74,8 +110,12 @@ interface BookingModalProps {
 }
 
 /**
- * The pickup form: four short steps in a card, with a summary beside it on a
+ * The pickup form: a few short steps in a card, with a summary beside it on a
  * wide screen. One instance serves every "Book a pickup" button on the site.
+ *
+ * A visitor who is not signed in gets five steps; the last proves their WhatsApp
+ * or email with a code, and the request goes the moment it is accepted. A
+ * customer who is signed in gets three, and the request goes from the address.
  *
  * It is one `<form>`, so Enter in a box means "next" and the phone keyboard's
  * Go key works. Each step is checked before the next opens; the last sends the
@@ -87,9 +127,11 @@ function BookingModal({
   onClose,
   returnFocusTo,
 }: BookingModalProps) {
-  const { step, submitted, sending, submitError, next, back } = flow
-  const isLast = step === LAST_BOOKING_STEP
-  const current = steps[step]
+  const { step, steps, stepIndex, isLast, submitted, sending, next, back } =
+    flow
+  const current = stepText(step, flow)
+  const total = steps.length
+  const { verification } = flow
 
   return (
     <ModalFrame
@@ -121,22 +163,23 @@ function BookingModal({
           >
             <ModalHeader
               eyebrow={m.booking_stepLabel({
-                step: step + 1,
-                total: TOTAL_STEPS,
+                step: stepIndex + 1,
+                total,
               })}
-              title={current.title()}
-              sub={current.sub()}
+              title={current.title}
+              sub={current.sub}
               closeLabel={m.booking_a11y_close()}
             >
-              <Progress step={step} />
+              <Progress total={total} step={stepIndex} />
+              <AccountNote flow={flow} />
             </ModalHeader>
 
             {/* Tells a screen reader which step it is now on. */}
             <Text srOnly aria-live="polite">
               {m.booking_a11y_stepAnnounce({
-                step: step + 1,
-                total: TOTAL_STEPS,
-                title: current.title(),
+                step: stepIndex + 1,
+                total,
+                title: current.title,
               })}
             </Text>
 
@@ -150,26 +193,17 @@ function BookingModal({
               pt={6}
               pb={4}
             >
-              {step === 0 && <ServiceStep flow={flow} />}
-              {step === 1 && <TimeStep flow={flow} />}
-              {step === 2 && <AddressStep flow={flow} />}
-              {step === 3 && <ContactStep flow={flow} />}
+              {step === 'service' && <ServiceStep flow={flow} />}
+              {step === 'time' && <TimeStep flow={flow} />}
+              {step === 'address' && <AddressStep flow={flow} />}
+              {step === 'contact' && <ContactStep flow={flow} />}
+              {step === 'verify' && <VerifyStep flow={flow} />}
 
-              {submitError && (
-                <Text
-                  role="alert"
-                  mt={4}
-                  px={4}
-                  py={3}
-                  rounded="14px"
-                  fontSize="13.5px"
-                  color="red.700"
-                  bg="red.50"
-                  borderWidth="1px"
-                  borderColor="red.200"
-                >
-                  {submitError}
-                </Text>
+              {/* The code step says its own failures, in its own place. */}
+              {step !== 'verify' && flow.sendError && (
+                <Box mt={4}>
+                  <SignupError error={flow.sendError} />
+                </Box>
               )}
             </Dialog.Body>
 
@@ -194,8 +228,8 @@ function BookingModal({
                 fontSize="14px"
                 fontWeight="semibold"
                 color="site.ink-muted"
-                visibility={step === 0 ? 'hidden' : 'visible'}
-                disabled={sending}
+                visibility={stepIndex === 0 ? 'hidden' : 'visible'}
+                disabled={sending || verification.outcome !== null}
                 _hover={{ bg: 'rgba(0, 23, 31, 0.04)' }}
                 onClick={back}
               >
@@ -218,10 +252,16 @@ function BookingModal({
                   py="13px"
                   fontSize="15px"
                   loading={sending}
-                  loadingText={m.booking_action_sending()}
+                  loadingText={
+                    verification.sending
+                      ? m.booking_action_sendingCode()
+                      : verification.verifying && !verification.finishing
+                        ? m.booking_action_checking()
+                        : m.booking_action_sending()
+                  }
                   boxShadow="0 10px 24px rgba(46, 207, 220, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35)"
                 >
-                  {isLast ? m.booking_action_submit() : m.booking_action_next()}
+                  {nextLabel(flow)}
                   <Icon aria-hidden boxSize={3.5} as={icons.forward} />
                 </SiteButton>
               </Flex>

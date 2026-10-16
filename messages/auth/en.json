@@ -80,5 +80,18 @@
   "auth_aside_pillTurnaround": "Back in 48 hours",
   "auth_aside_pillCancel": "Cancel any time",
   "auth_aside_pillExpire": "Each code works for 5 minutes",
-  "auth_aside_pillPrivate": "Your details stay private"
+  "auth_aside_pillPrivate": "Your details stay private",
+  "auth_signup_error_rateLimited": "Too many codes were asked for from this connection. Please try again later.",
+  "auth_signup_error_busy": "We are very busy right now. Please try again in a few minutes.",
+  "auth_signup_error_numberHasAccount": "This phone number already has an account. To use it, we need to send a code to this number on WhatsApp.",
+  "auth_signup_action_codeToPhone": "Send the code to {phone}",
+  "auth_signup_error_contactInUse": "We cannot use these details to make an account. Please chat to us on WhatsApp and we will help.",
+  "auth_signup_error_sessionEnded": "You were logged out. Please enter your details again.",
+  "auth_signup_action_chat": "Chat to us on WhatsApp",
+  "auth_verify_leadWhatsapp": "We sent a 6-digit code to {contact} on WhatsApp. Type it below.",
+  "auth_verify_leadEmail": "We sent a 6-digit code to {contact} by email. Type it below.",
+  "auth_verify_sending": "Sending your code…",
+  "auth_verify_confirmed": "Your details are confirmed.",
+  "auth_verify_confirmedSending": "We are sending your request…",
+  "auth_signup_chatMessage": "Hello Dress Doctor, I could not make my account on the website. Can you help me?"
 }

@@ -150,7 +150,7 @@ function AccountPage() {
               fontSize="15px"
               loading={loggingOut}
               loadingText={m.auth_account_loggingOut()}
-              onClick={logout}
+              onClick={() => logout()}
             >
               <Icon aria-hidden boxSize={4} as={icons.logout} />
               {m.auth_account_logout()}

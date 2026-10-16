@@ -173,8 +173,18 @@ export function useContactVerification({
     askAgain,
     submitCode,
     changeCode: (digits: string[]) => dispatch({ type: 'digits', digits }),
-    /** Back to choosing where the code goes. */
-    changeContact: () => dispatch({ type: 'reset' }),
+    /**
+     * Back to the start: choosing where the code goes, with nothing proven.
+     * Also how the form begins again once a request has gone, so the next
+     * visitor is not met by the last one's finished state.
+     */
+    changeContact: () => {
+      verifying.current = false
+      requesting.current = false
+      setFinishing(false)
+      setOutcome(null)
+      dispatch({ type: 'reset' })
+    },
   }
 }
 

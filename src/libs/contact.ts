@@ -79,18 +79,3 @@ export const whatsappCountryOf = (contact: ContactDraftDto) =>
 /** The phone as the API takes it: `+` and the country code, then the digits. */
 export const contactPhone = (contact: ContactDraftDto) =>
   toInternational(getCountry(contact.phoneCountry), contact.phone)
-
-/**
- * The WhatsApp number written like the phone, or `undefined` when the visitor
- * gave none — the API checks any it is given, and an empty string fails that.
- */
-export function contactWhatsapp(contact: ContactDraftDto) {
-  const digits = utils.digitsOnly(contact.whatsapp)
-  return digits
-    ? toInternational(whatsappCountryOf(contact), digits)
-    : undefined
-}
-
-/** The email, trimmed, or `undefined` when the visitor gave none. */
-export const contactEmail = (contact: ContactDraftDto) =>
-  contact.email.trim() || undefined
