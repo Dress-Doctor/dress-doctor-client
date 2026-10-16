@@ -1,7 +1,6 @@
-import { HStack, Icon, Stack, Text } from '@chakra-ui/react'
-import icons from '#/config/icons'
+import { Stack } from '@chakra-ui/react'
 import type { BookingFlow } from '#/hooks/use-booking-flow'
-import { m } from '#/paraglide/messages'
+import ContactAccountNote from '../contact-account-note'
 import ContactFields from '../contact-fields'
 
 /**
@@ -17,28 +16,7 @@ function ContactStep({ flow }: { flow: BookingFlow }) {
         errors={flow.errors}
         onChange={flow.update}
       />
-
-      <HStack
-        gap={2.5}
-        px={4}
-        py={3}
-        align="flex-start"
-        rounded="14px"
-        fontSize="13px"
-        lineHeight="1.55"
-        color="site.ink-muted"
-        bg="site.sunken"
-      >
-        <Icon
-          aria-hidden
-          flex="none"
-          boxSize={4}
-          mt={0.5}
-          as={icons.secure}
-          color="turquoise-blue.700"
-        />
-        <Text>{m.booking_contact_accountNote()}</Text>
-      </HStack>
+      <ContactAccountNote />
     </Stack>
   )
 }

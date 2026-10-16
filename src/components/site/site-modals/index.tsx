@@ -68,6 +68,7 @@ function SiteModalsProvider({ children }: PropsWithChildren) {
         ...(mode && { plan: mode }),
         ...(billing && { billing }),
       }),
+    contact,
   })
 
   // A form takes its own choices out of the address when it closes — what is

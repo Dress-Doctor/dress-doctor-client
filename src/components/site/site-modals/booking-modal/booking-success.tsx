@@ -10,31 +10,18 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { Link } from '@tanstack/react-router'
 import type { IconType } from 'react-icons/lib'
 import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
-import { sitePaths } from '#/data/site.data'
 import type { BookingFlow } from '#/hooks/use-booking-flow'
 import { formatHeldPickup } from '#/libs/booking'
 import { whatsappUrl } from '#/libs/whatsapp'
 import { m } from '#/paraglide/messages'
 import { describeBooking } from './describe-booking'
+import AccountCard from '../account-card'
+import { successCard, successCardTitle } from '../success-card'
 import SuccessHero from '../success-hero'
 import { modalPadX } from '../modal-header'
-
-const card = {
-  p: 4.5,
-  rounded: '16px',
-  bg: 'site.sunken',
-} as const
-
-const cardTitle = {
-  mb: 3,
-  fontSize: '13px',
-  fontWeight: 'bold',
-  color: 'site.ink',
-} as const
 
 function Detail({
   icon,
@@ -85,54 +72,6 @@ function statusText(status: string) {
     default:
       return status
   }
-}
-
-/**
- * Tells a visitor what signing up did: a new account, or a login to the one
- * they had. A customer who was signed in already needs neither, so there is no
- * card for them.
- */
-function AccountCard({
-  outcome,
-}: {
-  outcome: NonNullable<BookingFlow['placed']>['outcome']
-}) {
-  if (!outcome) return null
-  const created = outcome === 'CREATED'
-
-  return (
-    <HStack {...card} mt={3.5} gap={3.5} align="flex-start" flexWrap="wrap">
-      <Center
-        flex="none"
-        boxSize="38px"
-        rounded="10px"
-        bg="white"
-        color="turquoise-blue.700"
-      >
-        <Icon aria-hidden boxSize="17px" as={icons.user} />
-      </Center>
-
-      <Box flex="1" minW="220px">
-        <Text {...cardTitle} mb={1}>
-          {created
-            ? m.booking_success_accountTitle()
-            : m.booking_success_loggedInTitle()}
-        </Text>
-        <Text fontSize="13.5px" lineHeight="1.55" color="site.ink-muted">
-          {created
-            ? m.booking_success_accountBody()
-            : m.booking_success_loggedInBody()}
-        </Text>
-      </Box>
-
-      <SiteButton asChild px={5} py="10px" fontSize="14px">
-        <Link to={sitePaths.account}>
-          {m.booking_success_accountAction()}
-          <Icon aria-hidden boxSize={3.5} as={icons.forward} />
-        </Link>
-      </SiteButton>
-    </HStack>
-  )
 }
 
 /**
@@ -229,8 +168,8 @@ function BookingSuccess({
         py={5}
       >
         <SimpleGrid columns={{ base: 1, sm: 2 }} gap={3.5}>
-          <Stack {...card} gap={0}>
-            <Text {...cardTitle}>{m.booking_success_yourPickup()}</Text>
+          <Stack {...successCard} gap={0}>
+            <Text {...successCardTitle}>{m.booking_success_yourPickup()}</Text>
             <Stack gap={3}>
               {existing ? (
                 <>
@@ -267,8 +206,8 @@ function BookingSuccess({
             </Stack>
           </Stack>
 
-          <Stack {...card} gap={0}>
-            <Text {...cardTitle}>{m.booking_success_nextTitle()}</Text>
+          <Stack {...successCard} gap={0}>
+            <Text {...successCardTitle}>{m.booking_success_nextTitle()}</Text>
             <Stack as="ol" gap={3} listStyleType="none">
               {steps.map((step, index) => (
                 <HStack as="li" key={step} gap={2.5} align="flex-start">
