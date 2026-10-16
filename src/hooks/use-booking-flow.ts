@@ -1,7 +1,9 @@
 import { isAxiosError } from 'axios'
 import { useEffect, useState } from 'react'
+import type { ContactDraft } from '#/hooks/use-contact-draft'
 import { useSchedulePickup } from '#/hooks/use-schedule-pickup'
 import type {
+  BookingAnswersDto,
   BookingDraftDto,
   BookingErrorsDto,
   BookingFieldDto,
@@ -12,12 +14,13 @@ import type { ErrorResponseDto } from '#/interfaces/api-client.dto'
 import {
   buildPickupDays,
   buildPickupPayload,
-  emptyDraft,
+  emptyAnswers,
   isDayOpen,
   isWindowOpen,
   validateStep,
   windowById,
 } from '#/libs/booking'
+import { splitContactPatch } from '#/libs/contact'
 import { m } from '#/paraglide/messages'
 
 export const LAST_BOOKING_STEP = 3
@@ -44,6 +47,11 @@ interface BookingFlowOptions {
   service: BookingServiceIdDto | undefined
   /** Writes the service to the address; `undefined` takes it out. */
   setService: (service: BookingServiceIdDto | undefined) => void
+  /**
+   * Who the visitor is. Kept above the form because the plan form asks for the
+   * same details: what is typed in one is there in the other.
+   */
+  contact: ContactDraft
 }
 
 /**
@@ -64,11 +72,12 @@ export function useBookingFlow({
   open,
   service,
   setService,
+  contact,
 }: BookingFlowOptions) {
   const schedule = useSchedulePickup()
 
   const [step, setStep] = useState<BookingStepDto>(0)
-  const [answers, setAnswers] = useState<BookingDraftDto>(emptyDraft)
+  const [answers, setAnswers] = useState<BookingAnswersDto>(emptyAnswers)
   const [errors, setErrors] = useState<BookingErrorsDto>({})
   /** Fixed when the form opens, so the day list does not shift under a click. */
   const [now, setNow] = useState(() => new Date())
@@ -86,8 +95,15 @@ export function useBookingFlow({
     if (service) setChosen(service)
   }, [service])
 
-  /** What the form shows: the typed answers, and the service chosen. */
-  const draft: BookingDraftDto = { ...answers, service: chosen ?? null }
+  /**
+   * What the form shows: the pickup's answers, who the visitor is, and the
+   * service chosen.
+   */
+  const draft: BookingDraftDto = {
+    ...answers,
+    ...contact.contact,
+    service: chosen ?? null,
+  }
   const submitted = reference !== null
   const days = buildPickupDays(now)
 
@@ -129,7 +145,8 @@ export function useBookingFlow({
    */
   const finish = () => {
     if (!submitted) return
-    setAnswers(emptyDraft)
+    setAnswers(emptyAnswers)
+    contact.clear()
     setStep(0)
     setReference(null)
     setChosen(undefined)
@@ -142,7 +159,11 @@ export function useBookingFlow({
       setService(nextService ?? undefined)
     }
 
-    const merged = { ...answers, ...typed }
+    // Who the visitor is goes to the shared draft; the rest is the pickup's.
+    const { contact: aboutVisitor, rest } = splitContactPatch(typed)
+    if (Object.keys(aboutVisitor).length > 0) contact.change(aboutVisitor)
+
+    const merged = { ...answers, ...rest }
 
     // Moving to today can leave the chosen window in the past.
     const day = days.find((candidate) => candidate.key === merged.date)

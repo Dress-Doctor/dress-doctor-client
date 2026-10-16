@@ -19,7 +19,7 @@ import { m } from '#/paraglide/messages'
 import Eyebrow from './eyebrow'
 import InfoNote from './info-note'
 import LoginError from './login-error'
-import OtpCodeField from './otp-code-field'
+import OtpCodeField from '#/components/site/site-modals/otp-code-field'
 
 interface CodeStepProps {
   flow: ReturnType<typeof useLoginFlow>

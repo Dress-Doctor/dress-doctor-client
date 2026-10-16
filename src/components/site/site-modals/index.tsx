@@ -3,6 +3,7 @@ import { useMemo, useRef } from 'react'
 import type { PropsWithChildren } from 'react'
 import { DEFAULT_PLAN_BILLING, DEFAULT_PLAN_MODE } from '#/data/home.data'
 import { useBookingFlow } from '#/hooks/use-booking-flow'
+import { useContactDraft } from '#/hooks/use-contact-draft'
 import { SiteModalsContext } from '#/hooks/use-site-modals'
 import type { SiteModalsApi } from '#/hooks/use-site-modals'
 import { useSubscribeFlow } from '#/hooks/use-subscribe-flow'
@@ -46,10 +47,14 @@ function SiteModalsProvider({ children }: PropsWithChildren) {
   const bookingOpen = search.modal === 'booking'
   const subscribeOpen = search.modal === 'subscribe'
 
+  // Who the visitor is, shared by both forms: they ask for the same details.
+  const contact = useContactDraft()
+
   const booking = useBookingFlow({
     open: bookingOpen,
     service: search.service,
     setService: (service) => replaceSearch({ service }),
+    contact,
   })
 
   const subscribe = useSubscribeFlow({

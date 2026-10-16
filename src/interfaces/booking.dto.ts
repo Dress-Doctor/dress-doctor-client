@@ -1,3 +1,4 @@
+import type { ContactDraftDto, ContactFieldDto, GenderDto } from './contact.dto'
 import type { KgServiceIdDto, PlanBillingDto, PlanModeDto } from './site.dto'
 
 /** The two forms that open over a page. */
@@ -29,11 +30,8 @@ export type PickupWindowIdDto = 'morning' | 'afternoon' | 'evening'
 /** The four steps of the booking form, in order. */
 export type BookingStepDto = 0 | 1 | 2 | 3
 
-/** What the visitor has typed or picked so far. */
-/** The values the API accepts for `gender`. */
-export type BookingGenderDto = 'Male' | 'Female'
-
-export interface BookingDraftDto {
+/** The pickup itself: what, when and where. */
+export interface BookingAnswersDto {
   service: BookingServiceIdDto | null
   /** The chosen day as a local `YYYY-MM-DD` key. */
   date: string | null
@@ -41,22 +39,13 @@ export interface BookingDraftDto {
   area: string
   street: string
   notes: string
-  firstName: string
-  lastName: string
-  /** Optional: `''` until the visitor picks one. */
-  gender: BookingGenderDto | ''
-  /** The national number, grouped (`689 688 248`) — the code is `phoneCountry`. */
-  phone: string
-  /** ISO code of the country `phone` belongs to. */
-  phoneCountry: string
-  /** Optional. Same grouping as `phone`; left empty when it is the same number. */
-  whatsapp: string
-  /** ISO code, or `null` while the WhatsApp number follows the phone's. */
-  whatsappCountry: string | null
-  /** Optional. */
-  email: string
-  consent: boolean
 }
+
+/**
+ * What the visitor has typed or picked so far: the pickup, and who they are.
+ * Who they are is the same set of fields the plan form asks for.
+ */
+export interface BookingDraftDto extends BookingAnswersDto, ContactDraftDto {}
 
 /** Values the page can hand the form when it opens. */
 export interface BookingPrefillDto {
@@ -73,16 +62,7 @@ export interface SubscribePrefillDto {
 
 /** The form fields that can show an error. */
 export type BookingFieldDto =
-  | 'service'
-  | 'date'
-  | 'windowId'
-  | 'area'
-  | 'firstName'
-  | 'lastName'
-  | 'phone'
-  | 'whatsapp'
-  | 'email'
-  | 'consent'
+  'service' | 'date' | 'windowId' | 'area' | ContactFieldDto
 
 export type BookingErrorsDto = Partial<Record<BookingFieldDto, true>>
 
@@ -119,7 +99,7 @@ export interface SchedulePickupDataDto {
   firstName: string
   lastName: string
   /** Only sent when the visitor picked one. */
-  gender?: BookingGenderDto
+  gender?: GenderDto
   /** `+` and the country code, then the number: `+237689688248`. */
   phone: string
   /** Written like `phone`. Only sent when the visitor gave one; the API refuses an empty string. */

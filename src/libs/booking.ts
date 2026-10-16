@@ -1,7 +1,7 @@
 import { CLOSED_WEEKDAY, PICKUP_DAYS, pickupWindows } from '#/data/booking.data'
-import { DEFAULT_COUNTRY_ISO } from '#/data/countries.data'
 import { QUARTERLY_MULTIPLIER } from '#/data/home.data'
 import type {
+  BookingAnswersDto,
   BookingDraftDto,
   BookingErrorsDto,
   BookingStepDto,
@@ -10,41 +10,28 @@ import type {
   PickupWindowIdDto,
   SchedulePickupDataDto,
 } from '#/interfaces/booking.dto'
+import type { SelfPickupDataDto } from '#/interfaces/signup.dto'
 import type { PlanBillingDto } from '#/interfaces/site.dto'
-import { getCountry, isValidNumber, toInternational } from '#/libs/phone'
-import utils from '#/libs/utils'
+import {
+  contactEmail,
+  contactPhone,
+  contactWhatsapp,
+  emptyContact,
+  validateContact,
+} from '#/libs/contact'
 import { getLocale } from '#/paraglide/runtime'
 
-/** The API's own rules for a name, so a bad one is caught before the request. */
-const FIRST_NAME = /^[A-Za-z]{2,50}$/
-const LAST_NAME = /^(?=.{2,50}$)[A-Za-z]+( [A-Za-z]+)*$/
-
-/**
- * What the API accepts as an email, tried against its own check: no dot at
- * either end of the part before the `@`, no two dots in a row, and a last part
- * of letters only. The API turns away an empty string, so an empty box is not
- * tested here — it is left out of the request instead.
- */
-const EMAIL =
-  /^[\p{L}\p{N}!#$%&'*+/=?^_`{|}~-]+(?:\.[\p{L}\p{N}!#$%&'*+/=?^_`{|}~-]+)*@[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?(?:\.[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?)*\.\p{L}{2,}$/u
-
-export const emptyDraft: BookingDraftDto = {
+/** The pickup's own answers before the visitor has given any. */
+export const emptyAnswers: BookingAnswersDto = {
   service: null,
   date: null,
   windowId: null,
   area: '',
   street: '',
   notes: '',
-  firstName: '',
-  lastName: '',
-  gender: '',
-  phone: '',
-  phoneCountry: DEFAULT_COUNTRY_ISO,
-  whatsapp: '',
-  whatsappCountry: null,
-  email: '',
-  consent: false,
 }
+
+export const emptyDraft: BookingDraftDto = { ...emptyAnswers, ...emptyContact }
 
 /** A local calendar day as `YYYY-MM-DD`. `toISOString` would shift it by the UTC offset. */
 export function toDateKey(date: Date) {
@@ -150,28 +137,8 @@ export function validateStep(
 
   if (step === 2 && !draft.area.trim()) errors.area = true
 
-  if (step === 3) {
-    if (!FIRST_NAME.test(draft.firstName.trim())) errors.firstName = true
-    if (!LAST_NAME.test(draft.lastName.trim())) errors.lastName = true
-    if (!isValidNumber(getCountry(draft.phoneCountry), draft.phone)) {
-      errors.phone = true
-    }
-
-    // Both are optional: empty is fine, half-filled is not.
-    const whatsappCountry = getCountry(
-      draft.whatsappCountry ?? draft.phoneCountry,
-    )
-    if (
-      utils.digitsOnly(draft.whatsapp) &&
-      !isValidNumber(whatsappCountry, draft.whatsapp)
-    ) {
-      errors.whatsapp = true
-    }
-    const email = draft.email.trim()
-    if (email && !EMAIL.test(email)) errors.email = true
-
-    if (!draft.consent) errors.consent = true
-  }
+  // Who the visitor is: the same check the plan form uses.
+  if (step === 3) Object.assign(errors, validateContact(draft))
 
   return errors
 }
@@ -189,22 +156,31 @@ export const buildAddress = (draft: BookingDraftDto) =>
 export function buildPickupPayload(
   draft: BookingDraftDto,
 ): SchedulePickupDataDto {
-  const whatsappDigits = utils.digitsOnly(draft.whatsapp)
-  const whatsappPhone =
-    whatsappDigits &&
-    toInternational(
-      getCountry(draft.whatsappCountry ?? draft.phoneCountry),
-      whatsappDigits,
-    )
-  const email = draft.email.trim()
+  const whatsappPhone = contactWhatsapp(draft)
+  const email = contactEmail(draft)
 
   return {
     firstName: draft.firstName.trim(),
     lastName: draft.lastName.trim(),
     ...(draft.gender && { gender: draft.gender }),
-    phone: toInternational(getCountry(draft.phoneCountry), draft.phone),
+    phone: contactPhone(draft),
     ...(whatsappPhone && { whatsappPhone }),
     ...(email && { email }),
+    pickupAddress: buildAddress(draft),
+    pickupTime: windowById(draft.windowId)!.apiValue,
+    pickupDate: toPickupDate(draft.date!),
+  }
+}
+
+/**
+ * The body for a customer who has signed in: where and when, nothing more.
+ * Their name, phone and the rest are not repeated — the session says who is
+ * asking, and the account already holds the details.
+ */
+export function buildSelfPickupPayload(
+  draft: BookingDraftDto,
+): SelfPickupDataDto {
+  return {
     pickupAddress: buildAddress(draft),
     pickupTime: windowById(draft.windowId)!.apiValue,
     pickupDate: toPickupDate(draft.date!),

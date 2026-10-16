@@ -24,7 +24,7 @@ export interface LoginErrorDto {
 }
 
 /** "Please wait 5 minute(s) before trying." gives 5. */
-function minutesFrom(message: string | undefined): number | undefined {
+export function minutesFrom(message: string | undefined): number | undefined {
   const match = message?.match(/(\d+)\s*minute/i)
   return match ? Number(match[1]) : undefined
 }

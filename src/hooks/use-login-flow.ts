@@ -6,22 +6,12 @@ import type { LoginChannelDto } from '#/interfaces/auth.dto'
 import authApi from '#/libs/auth.api'
 import { loginErrorFrom } from '#/libs/auth-errors'
 import type { LoginErrorDto, LoginStageDto } from '#/libs/auth-errors'
+import { CODE_LENGTH, RESEND_WAIT_SECONDS, emptyCode } from '#/libs/otp'
 import { getCountry, isValidNumber, toInternational } from '#/libs/phone'
 import { afterLoginPath } from '#/libs/redirect'
 import utils from '#/libs/utils'
-import { meQueryOptions } from '#/hooks/use-me'
+import { refreshMe } from '#/hooks/use-me'
 import { useCountdown } from '#/hooks/use-countdown'
-
-export const CODE_LENGTH = 6
-
-/**
- * How long before another code can be asked for. The API has no fixed wait
- * between codes (it only slows down after several), so this one stops a
- * visitor sending a second code before the first has arrived.
- */
-const RESEND_WAIT_SECONDS = 60
-
-const emptyCode = () => Array.from({ length: CODE_LENGTH }, () => '')
 
 /** What the code step needs to know about the code that was sent. */
 interface SentCodeDto {
@@ -194,7 +184,7 @@ export function useLoginFlow(redirect: string | undefined) {
           setFinishing(true)
           try {
             // Read the account fresh: the page it lands on trusts it.
-            await queryClient.fetchQuery({ ...meQueryOptions(), staleTime: 0 })
+            await refreshMe(queryClient)
             await navigate({ href: afterLoginPath(redirect), replace: true })
           } catch (caught) {
             setFinishing(false)

@@ -1,7 +1,7 @@
 import { PinInput } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { CODE_LENGTH } from '#/hooks/use-login-flow'
-import ModalField from '#/components/site/site-modals/modal-field'
+import { CODE_LENGTH } from '#/libs/otp'
+import ModalField from './modal-field'
 import { m } from '#/paraglide/messages'
 
 interface OtpCodeFieldProps {

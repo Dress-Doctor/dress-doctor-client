@@ -1,4 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
+import type { QueryClient } from '@tanstack/react-query'
 import type { MeDto } from '#/interfaces/auth.dto'
 import authApi from '#/libs/auth.api'
 
@@ -24,6 +25,16 @@ export const meQueryOptions = () =>
       return response.data
     },
   })
+
+/**
+ * Asks who is signed in right now, ignoring what was kept.
+ *
+ * Called the moment a code has been accepted: the session cookie is new, and
+ * whatever the page is about to show (the header, the account page) trusts the
+ * answer. The kept answer from before the code — "nobody" — must not outlive it.
+ */
+export const refreshMe = (queryClient: QueryClient) =>
+  queryClient.fetchQuery({ ...meQueryOptions(), staleTime: 0 })
 
 /** Customers only: this site has no staff pages and no staff sign-in. */
 export function isCustomer(me: MeDto): boolean {
