@@ -41,6 +41,9 @@ export const sitePaths = {
   delivery: '/delivery-policy',
   login: LOGIN_PATH,
   account: ACCOUNT_PATH,
+  accountOrders: '/account/orders',
+  accountSubscription: '/account/subscription',
+  accountPickups: '/account/pickups',
 } as const satisfies Record<string, keyof FileRoutesByTo>
 
 /**

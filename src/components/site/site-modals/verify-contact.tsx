@@ -216,7 +216,7 @@ function VerifyContact({
         </Text>
 
         {verification.expired ? (
-          <Text fontSize="13px" color="red.600">
+          <Text role="alert" fontSize="13px" color="red.600">
             {m.auth_code_expired()}
           </Text>
         ) : null}

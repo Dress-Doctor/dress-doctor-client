@@ -41,7 +41,9 @@ import {
   LuMoon,
   LuPanelLeftClose,
   LuPanelLeftOpen,
+  LuPause,
   LuPencil,
+  LuPlay,
   LuPhone,
   LuPlus,
   LuPower,
@@ -145,6 +147,8 @@ const icons = {
   home: LuHouse,
   calendar: LuCalendar,
   document: LuFileText,
+  pause: LuPause,
+  play: LuPlay,
 } satisfies Record<string, IconType>
 
 export default icons

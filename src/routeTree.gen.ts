@@ -23,9 +23,14 @@ import { Route as SitePrivacyRouteImport } from './routes/_site/privacy'
 import { Route as SiteRefundPolicyRouteImport } from './routes/_site/refund-policy'
 import { Route as SiteResourcesRouteImport } from './routes/_site/resources'
 import { Route as SiteTermsRouteImport } from './routes/_site/terms'
+import { Route as SiteAccountIndexRouteImport } from './routes/_site/account/index'
+import { Route as SiteAccountPickupsRouteImport } from './routes/_site/account/pickups'
+import { Route as SiteAccountSubscriptionRouteImport } from './routes/_site/account/subscription'
 import { Route as SiteIndustriesHotelsRouteImport } from './routes/_site/industries/hotels'
 import { Route as SiteServicesIndexRouteImport } from './routes/_site/services/index'
 import { Route as SiteServicesWashAndFoldRouteImport } from './routes/_site/services/wash-and-fold'
+import { Route as SiteAccountOrdersIndexRouteImport } from './routes/_site/account/orders/index'
+import { Route as SiteAccountOrdersOrderCodeRouteImport } from './routes/_site/account/orders/$orderCode'
 
 const SiteRoute = SiteRouteImport.update({
   id: '/_site',
@@ -96,6 +101,21 @@ const SiteTermsRoute = SiteTermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteAccountIndexRoute = SiteAccountIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SiteAccountRoute,
+} as any)
+const SiteAccountPickupsRoute = SiteAccountPickupsRouteImport.update({
+  id: '/pickups',
+  path: '/pickups',
+  getParentRoute: () => SiteAccountRoute,
+} as any)
+const SiteAccountSubscriptionRoute = SiteAccountSubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => SiteAccountRoute,
+} as any)
 const SiteIndustriesHotelsRoute = SiteIndustriesHotelsRouteImport.update({
   id: '/industries/hotels',
   path: '/industries/hotels',
@@ -111,10 +131,21 @@ const SiteServicesWashAndFoldRoute = SiteServicesWashAndFoldRouteImport.update({
   path: '/services/wash-and-fold',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteAccountOrdersIndexRoute = SiteAccountOrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => SiteAccountRoute,
+} as any)
+const SiteAccountOrdersOrderCodeRoute =
+  SiteAccountOrdersOrderCodeRouteImport.update({
+    id: '/orders/$orderCode',
+    path: '/orders/$orderCode',
+    getParentRoute: () => SiteAccountRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
-  '/account': typeof SiteAccountRoute
+  '/account': typeof SiteAccountRouteWithChildren
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
@@ -126,12 +157,16 @@ export interface FileRoutesByFullPath {
   '/refund-policy': typeof SiteRefundPolicyRoute
   '/resources': typeof SiteResourcesRoute
   '/terms': typeof SiteTermsRoute
+  '/account/pickups': typeof SiteAccountPickupsRoute
+  '/account/subscription': typeof SiteAccountSubscriptionRoute
   '/industries/hotels': typeof SiteIndustriesHotelsRoute
   '/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/account/': typeof SiteAccountIndexRoute
   '/services/': typeof SiteServicesIndexRoute
+  '/account/orders/$orderCode': typeof SiteAccountOrdersOrderCodeRoute
+  '/account/orders/': typeof SiteAccountOrdersIndexRoute
 }
 export interface FileRoutesByTo {
-  '/account': typeof SiteAccountRoute
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
@@ -144,14 +179,19 @@ export interface FileRoutesByTo {
   '/resources': typeof SiteResourcesRoute
   '/terms': typeof SiteTermsRoute
   '/': typeof SiteIndexRoute
+  '/account/pickups': typeof SiteAccountPickupsRoute
+  '/account/subscription': typeof SiteAccountSubscriptionRoute
   '/industries/hotels': typeof SiteIndustriesHotelsRoute
   '/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/account': typeof SiteAccountIndexRoute
   '/services': typeof SiteServicesIndexRoute
+  '/account/orders/$orderCode': typeof SiteAccountOrdersOrderCodeRoute
+  '/account/orders': typeof SiteAccountOrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_site': typeof SiteRouteWithChildren
-  '/_site/account': typeof SiteAccountRoute
+  '/_site/account': typeof SiteAccountRouteWithChildren
   '/_site/catalog': typeof SiteCatalogRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/corporate': typeof SiteCorporateRoute
@@ -164,9 +204,14 @@ export interface FileRoutesById {
   '/_site/resources': typeof SiteResourcesRoute
   '/_site/terms': typeof SiteTermsRoute
   '/_site/': typeof SiteIndexRoute
+  '/_site/account/pickups': typeof SiteAccountPickupsRoute
+  '/_site/account/subscription': typeof SiteAccountSubscriptionRoute
   '/_site/industries/hotels': typeof SiteIndustriesHotelsRoute
   '/_site/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/_site/account/': typeof SiteAccountIndexRoute
   '/_site/services/': typeof SiteServicesIndexRoute
+  '/_site/account/orders/$orderCode': typeof SiteAccountOrdersOrderCodeRoute
+  '/_site/account/orders/': typeof SiteAccountOrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -184,12 +229,16 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/resources'
     | '/terms'
+    | '/account/pickups'
+    | '/account/subscription'
     | '/industries/hotels'
     | '/services/wash-and-fold'
+    | '/account/'
     | '/services/'
+    | '/account/orders/$orderCode'
+    | '/account/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/account'
     | '/catalog'
     | '/contact'
     | '/corporate'
@@ -202,9 +251,14 @@ export interface FileRouteTypes {
     | '/resources'
     | '/terms'
     | '/'
+    | '/account/pickups'
+    | '/account/subscription'
     | '/industries/hotels'
     | '/services/wash-and-fold'
+    | '/account'
     | '/services'
+    | '/account/orders/$orderCode'
+    | '/account/orders'
   id:
     | '__root__'
     | '/_site'
@@ -221,9 +275,14 @@ export interface FileRouteTypes {
     | '/_site/resources'
     | '/_site/terms'
     | '/_site/'
+    | '/_site/account/pickups'
+    | '/_site/account/subscription'
     | '/_site/industries/hotels'
     | '/_site/services/wash-and-fold'
+    | '/_site/account/'
     | '/_site/services/'
+    | '/_site/account/orders/$orderCode'
+    | '/_site/account/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -330,6 +389,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteTermsRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/account/': {
+      id: '/_site/account/'
+      path: '/'
+      fullPath: '/account/'
+      preLoaderRoute: typeof SiteAccountIndexRouteImport
+      parentRoute: typeof SiteAccountRoute
+    }
+    '/_site/account/pickups': {
+      id: '/_site/account/pickups'
+      path: '/pickups'
+      fullPath: '/account/pickups'
+      preLoaderRoute: typeof SiteAccountPickupsRouteImport
+      parentRoute: typeof SiteAccountRoute
+    }
+    '/_site/account/subscription': {
+      id: '/_site/account/subscription'
+      path: '/subscription'
+      fullPath: '/account/subscription'
+      preLoaderRoute: typeof SiteAccountSubscriptionRouteImport
+      parentRoute: typeof SiteAccountRoute
+    }
     '/_site/industries/hotels': {
       id: '/_site/industries/hotels'
       path: '/industries/hotels'
@@ -351,11 +431,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteServicesWashAndFoldRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/account/orders/': {
+      id: '/_site/account/orders/'
+      path: '/orders'
+      fullPath: '/account/orders/'
+      preLoaderRoute: typeof SiteAccountOrdersIndexRouteImport
+      parentRoute: typeof SiteAccountRoute
+    }
+    '/_site/account/orders/$orderCode': {
+      id: '/_site/account/orders/$orderCode'
+      path: '/orders/$orderCode'
+      fullPath: '/account/orders/$orderCode'
+      preLoaderRoute: typeof SiteAccountOrdersOrderCodeRouteImport
+      parentRoute: typeof SiteAccountRoute
+    }
   }
 }
 
+interface SiteAccountRouteChildren {
+  SiteAccountPickupsRoute: typeof SiteAccountPickupsRoute
+  SiteAccountSubscriptionRoute: typeof SiteAccountSubscriptionRoute
+  SiteAccountIndexRoute: typeof SiteAccountIndexRoute
+  SiteAccountOrdersOrderCodeRoute: typeof SiteAccountOrdersOrderCodeRoute
+  SiteAccountOrdersIndexRoute: typeof SiteAccountOrdersIndexRoute
+}
+
+const SiteAccountRouteChildren: SiteAccountRouteChildren = {
+  SiteAccountPickupsRoute: SiteAccountPickupsRoute,
+  SiteAccountSubscriptionRoute: SiteAccountSubscriptionRoute,
+  SiteAccountIndexRoute: SiteAccountIndexRoute,
+  SiteAccountOrdersOrderCodeRoute: SiteAccountOrdersOrderCodeRoute,
+  SiteAccountOrdersIndexRoute: SiteAccountOrdersIndexRoute,
+}
+
+const SiteAccountRouteWithChildren = SiteAccountRoute._addFileChildren(
+  SiteAccountRouteChildren,
+)
+
 interface SiteRouteChildren {
-  SiteAccountRoute: typeof SiteAccountRoute
+  SiteAccountRoute: typeof SiteAccountRouteWithChildren
   SiteCatalogRoute: typeof SiteCatalogRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteCorporateRoute: typeof SiteCorporateRoute
@@ -374,7 +488,7 @@ interface SiteRouteChildren {
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
-  SiteAccountRoute: SiteAccountRoute,
+  SiteAccountRoute: SiteAccountRouteWithChildren,
   SiteCatalogRoute: SiteCatalogRoute,
   SiteContactRoute: SiteContactRoute,
   SiteCorporateRoute: SiteCorporateRoute,

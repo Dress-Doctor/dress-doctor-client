@@ -17,7 +17,8 @@
       "./messages/legal/{locale}.json",
       "./messages/privacy/{locale}.json",
       "./messages/terms/{locale}.json",
-      "./messages/auth/{locale}.json"
+      "./messages/auth/{locale}.json",
+      "./messages/account/{locale}.json"
     ]
   }
 }

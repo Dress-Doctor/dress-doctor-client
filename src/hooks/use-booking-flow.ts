@@ -170,10 +170,19 @@ export function useBookingFlow({
     })
   }
 
+  // The code was accepted, so the visitor is being carried on to the request.
+  // That lasts until the request fails: from then on nothing is on its way,
+  // and "Try again" must work. (`verification.finishing` stays set for good,
+  // because the code cannot be un-proved.)
+  const carryingOn = verification.finishing && sendError === null
+  // Only the check of the digits, not the carrying on after it.
+  const checkingCode = verification.verifying && !verification.finishing
+
   const busy =
     requestPickup.isPending ||
     verification.sending ||
-    verification.verifying ||
+    checkingCode ||
+    carryingOn ||
     loggingOut
 
   /** Brings the form up to date each time it opens. */

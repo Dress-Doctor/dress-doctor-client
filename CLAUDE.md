@@ -95,7 +95,7 @@ npx tsc --noEmit     # typecheck — there is no npm script for this
 npm run i18n         # recompile messages after editing messages/**/*.json
 npm run chakra-theme # regenerate theme types after editing src/config/theme.ts
 npm run generate-routes  # regenerate the route tree
-npm test             # vitest, single run
+npm test             # vitest, single run (add `// @vitest-environment jsdom` to a file that renders)
 ```
 
 Do not start a dev server with a bare `npm run dev` in the background when a
@@ -109,10 +109,17 @@ src/components/layout/    header, footer and page shell
 src/routes/               file-based routes (TanStack Router)
   _site.tsx               pathless layout that wraps every public page
   _site/                  the public pages
+  _site/account.tsx       the signed-in frame (greeting + navigation) …
+  _site/account/          … and the pages inside it: index (details), orders,
+                          orders/$orderCode, subscription, pickups
   **/-components/         page-only components; the `-` keeps them out of routing
 src/data/                 static content lists (site.data.ts, home.data.ts)
 src/hooks/                small React hooks, one per file (use-in-view…)
 src/interfaces/           DTO types (*.dto.ts)
+src/libs/account*.ts      the account's API calls, query keys, error words and
+                          pure helpers (all unit-tested)
+src/test/                 test helpers: `render.tsx` (Chakra + a query client),
+                          `mocks.ts`, `api-errors.ts`
 src/config/theme.ts       the Chakra theme — brand colours, fonts, radii
 messages/                 translation catalogues, per namespace, `en` and `fr`
 ```
@@ -157,6 +164,42 @@ drop it from a call. The
 flow lives in `src/hooks/use-login-flow.ts`; failures are turned into words by
 `src/libs/auth-errors.ts` and the API's own text is never shown. The phone goes
 to the API as `+` and the country code, like the other forms.
+
+**The two forms sign a visitor up.** The pickup form and the plan form ask the
+same details (name, phone, WhatsApp, email, yes to the terms), through one
+shared `ContactFields` and one draft kept above both (`use-contact-draft.ts`), so
+what is typed in one is there in the other. A visitor who is not signed in then
+proves one contact with a 6-digit code (`use-contact-verification.ts`), which
+also makes their account and signs them in; the pickup or plan is asked for the
+moment the code is accepted. A customer who is signed in skips all of that and
+just asks. A phone typed on the form is not proven by it, so an email sign-up
+leaves a phone the API marks `phoneUnverified`; the account says so
+("We have not checked your phone number").
+
+**The account is a frame with pages inside it.** `src/routes/_site/account.tsx`
+is the guard and the frame; each page (`account/index`, `orders`,
+`orders/$orderCode`, `subscription`, `pickups`) draws inside it and inherits
+the guard. Every one reads only the customer's own records, through the API's
+customer-only answers (`GET /v1/customers/me`, `/v1/customers/:code/orders`,
+`/v1/orders/:code`, `/v1/pickups/mine`, `/v1/subscriptions`), so no call carries
+a customer id the visitor could change. Rules:
+
+- **Contacts are shown, never edited.** A sign-in code goes to the WhatsApp
+  number or email, so changing one needs us. Only the language, the
+  notification choice and the saved address are editable, and only what changed
+  is sent.
+- **Words are the customer's, not the shop's.** `src/data/account.data.ts` maps
+  each API status to a plain word and a tone ("RECEIVED" reads "We have your
+  clothes"). The API's own spelling and error text are never shown; failures go
+  through `src/libs/account-errors.ts`.
+- **Queries are `silent`** (`meta: { silent: true }`), so the app-wide "Request
+  failed" toast stays away and the page shows its own message with a "Try
+  again" button. Lists use "Show more", not page numbers.
+- **Ending something asks first** (`confirm-dialog.tsx`), with the safe button
+  first. A plan or pickup that staff changed in the meantime is not an error:
+  the page says so and shows how it stands now.
+- **Dates are written in `Africa/Douala`**, and English in British day-first
+  order, so the server's page and the browser's agree.
 
 **The address is the state.** Which form is open and its main choices live in
 the query string, declared once on the `_site` layout so every page reads them:
@@ -209,6 +252,16 @@ entry quietly shows English to French visitors.
 `amber-orange`, `dark-bluish-gray`) and the `site.*` tokens. The public site is
 light-only, so the `site.*` tokens are fixed values that do not flip in dark
 mode.
+
+## Tests
+
+Pure helpers and API calls run on node. A file that draws a component or runs a
+hook starts with `// @vitest-environment jsdom` and uses `src/test/render.tsx`.
+Mock the API module (`vi.mock('#/libs/…api')`), not axios, and make a failing
+mock with `mockImplementation(rejecting(error))` from `src/test/mocks.ts`:
+`mockRejectedValue` builds the rejected promise up front and the runner reports
+it as unhandled. In `beforeEach`, use a block body (`{ fn.mockReset() }`): a
+returned function is run afterwards as a clean-up.
 
 ## Before you say it is done
 
