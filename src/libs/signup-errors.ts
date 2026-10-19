@@ -31,6 +31,8 @@ export type SignupErrorKindDto =
   | 'requestOpen'
   /** The session ended before the request could be sent. */
   | 'sessionEnded'
+  /** The visitor is signed in, but the API refused the request. */
+  | 'sendRefused'
   /** The details are not what the API accepts. */
   | 'invalid'
   /** The request never got an answer. */
@@ -93,8 +95,10 @@ export function signupErrorFrom(
 
   if (status === 403) {
     // After the code the customer is signed in, so a refusal here is not about
-    // the code. Before it, a 403 is the contact being locked for abuse.
-    return stage === 'send' ? { kind: 'sessionEnded' } : { kind: 'locked' }
+    // the code, and not a lost session either (that is a 401). The session is
+    // fine and the API said no, so the form must not send them back to start.
+    // Before the code, a 403 is the contact being locked for abuse.
+    return stage === 'send' ? { kind: 'sendRefused' } : { kind: 'locked' }
   }
 
   // The cool-down after too many codes or too many wrong tries.

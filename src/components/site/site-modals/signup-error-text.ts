@@ -30,6 +30,8 @@ export function signupErrorText(error: SignupErrorDto): string {
       return m.auth_error_locked()
     case 'sessionEnded':
       return m.auth_signup_error_sessionEnded()
+    case 'sendRefused':
+      return m.auth_signup_error_sendRefused()
     case 'invalid':
       return m.auth_error_invalid()
     case 'network':

@@ -73,6 +73,7 @@
   "auth_signup_action_codeToPhone": "Envoyer le code au {phone}",
   "auth_signup_error_contactInUse": "Nous ne pouvons pas utiliser ces informations pour créer un compte. Écrivez-nous sur WhatsApp et nous vous aiderons.",
   "auth_signup_error_sessionEnded": "Vous avez été déconnecté. Veuillez entrer de nouveau vos informations.",
+  "auth_signup_error_sendRefused": "Nous n’avons pas pu envoyer votre demande.",
   "auth_signup_action_chat": "Écrivez-nous sur WhatsApp",
   "auth_verify_leadWhatsapp": "Nous avons envoyé un code à 6 chiffres au {contact} sur WhatsApp. Entrez-le ci-dessous.",
   "auth_verify_leadEmail": "Nous avons envoyé un code à 6 chiffres à {contact} par e-mail. Entrez-le ci-dessous.",

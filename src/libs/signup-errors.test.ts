@@ -68,8 +68,11 @@ describe('signupErrorFrom', () => {
       expect(signupErrorFrom(apiError(401, 'UNAUTHENTICATED'), 'send')).toEqual(
         { kind: 'sessionEnded' },
       )
+    })
+
+    it('reads a refusal as its own kind, not as an ended session', () => {
       expect(signupErrorFrom(apiError(403, 'FORBIDDEN'), 'send')).toEqual({
-        kind: 'sessionEnded',
+        kind: 'sendRefused',
       })
     })
   })

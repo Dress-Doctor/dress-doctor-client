@@ -252,6 +252,19 @@ describe('useBookingFlow', () => {
       expect(result.current.flow.placed).toBeNull()
     })
 
+    it('stays on the code step when the API refuses the request, and can try again', async () => {
+      signup.requestPickup.mockImplementation(rejecting(apiError(403)))
+      const { result } = await atTheCode()
+
+      acceptCode(result)
+
+      await waitFor(() => expect(result.current.flow.canRetry).toBe(true))
+      expect(result.current.flow.sendError?.kind).toBe('sendRefused')
+      // The session is fine, so nothing starts again from the details.
+      expect(result.current.flow.step).toBe('verify')
+      expect(result.current.flow.placed).toBeNull()
+    })
+
     it('cannot go back once the code was accepted', async () => {
       signup.requestPickup.mockImplementation(rejecting(apiError(500)))
       const { result } = await atTheCode()
