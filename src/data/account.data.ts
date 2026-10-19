@@ -3,6 +3,7 @@ import type {
   PaymentStatusDto,
   PickupStatusDto,
   PlanStatusDto,
+  PricingModelDto,
 } from '#/interfaces/account.dto'
 import type { AccountErrorKindDto } from '#/libs/account-errors'
 import type { FileRoutesByTo } from '#/routeTree.gen'
@@ -47,6 +48,14 @@ export const pickupStatusView: Record<PickupStatusDto, StatusViewDto> = {
   ASSIGNED: { label: m.account_pickupStatus_assigned, tone: 'success' },
   PICKED_UP: { label: m.account_pickupStatus_pickedUp, tone: 'success' },
   CANCELLED: { label: m.account_pickupStatus_cancelled, tone: 'danger' },
+}
+
+/** How a customer reads the pricing model on a pickup. */
+export const pricingModelLabel: Record<PricingModelDto, () => string> = {
+  PER_PIECE: m.common_pricingModel_perPiece,
+  PER_KG: m.common_pricingModel_perKg,
+  SUBSCRIPTION: m.common_pricingModel_subscription,
+  FREE: m.common_pricingModel_free,
 }
 
 export const planStatusView: Record<PlanStatusDto, StatusViewDto> = {

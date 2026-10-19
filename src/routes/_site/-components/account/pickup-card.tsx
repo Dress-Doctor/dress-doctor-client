@@ -2,10 +2,10 @@ import { HStack, Icon, Link as ChakraLink, Stack, Text } from '@chakra-ui/react'
 import { Link } from '@tanstack/react-router'
 import SiteButton from '#/components/site/site-button'
 import icons from '#/config/icons'
-import { pickupStatusView } from '#/data/account.data'
+import { pickupStatusView, pricingModelLabel } from '#/data/account.data'
 import { siteContact } from '#/data/site.data'
 import type { MyPickupDto } from '#/interfaces/account.dto'
-import { formatPickupWhen } from '#/libs/account'
+import { formatDate, formatPickupWhen } from '#/libs/account'
 import { m } from '#/paraglide/messages'
 import StatusPill from './status-pill'
 
@@ -80,6 +80,14 @@ function PickupCard({ pickup, onCancel }: PickupCardProps) {
           {formatPickupWhen(pickup.pickupDate, pickup.pickupTime)}
         </Line>
         <Line label={m.account_pickups_address()}>{pickup.pickupAddress}</Line>
+        {pickup.pricingModel && (
+          <Line label={m.account_pickups_pricing()}>
+            {pricingModelLabel[pickup.pricingModel]()}
+          </Line>
+        )}
+        <Line label={m.account_pickups_sent()}>
+          {formatDate(pickup.createdAt)}
+        </Line>
         {pickup.orderCodes.length > 0 && (
           <Line label={m.account_pickups_orders()}>
             <HStack as="span" gap={3} wrap="wrap">

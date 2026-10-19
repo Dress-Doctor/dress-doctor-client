@@ -4,12 +4,16 @@ import type {
   BookingAnswersDto,
   BookingDraftDto,
   BookingErrorsDto,
+  BookingServiceIdDto,
   BookingStepIdDto,
   PickupDayDto,
   PickupWindowDto,
   PickupWindowIdDto,
 } from '#/interfaces/booking.dto'
-import type { SelfPickupDataDto } from '#/interfaces/signup.dto'
+import type {
+  SelfPickupDataDto,
+  SelfPricingModelDto,
+} from '#/interfaces/signup.dto'
 import type { PlanBillingDto } from '#/interfaces/site.dto'
 import { emptyContact, validateContact } from '#/libs/contact'
 import { getLocale } from '#/paraglide/runtime'
@@ -168,17 +172,27 @@ export function validateStep(
 export const buildAddress = (draft: BookingDraftDto) =>
   [draft.street.trim(), draft.area.trim()].filter(Boolean).join(', ')
 
+/** How a service is priced: the kilo services by weight, the other by piece. */
+export const pricingModelFor = (
+  service: BookingServiceIdDto,
+): SelfPricingModelDto => (service === 'perpiece' ? 'PER_PIECE' : 'PER_KG')
+
 /**
- * The body for a customer who has signed in: where and when, nothing more.
- * Their name, phone and the rest are not repeated — the session says who is
- * asking, and the account already holds the details.
+ * The body for a customer who has signed in: where and when, how they would
+ * like to be priced, and their note. Their name, phone and the rest are not
+ * repeated — the session says who is asking, and the account already holds
+ * the details.
  */
 export function buildSelfPickupPayload(
   draft: BookingDraftDto,
 ): SelfPickupDataDto {
+  const note = draft.notes.trim()
+
   return {
     pickupAddress: buildAddress(draft),
     pickupTime: windowById(draft.windowId)!.apiValue,
     pickupDate: toPickupDate(draft.date!),
+    ...(draft.service && { pricingModel: pricingModelFor(draft.service) }),
+    ...(note && { note }),
   }
 }

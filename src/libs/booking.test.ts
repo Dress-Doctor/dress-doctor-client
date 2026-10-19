@@ -6,6 +6,7 @@ import {
   buildSelfPickupPayload,
   emptyDraft,
   formatHeldPickup,
+  pricingModelFor,
   validateStep,
 } from './booking'
 
@@ -95,8 +96,29 @@ describe('buildSelfPickupPayload', () => {
       'pickupAddress',
       'pickupDate',
       'pickupTime',
+      'pricingModel',
     ])
     expect(payload.pickupAddress).toBe('Near Carrefour, Akwa')
+  })
+
+  it.each([
+    ['washFold', 'PER_KG'],
+    ['washIron', 'PER_KG'],
+    ['perpiece', 'PER_PIECE'],
+  ] as const)('prices %s as %s', (service, pricingModel) => {
+    expect(buildSelfPickupPayload({ ...done, service }).pricingModel).toBe(
+      pricingModel,
+    )
+    expect(pricingModelFor(service)).toBe(pricingModel)
+  })
+
+  it('sends the note, tidied, and leaves it out when it is empty', () => {
+    expect(
+      buildSelfPickupPayload({ ...done, notes: '  A stained suit  ' }).note,
+    ).toBe('A stained suit')
+    expect(
+      buildSelfPickupPayload({ ...done, notes: '   ' }),
+    ).not.toHaveProperty('note')
   })
 
   it('writes the time as the API takes it', () => {

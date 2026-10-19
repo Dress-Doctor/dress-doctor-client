@@ -52,11 +52,18 @@ export interface SignupCompletedDto {
   outcome: SignupOutcomeDto
 }
 
+/** The two ways a customer can ask to be priced. Staff set the others on the order. */
+export type SelfPricingModelDto = 'PER_PIECE' | 'PER_KG'
+
 /** The body of `POST /v1/pickups/mine` — who is asking comes from the session. */
 export interface SelfPickupDataDto {
   pickupAddress: string
   pickupTime: string
   pickupDate: string
+  /** Per piece or per kg, from the service the visitor chose. */
+  pricingModel?: SelfPricingModelDto
+  /** What the visitor wrote under "Notes". Left out when empty. */
+  note?: string
 }
 
 export interface SelfPickupDto {

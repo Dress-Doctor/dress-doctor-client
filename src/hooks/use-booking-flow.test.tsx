@@ -220,6 +220,7 @@ describe('useBookingFlow', () => {
         pickupAddress: 'Near the market, Akwa',
         pickupTime: 'MORNING 8AM - 12PM',
         pickupDate: toPickupDate(DAY),
+        pricingModel: 'PER_KG',
       })
       expect(result.current.flow.placed).toMatchObject({
         reference: 'PU-A4F92C',
@@ -334,6 +335,7 @@ describe('useBookingFlow', () => {
         pickupAddress: 'Near the market, Akwa',
         pickupTime: 'MORNING 8AM - 12PM',
         pickupDate: toPickupDate(DAY),
+        pricingModel: 'PER_KG',
       })
     })
   })

@@ -5,17 +5,17 @@ import {
   Dialog,
   HStack,
   Icon,
-  Link as ChakraLink,
   SimpleGrid,
   Stack,
   Text,
 } from '@chakra-ui/react'
+import { Link } from '@tanstack/react-router'
 import type { IconType } from 'react-icons/lib'
 import icons from '#/config/icons'
 import SiteButton from '#/components/site/site-button'
+import { sitePaths } from '#/data/site.data'
 import type { BookingFlow } from '#/hooks/use-booking-flow'
 import { formatHeldPickup } from '#/libs/booking'
-import { whatsappUrl } from '#/libs/whatsapp'
 import { m } from '#/paraglide/messages'
 import { describeBooking } from './describe-booking'
 import AccountCard from '../account-card'
@@ -77,8 +77,8 @@ function statusText(status: string) {
 /**
  * Shown once the request has gone. It is honest about what has happened: we
  * have the request, and we will confirm it — nothing here says it is booked
- * until a person has said so. The WhatsApp button carries the details the API
- * has no place for, the service and the notes.
+ * until a person has said so. The button opens the request in the customer's
+ * account, where its status shows.
  *
  * A customer who already had a pickup open is shown that one instead, with the
  * reference they already have: asking twice does not make two.
@@ -90,26 +90,16 @@ function BookingSuccess({
   flow: BookingFlow
   onClose: () => void
 }) {
-  const { draft, reference, placed } = flow
+  const { reference, placed } = flow
   const summary = describeBooking(flow)
   const dash = '—'
   const existing = placed?.existing ?? null
 
   // What the visitor typed this time is not what is on the pickup already in
-  // hand, so the message and the card name only what that pickup holds.
+  // hand, so the card names only what that pickup holds.
   const when = existing
     ? formatHeldPickup(existing.pickupDate, existing.pickupTime)
     : summary.pickup
-
-  const notes = existing ? '' : draft.notes.trim()
-  const message =
-    m.booking_whatsapp_message({
-      reference,
-      service: existing ? dash : (summary.service ?? dash),
-      when: when ?? dash,
-      area: existing ? dash : (summary.address ?? dash),
-      name: summary.contact ?? dash,
-    }) + (notes ? m.booking_whatsapp_notes({ notes }) : '')
 
   const steps = [
     m.booking_success_next1(),
@@ -289,14 +279,10 @@ function BookingSuccess({
             fontSize="14px"
             boxShadow="0 10px 24px rgba(46, 207, 220, 0.35)"
           >
-            <ChakraLink
-              target="_blank"
-              rel="noopener"
-              href={whatsappUrl(message)}
-            >
-              <Icon aria-hidden boxSize={4} as={icons.whatsappBrand} />
-              {m.booking_success_whatsapp()}
-            </ChakraLink>
+            <Link to={sitePaths.accountPickups}>
+              <Icon aria-hidden boxSize={4} as={icons.pickups} />
+              {m.booking_success_viewPickup()}
+            </Link>
           </SiteButton>
         </HStack>
       </Dialog.Footer>

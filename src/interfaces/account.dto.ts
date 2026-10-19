@@ -156,6 +156,8 @@ export interface MyPickupDto {
   /** The window, as the API spells it: `MORNING 8AM - 12PM`. */
   pickupTime: string
   pickupAddress: string
+  /** What the customer chose when they asked. Absent on older pickups. */
+  pricingModel?: PricingModelDto
   status: PickupStatusDto
   createdAt: string
   /** The orders raised off this pickup. */
