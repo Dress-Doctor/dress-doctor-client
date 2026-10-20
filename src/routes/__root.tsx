@@ -1,3 +1,7 @@
+// Self-hosted, so the first paint does not wait on a third party. These two
+// variable fonts cover every weight the site uses.
+import '@fontsource-variable/figtree/wght.css'
+import '@fontsource-variable/jost/wght.css'
 import { getLocale } from '#/paraglide/runtime'
 import TanStackQueryDevtools from '@/config/query-devtools'
 import TanStackRouterDevtools from '@/config/router-devtools'
@@ -57,17 +61,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         { rel: 'manifest', href: '/manifest.json' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        // Fonts
-        {
-          rel: 'preconnect',
-          crossOrigin: 'anonymous',
-          href: 'https://fonts.gstatic.com',
-        },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap',
-        },
       ],
     }),
     shellComponent: RootDocument,

@@ -139,11 +139,11 @@ const site = {
 } as const
 
 const fonts = {
-  body: `"jost", system-ui, sans-serif`,
-  heading: `"jost", system-ui, sans-serif`,
-  display: `"jost", system-ui, sans-serif`,
+  body: `"Jost Variable", "jost", system-ui, sans-serif`,
+  heading: `"Jost Variable", "jost", system-ui, sans-serif`,
+  display: `"Jost Variable", "jost", system-ui, sans-serif`,
   /** Small uppercase labels: section eyebrows, badges and tags. */
-  label: `"figtree", system-ui, sans-serif`,
+  label: `"Figtree Variable", "figtree", system-ui, sans-serif`,
   mono: 'monospace',
 }
 
