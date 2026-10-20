@@ -200,6 +200,8 @@ export interface MySubscriptionDto {
   renewalConfirmed?: boolean
   /** The plan is ending (or has ended) and needs the customer's answer. */
   awaitingRenewal?: boolean
+  /** Owed across every period that has started, net of waivers. */
+  totalOutstanding?: number
   createdAt: string
 }
 

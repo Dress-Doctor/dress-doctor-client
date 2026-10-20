@@ -109,6 +109,26 @@ describe('PlanCard', () => {
       await waitFor(() => expect(api.renewPlan).toHaveBeenCalledWith('s1'))
     })
 
+    it('says what is owed in total when an earlier period is unpaid', () => {
+      show(
+        plan({
+          totalOutstanding: 32000,
+          currentPeriod: {
+            planPrice: 40000,
+            amountPaid: 28000,
+            outstanding: 12000,
+            paymentStatus: 'PARTIALLY_PAID',
+            startsAt: '2026-10-12T09:00:00.000Z',
+            endsAt: '2026-11-11T09:00:00.000Z',
+          },
+        }),
+      )
+
+      expect(squash(document.body.textContent)).toContain(
+        'you owe 32 000 XAF in total',
+      )
+    })
+
     it('says nothing is owed when the fee was waived on cancellation', () => {
       show(
         plan({

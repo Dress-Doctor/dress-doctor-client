@@ -194,6 +194,13 @@ function PlanCard({
                       left: formatMoney(fee.outstanding),
                     })}
           </Text>
+          {(plan.totalOutstanding ?? 0) > fee.outstanding && (
+            <Text>
+              {m.account_plan_feeEarlier({
+                total: formatMoney(plan.totalOutstanding ?? 0),
+              })}
+            </Text>
+          )}
           {fee.paymentStatus !== 'PAID' &&
             fee.paymentStatus !== 'WAIVED' &&
             fee.renewal?.paymentDueAt && (
