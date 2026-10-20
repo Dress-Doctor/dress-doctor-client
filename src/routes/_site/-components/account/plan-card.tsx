@@ -73,8 +73,8 @@ function PlanCard({
    */
   onChanged: () => void
 }) {
-  const actions = planActions(plan.status)
-  const { pause, resume, cancel } = usePlanActions()
+  const actions = planActions(plan.status, plan)
+  const { pause, resume, cancel, renew } = usePlanActions()
 
   // The action stays set while the dialog fades out, so its words do not
   // change under the customer's eyes as it closes.
@@ -82,7 +82,7 @@ function PlanCard({
   const [open, setOpen] = useState(false)
   const [failure, setFailure] = useState<AccountErrorKindDto | null>(null)
 
-  const mutations = { pause, resume, cancel }
+  const mutations = { pause, resume, cancel, renew }
   const active = mutations[asking]
   const copy = planDialogCopy(asking, plan.status)
 
@@ -114,6 +114,8 @@ function PlanCard({
 
   const price = planPrice(plan)
   const live = plan.status === 'ACTIVE' || plan.status === 'PAUSED'
+  const ended = plan.status === 'EXPIRED'
+  const fee = plan.currentPeriod
 
   return (
     <DashboardCard
@@ -138,7 +140,7 @@ function PlanCard({
         </Text>
       </Stack>
 
-      {live && <Meter plan={plan} />}
+      {(live || ended) && <Meter plan={plan} />}
 
       {live && plan.currentPeriodStart && plan.currentPeriodEnd && (
         <Text fontSize="14.5px" color="site.ink-muted">
@@ -147,6 +149,57 @@ function PlanCard({
             end: formatDate(plan.currentPeriodEnd) ?? '',
           })}
         </Text>
+      )}
+
+      {/* Why it ended, in plain words: the date came, or the allowance ran out. */}
+      {ended && (
+        <Text lineHeight="1.6" textWrap="pretty" color="site.ink-muted">
+          {plan.expiredReason === 'CONSUMED'
+            ? m.account_plan_endedUsedUp()
+            : m.account_plan_endedDate()}
+        </Text>
+      )}
+
+      {/* The plan is ending and we need to hear from the customer. */}
+      {plan.status === 'ACTIVE' && actions.renew && (
+        <Text lineHeight="1.6" textWrap="pretty" color="site.ink-muted">
+          {m.account_plan_renewDue({
+            date: formatDate(plan.currentPeriodEnd) ?? '',
+          })}
+        </Text>
+      )}
+      {plan.status === 'ACTIVE' && plan.renewalConfirmed && (
+        <Text lineHeight="1.6" textWrap="pretty" color="site.ink-muted">
+          {m.account_plan_renewConfirmed({
+            date: formatDate(plan.currentPeriodEnd) ?? '',
+          })}
+        </Text>
+      )}
+
+      {/* What this period costs and what has been paid. It never decides
+          whether the plan is running. */}
+      {fee && (live || ended) && (
+        <Stack gap={0.5} fontSize="14.5px" color="site.ink-muted">
+          <Text>
+            {fee.paymentStatus === 'PAID'
+              ? m.account_plan_feePaid()
+              : fee.paymentStatus === 'PARTIALLY_PAID'
+                ? m.account_plan_feePartial({
+                    paid: formatMoney(fee.amountPaid),
+                    left: formatMoney(fee.outstanding),
+                  })
+                : m.account_plan_feeUnpaid({
+                    left: formatMoney(fee.outstanding),
+                  })}
+          </Text>
+          {fee.paymentStatus !== 'PAID' && fee.renewal?.paymentDueAt && (
+            <Text>
+              {m.account_plan_feeDue({
+                date: formatDate(fee.renewal.paymentDueAt) ?? '',
+              })}
+            </Text>
+          )}
+        </Stack>
       )}
 
       {plan.status === 'PENDING' && (
@@ -160,8 +213,20 @@ function PlanCard({
         </Text>
       )}
 
-      {(actions.pause || actions.resume || actions.cancel) && (
+      {(actions.renew || actions.pause || actions.resume || actions.cancel) && (
         <HStack gap={3} wrap="wrap">
+          {actions.renew && (
+            <SiteButton
+              px={6}
+              py="12px"
+              fontSize="15px"
+              aria-haspopup="dialog"
+              onClick={() => ask('renew')}
+            >
+              <Icon aria-hidden boxSize={4} as={icons.forward} />
+              {m.account_plan_renew()}
+            </SiteButton>
+          )}
           {actions.pause && (
             <SiteButton
               px={6}

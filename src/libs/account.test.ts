@@ -171,10 +171,27 @@ describe('splitPlans', () => {
     expect(current?._id).toBe('b')
   })
 
-  it('has no current plan when every plan has ended', () => {
+  it('shows the plan that ended last, so the customer can see why and renew', () => {
+    const { current, earlier } = splitPlans([
+      subscription({ _id: 'a', status: 'CANCELLED' }),
+      subscription({ _id: 'b', status: 'EXPIRED' }),
+    ])
+    expect(current?._id).toBe('b')
+    expect(earlier.map((item) => item._id)).toEqual(['a'])
+  })
+
+  it('prefers a running plan to an ended one', () => {
+    const { current } = splitPlans([
+      subscription({ _id: 'old', status: 'EXPIRED' }),
+      subscription({ _id: 'now', status: 'ACTIVE' }),
+    ])
+    expect(current?._id).toBe('now')
+  })
+
+  it('has no current plan when every plan was cancelled', () => {
     const { current, earlier } = splitPlans([
       subscription({ status: 'CANCELLED' }),
-      subscription({ status: 'EXPIRED' }),
+      subscription({ status: 'CANCELLED' }),
     ])
     expect(current).toBeUndefined()
     expect(earlier).toHaveLength(2)
@@ -185,12 +202,38 @@ describe('splitPlans', () => {
   })
 })
 
+describe('planActions — renewing', () => {
+  it('lets an ended plan be renewed', () => {
+    expect(planActions('EXPIRED').renew).toBe(true)
+  })
+
+  it('offers renewal on a running plan only once it is due to answer', () => {
+    expect(planActions('ACTIVE').renew).toBe(false)
+    expect(planActions('ACTIVE', { awaitingRenewal: true }).renew).toBe(true)
+  })
+
+  it('does not offer it again once the customer has answered', () => {
+    expect(
+      planActions('ACTIVE', { awaitingRenewal: true, renewalConfirmed: true })
+        .renew,
+    ).toBe(false)
+  })
+
+  it.each(['PENDING', 'PAUSED', 'CANCELLED'] as const)(
+    'never offers it on a %s plan',
+    (status) => {
+      expect(planActions(status, { awaitingRenewal: true }).renew).toBe(false)
+    },
+  )
+})
+
 describe('planActions', () => {
   it('lets a running plan be paused or ended', () => {
     expect(planActions('ACTIVE')).toEqual({
       pause: true,
       resume: false,
       cancel: true,
+      renew: false,
     })
   })
 
@@ -199,6 +242,7 @@ describe('planActions', () => {
       pause: false,
       resume: true,
       cancel: true,
+      renew: false,
     })
   })
 
@@ -207,6 +251,7 @@ describe('planActions', () => {
       pause: false,
       resume: false,
       cancel: true,
+      renew: false,
     })
   })
 
@@ -215,11 +260,13 @@ describe('planActions', () => {
       pause: false,
       resume: false,
       cancel: false,
+      renew: false,
     })
     expect(planActions('EXPIRED')).toEqual({
       pause: false,
       resume: false,
       cancel: false,
+      renew: true,
     })
   })
 })

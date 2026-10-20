@@ -104,6 +104,19 @@ const accountApi = {
       }),
     ),
 
+  /**
+   * The customer's yes to another period. A plan never renews on its own. An
+   * ended plan starts again at once; a running one starts its next period when
+   * this one ends. Payment is not asked about.
+   */
+  renewPlan: (id: string) =>
+    new APIClient<unknown, Record<string, never>>(
+      `/v1/subscriptions/${encodeURIComponent(id)}/renew`,
+    ).post(
+      {},
+      withChangeReason('Plan renewal confirmed by the customer on the website'),
+    ),
+
   pausePlan: (id: string) => planAction(id, 'pause', 'paused'),
   resumePlan: (id: string) => planAction(id, 'resume', 'resumed'),
   /** Ends a live plan, or withdraws a request still waiting for us. */

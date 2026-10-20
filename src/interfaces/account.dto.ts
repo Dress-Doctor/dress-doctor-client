@@ -187,8 +187,31 @@ export interface MySubscriptionDto {
   /** What the customer pays each cycle, as it was when they asked. */
   price?: number
   remainingQuota: number
+  /** Whether the allowance is used up. Separate from `status`. */
+  consumptionStatus?: 'AVAILABLE' | 'CONSUMED'
+  /** Set on an ended plan: its date passed, or its allowance ran out. */
+  expiredReason?: 'DATE' | 'CONSUMED'
   /** Empty until staff confirm the request. */
   currentPeriodStart?: string
   currentPeriodEnd?: string
+  /** The period the plan is in, with its fee and what has been paid. */
+  currentPeriod?: MyPlanPeriodDto | null
+  /** The customer has already said yes to another period. */
+  renewalConfirmed?: boolean
+  /** The plan is ending (or has ended) and needs the customer's answer. */
+  awaitingRenewal?: boolean
   createdAt: string
+}
+
+/** One billing period of a plan: its fee and how much of it has been paid. */
+export interface MyPlanPeriodDto {
+  planPrice: number
+  amountPaid: number
+  /** What is still to pay. Worked out by the API. */
+  outstanding: number
+  paymentStatus: 'UNPAID' | 'PARTIALLY_PAID' | 'PAID'
+  /** Set when the customer confirmed this period and a payment date was agreed. */
+  renewal?: { confirmedAt: string; paymentDueAt?: string }
+  startsAt: string
+  endsAt: string
 }

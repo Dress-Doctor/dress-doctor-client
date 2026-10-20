@@ -12,6 +12,7 @@ const api = vi.hoisted(() => ({
   pausePlan: vi.fn(),
   resumePlan: vi.fn(),
   cancelPlan: vi.fn(),
+  renewPlan: vi.fn(),
 }))
 vi.mock('#/libs/account.api', () => ({ default: api }))
 
@@ -52,6 +53,82 @@ describe('PlanCard', () => {
     renderWithProviders(<PlanCard plan={subscription} onChanged={onChanged} />)
 
   const button = (name: RegExp) => screen.queryByRole('button', { name })
+
+  describe('renewing', () => {
+    it('says why an ended plan ended, and offers to renew it', () => {
+      show(
+        plan({
+          status: 'EXPIRED',
+          expiredReason: 'CONSUMED',
+          remainingQuota: 0,
+        }),
+      )
+
+      expect(
+        screen.getByText(/ended early because you used everything/),
+      ).toBeTruthy()
+      expect(button(/renew my plan/i)).toBeTruthy()
+      // An ended plan cannot be paused or cancelled.
+      expect(button(/pause/i)).toBeNull()
+    })
+
+    it('tells apart a plan that ended on its date', () => {
+      show(plan({ status: 'EXPIRED', expiredReason: 'DATE' }))
+
+      expect(screen.getByText(/ended because its date came/)).toBeTruthy()
+    })
+
+    it('offers renewal on a running plan only once it is due to answer', () => {
+      const { unmount } = show(plan())
+      expect(button(/renew my plan/i)).toBeNull()
+      unmount()
+
+      show(plan({ awaitingRenewal: true }))
+      expect(button(/renew my plan/i)).toBeTruthy()
+    })
+
+    it('does not ask again once the customer has confirmed', () => {
+      show(plan({ awaitingRenewal: true, renewalConfirmed: true }))
+
+      expect(button(/renew my plan/i)).toBeNull()
+      expect(screen.getByText(/You have confirmed your renewal/)).toBeTruthy()
+    })
+
+    it('asks first, then confirms the renewal for that plan', async () => {
+      api.renewPlan.mockResolvedValue({})
+      show(plan({ status: 'EXPIRED' }))
+
+      fireEvent.click(button(/renew my plan/i)!)
+      const dialog = await screen.findByRole('alertdialog')
+      expect(api.renewPlan).not.toHaveBeenCalled()
+
+      fireEvent.click(
+        within(dialog).getByRole('button', { name: /renew plan/i }),
+      )
+
+      await waitFor(() => expect(api.renewPlan).toHaveBeenCalledWith('s1'))
+    })
+
+    it('shows what is still to pay without hiding that the plan is running', () => {
+      show(
+        plan({
+          currentPeriod: {
+            planPrice: 40000,
+            amountPaid: 10000,
+            outstanding: 30000,
+            paymentStatus: 'PARTIALLY_PAID',
+            startsAt: '2026-10-12T09:00:00.000Z',
+            endsAt: '2026-11-11T09:00:00.000Z',
+          },
+        }),
+      )
+
+      expect(squash(document.body.textContent)).toContain(
+        '30 000 XAF is still to pay',
+      )
+      expect(screen.getByText('62 of 100 pieces left')).toBeTruthy()
+    })
+  })
 
   describe('what it shows', () => {
     it('names the plan, what it costs and what it includes', () => {

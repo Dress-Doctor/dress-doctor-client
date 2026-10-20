@@ -187,7 +187,9 @@ const LIVE: readonly PlanStatusDto[] = ['ACTIVE', 'PAUSED']
 
 /**
  * Which of the customer's plans to put first: the one running (or on hold),
- * else a request still waiting for us. The rest, newest first, are history.
+ * else a request still waiting for us, else the plan that ended last, so the
+ * customer can see why it ended and renew it. The rest, newest first, are
+ * history.
  */
 export function splitPlans(subscriptions: readonly MySubscriptionDto[]): {
   current: MySubscriptionDto | undefined
@@ -195,7 +197,8 @@ export function splitPlans(subscriptions: readonly MySubscriptionDto[]): {
 } {
   const current =
     subscriptions.find((item) => LIVE.includes(item.status)) ??
-    subscriptions.find((item) => item.status === 'PENDING')
+    subscriptions.find((item) => item.status === 'PENDING') ??
+    subscriptions.find((item) => item.status === 'EXPIRED')
 
   return {
     current,
@@ -208,14 +211,27 @@ export interface PlanActionsDto {
   resume: boolean
   /** Ends a live plan, or takes back a request. */
   cancel: boolean
+  /** Says yes to another period. */
+  renew: boolean
 }
 
-/** Which buttons a plan in this status offers. The API checks again. */
-export function planActions(status: PlanStatusDto): PlanActionsDto {
+/**
+ * Which buttons a plan in this status offers. The API checks again.
+ *
+ * Renewing is offered on a plan that has ended, whichever way, and on a running
+ * one only once it is due to answer and has not answered already.
+ */
+export function planActions(
+  status: PlanStatusDto,
+  plan: Pick<MySubscriptionDto, 'awaitingRenewal' | 'renewalConfirmed'> = {},
+): PlanActionsDto {
   return {
     pause: status === 'ACTIVE',
     resume: status === 'PAUSED',
     cancel: status === 'ACTIVE' || status === 'PAUSED' || status === 'PENDING',
+    renew:
+      status === 'EXPIRED' ||
+      (status === 'ACTIVE' && !!plan.awaitingRenewal && !plan.renewalConfirmed),
   }
 }
 

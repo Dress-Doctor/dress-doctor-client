@@ -1,7 +1,7 @@
 import type { PlanStatusDto } from '#/interfaces/account.dto'
 import { m } from '#/paraglide/messages'
 
-export type PlanActionKind = 'pause' | 'resume' | 'cancel'
+export type PlanActionKind = 'pause' | 'resume' | 'cancel' | 'renew'
 
 export interface PlanDialogCopyDto {
   title: string
@@ -30,6 +30,19 @@ export function planDialogCopy(
       body: m.account_plan_pause_body(),
       confirm: m.account_plan_pause_confirm(),
       keep: m.account_plan_pause_keep(),
+      destructive: false,
+    }
+  }
+
+  if (action === 'renew') {
+    return {
+      title: m.account_plan_renew_title(),
+      body:
+        status === 'EXPIRED'
+          ? m.account_plan_renew_bodyEnded()
+          : m.account_plan_renew_bodyRunning(),
+      confirm: m.account_plan_renew_confirm(),
+      keep: m.account_plan_renew_keep(),
       destructive: false,
     }
   }

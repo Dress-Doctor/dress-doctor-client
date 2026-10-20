@@ -3,7 +3,7 @@ import accountApi from '#/libs/account.api'
 import { accountKeys } from '#/libs/account-keys'
 
 /**
- * Pause, resume and cancel a plan. After each, the plans are asked for again
+ * Pause, resume, cancel and renew a plan. After each, the plans are asked for again
  * whether or not it worked: when it did not, the usual reason is that staff
  * changed the plan a moment ago, and the page should show how it stands now.
  */
@@ -25,5 +25,10 @@ export function usePlanActions() {
     onSettled: settled,
   })
 
-  return { pause, resume, cancel }
+  const renew = useMutation({
+    mutationFn: (id: string) => accountApi.renewPlan(id),
+    onSettled: settled,
+  })
+
+  return { pause, resume, cancel, renew }
 }
