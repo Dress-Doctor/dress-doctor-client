@@ -192,6 +192,7 @@
   "account_plan_renewDue": "Your plan ends on {date}. Tell us if you want to renew it.",
   "account_plan_renewConfirmed": "You have confirmed your renewal. It starts on {date}.",
   "account_plan_feePaid": "The fee for this period is paid.",
+  "account_plan_feeWaived": "Nothing is owed for this period: the fee was waived when the plan was cancelled.",
   "account_plan_feePartial": "You have paid {paid} of the fee. {left} is still to pay.",
   "account_plan_feeUnpaid": "The fee for this period is not paid yet. {left} to pay.",
   "account_plan_feeDue": "Please pay by {date}.",

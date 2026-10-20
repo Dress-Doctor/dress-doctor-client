@@ -209,7 +209,7 @@ export interface MyPlanPeriodDto {
   amountPaid: number
   /** What is still to pay. Worked out by the API. */
   outstanding: number
-  paymentStatus: 'UNPAID' | 'PARTIALLY_PAID' | 'PAID'
+  paymentStatus: 'UNPAID' | 'PARTIALLY_PAID' | 'PAID' | 'WAIVED'
   /** Set when the customer confirmed this period and a payment date was agreed. */
   renewal?: { confirmedAt: string; paymentDueAt?: string }
   startsAt: string

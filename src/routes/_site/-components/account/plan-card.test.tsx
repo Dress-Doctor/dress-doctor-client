@@ -109,6 +109,27 @@ describe('PlanCard', () => {
       await waitFor(() => expect(api.renewPlan).toHaveBeenCalledWith('s1'))
     })
 
+    it('says nothing is owed when the fee was waived on cancellation', () => {
+      show(
+        plan({
+          status: 'EXPIRED',
+          currentPeriod: {
+            planPrice: 40000,
+            amountPaid: 10000,
+            outstanding: 0,
+            paymentStatus: 'WAIVED',
+            startsAt: '2026-10-12T09:00:00.000Z',
+            endsAt: '2026-11-11T09:00:00.000Z',
+          },
+        }),
+      )
+
+      expect(
+        screen.getByText(/fee was waived when the plan was cancelled/),
+      ).toBeTruthy()
+      expect(squash(document.body.textContent)).not.toContain('still to pay')
+    })
+
     it('shows what is still to pay without hiding that the plan is running', () => {
       show(
         plan({

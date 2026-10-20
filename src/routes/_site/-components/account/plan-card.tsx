@@ -181,24 +181,28 @@ function PlanCard({
       {fee && (live || ended) && (
         <Stack gap={0.5} fontSize="14.5px" color="site.ink-muted">
           <Text>
-            {fee.paymentStatus === 'PAID'
-              ? m.account_plan_feePaid()
-              : fee.paymentStatus === 'PARTIALLY_PAID'
-                ? m.account_plan_feePartial({
-                    paid: formatMoney(fee.amountPaid),
-                    left: formatMoney(fee.outstanding),
-                  })
-                : m.account_plan_feeUnpaid({
-                    left: formatMoney(fee.outstanding),
-                  })}
+            {fee.paymentStatus === 'WAIVED'
+              ? m.account_plan_feeWaived()
+              : fee.paymentStatus === 'PAID'
+                ? m.account_plan_feePaid()
+                : fee.paymentStatus === 'PARTIALLY_PAID'
+                  ? m.account_plan_feePartial({
+                      paid: formatMoney(fee.amountPaid),
+                      left: formatMoney(fee.outstanding),
+                    })
+                  : m.account_plan_feeUnpaid({
+                      left: formatMoney(fee.outstanding),
+                    })}
           </Text>
-          {fee.paymentStatus !== 'PAID' && fee.renewal?.paymentDueAt && (
-            <Text>
-              {m.account_plan_feeDue({
-                date: formatDate(fee.renewal.paymentDueAt) ?? '',
-              })}
-            </Text>
-          )}
+          {fee.paymentStatus !== 'PAID' &&
+            fee.paymentStatus !== 'WAIVED' &&
+            fee.renewal?.paymentDueAt && (
+              <Text>
+                {m.account_plan_feeDue({
+                  date: formatDate(fee.renewal.paymentDueAt) ?? '',
+                })}
+              </Text>
+            )}
         </Stack>
       )}
 

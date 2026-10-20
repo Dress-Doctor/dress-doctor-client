@@ -192,6 +192,7 @@
   "account_plan_renewDue": "Votre formule se termine le {date}. Dites-nous si vous voulez la renouveler.",
   "account_plan_renewConfirmed": "Vous avez confirmé votre renouvellement. Il commence le {date}.",
   "account_plan_feePaid": "Le prix de cette période est payé.",
+  "account_plan_feeWaived": "Rien n'est dû pour cette période : le prix a été annulé quand la formule a été résiliée.",
   "account_plan_feePartial": "Vous avez payé {paid} sur le prix. Il reste {left} à payer.",
   "account_plan_feeUnpaid": "Le prix de cette période n'est pas encore payé. {left} à payer.",
   "account_plan_feeDue": "Merci de payer avant le {date}.",
