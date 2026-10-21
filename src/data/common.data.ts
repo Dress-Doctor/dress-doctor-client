@@ -4,7 +4,6 @@ import type {
   LanguageDataDto,
   PaymentModeDto,
 } from '#/interfaces/common.dto'
-import { m } from '#/paraglide/messages'
 import type { ColorPalette } from '@chakra-ui/react'
 import blank from '@/assets/payment-method/blank.png'
 import cash from '@/assets/payment-method/cash.png'
@@ -240,20 +239,3 @@ export const paymentModeImage = new Map<PaymentModeDto | string, string>([
   ['MTN Momo', mtnMomo],
   ['Orange Money', orangeMoney],
 ])
-
-/**
- * A customer's preferred language in words, for the cards that show it beside
- * their name.
- *
- * The API stores a free string, so an unknown code falls through to itself
- * rather than to a blank. Undefined-valued for that reason — the lookup must
- * be allowed to miss.
- */
-const LANGUAGE_LABEL: Record<string, (() => string) | undefined> = {
-  en: m.customers_language_en,
-  fr: m.customers_language_fr,
-}
-
-/** `en` → "English". The raw code back when this console has no wording. */
-export const languageLabel = (code?: string) =>
-  code ? (LANGUAGE_LABEL[code]?.() ?? code) : undefined

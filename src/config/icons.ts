@@ -1,10 +1,11 @@
 import { BsFiletypeCsv, BsFillFileEarmarkExcelFill } from 'react-icons/bs'
-import { FaWhatsapp } from 'react-icons/fa6'
+import { FaFacebookF, FaTiktok, FaWhatsapp } from 'react-icons/fa6'
 import type { IconType } from 'react-icons/lib'
 import {
   LuArrowLeft,
   LuArrowRight,
   LuBanknote,
+  LuBedDouble,
   LuBookMarked,
   LuBell,
   LuBuilding2,
@@ -12,15 +13,19 @@ import {
   LuChevronDown,
   LuChevronsUpDown,
   LuCircleDollarSign,
+  LuCalendar,
   LuCircleAlert,
   LuClipboardList,
   LuClock,
+  LuDroplet,
   LuDownload,
   LuEye,
   LuEyeOff,
+  LuFileText,
   LuFlag,
   LuGlobe,
   LuHistory,
+  LuHouse,
   LuInfo,
   LuLanguages,
   LuLayers,
@@ -29,12 +34,16 @@ import {
   LuLock,
   LuLogOut,
   LuMail,
+  LuMapPin,
   LuMessageCircle,
   LuTags,
+  LuMinus,
   LuMoon,
   LuPanelLeftClose,
   LuPanelLeftOpen,
+  LuPause,
   LuPencil,
+  LuPlay,
   LuPhone,
   LuPlus,
   LuPower,
@@ -45,6 +54,7 @@ import {
   LuShieldCheck,
   LuShirt,
   LuSparkles,
+  LuStar,
   LuSun,
   LuTrash2,
   LuTruck,
@@ -52,9 +62,10 @@ import {
   LuUsers,
   LuWallet,
   LuWashingMachine,
+  LuWeight,
 } from 'react-icons/lu'
-import { MdOutlineClose } from 'react-icons/md'
-import { PiFunnelLight } from 'react-icons/pi'
+import { MdOutlineClose, MdOutlineIron } from 'react-icons/md'
+import { PiFunnelLight, PiSneaker } from 'react-icons/pi'
 import { RxDashboard } from 'react-icons/rx'
 
 const icons = {
@@ -78,6 +89,8 @@ const icons = {
   back: LuArrowLeft,
   forward: LuArrowRight,
   whatsappBrand: FaWhatsapp,
+  facebookBrand: FaFacebookF,
+  tiktokBrand: FaTiktok,
   notifications: LuBell,
   office: LuBuilding2,
   chevronDown: LuChevronDown,
@@ -119,6 +132,23 @@ const icons = {
   user: LuUser,
   customers: LuUsers,
   laundry: LuWashingMachine,
+
+  // Public website. The six service marks lead the service cards, the nav's
+  // mega-menu and the footer, so each one has to be recognisable at 18px and
+  // distinct from the other five.
+  dryClean: LuDroplet,
+  ironing: MdOutlineIron,
+  bedding: LuBedDouble,
+  shoeCare: PiSneaker,
+  weight: LuWeight,
+  star: LuStar,
+  minus: LuMinus,
+  location: LuMapPin,
+  home: LuHouse,
+  calendar: LuCalendar,
+  document: LuFileText,
+  pause: LuPause,
+  play: LuPlay,
 } satisfies Record<string, IconType>
 
 export default icons

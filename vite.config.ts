@@ -19,7 +19,9 @@ const config = defineConfig({
       strategy: ['url', 'baseLocale'],
     }),
     nitro(),
-    tanstackStart({ spa: { enabled: true } }),
+    // Full SSR, not SPA mode: this is the public website, and search engines
+    // and link previews need the page content and head tags in the HTML.
+    tanstackStart(),
     viteReact(),
     babel({ presets: [reactCompilerPreset()] }),
   ],

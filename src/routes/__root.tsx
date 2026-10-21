@@ -1,3 +1,7 @@
+// Self-hosted, so the first paint does not wait on a third party. These two
+// variable fonts cover every weight the site uses.
+import '@fontsource-variable/figtree/wght.css'
+import '@fontsource-variable/jost/wght.css'
 import { getLocale } from '#/paraglide/runtime'
 import TanStackQueryDevtools from '@/config/query-devtools'
 import TanStackRouterDevtools from '@/config/router-devtools'
@@ -26,15 +30,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     head: () => ({
       meta: [
         { charSet: 'utf-8' },
-        { title: 'Laundry & Dry Cleaning Service in Douala' },
+        // Site-wide defaults. Pages set their own title, description,
+        // canonical and share tags in their route `head`.
+        { title: 'Dress Doctor' },
         { name: 'theme-color', content: '#202938' },
         { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Dress Doctor' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        {
-          property: 'og:site_name',
-          content: 'Laundry & Dry Cleaning Service in Douala',
-        },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        // Proves domain ownership to Meta Business Manager.
+        {
+          name: 'facebook-domain-verification',
+          content: 'pbsnftyr8pobkiqv0ug6kka62r6glt',
+        },
       ],
       links: [
         // PNG icons: the bundled favicon.ico is PNG data, so declaring it as
@@ -53,17 +61,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         { rel: 'manifest', href: '/manifest.json' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        // Fonts
-        {
-          rel: 'preconnect',
-          crossOrigin: 'anonymous',
-          href: 'https://fonts.gstatic.com',
-        },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap',
-        },
       ],
     }),
     shellComponent: RootDocument,
@@ -77,7 +74,7 @@ function RootDocument() {
         <HeadContent />
       </head>
       <body>
-        <ChakraAppProvider theme={chakraTheme}>
+        <ChakraAppProvider theme={chakraTheme} forcedTheme="light">
           <Toaster />
           <AntThemeSwitch>
             <Outlet />
