@@ -17,6 +17,8 @@ import { Provider as ChakraAppProvider } from '@/components/ui/provider'
 import chakraTheme from '@/config/theme'
 import { Toaster } from '#/components/ui/toaster'
 import AntThemeSwitch from '#/components/ant-theme-switch'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -84,6 +86,8 @@ function RootDocument() {
           config={{ position: 'bottom-left' }}
           plugins={[TanStackRouterDevtools, TanStackQueryDevtools]}
         />
+        <Analytics />
+        <SpeedInsights />
         <Scripts />
       </body>
     </html>
