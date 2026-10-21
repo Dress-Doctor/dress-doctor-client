@@ -197,6 +197,21 @@ class Utils {
     }).format(amount)
   }
 
+  /**
+   * `40000` → `40 000`. Space-grouped rather than `Intl`-grouped: the public
+   * site prints the same figure to an English and a French reader, and a
+   * locale-grouped number would show `40,000` to one of them while the price
+   * card beside it stays `40 000`.
+   */
+  toGrouped(amount: number): string {
+    return Math.round(amount).toLocaleString('en-US').replace(/,/g, ' ')
+  }
+
+  /** The same figure with the currency the shop quotes in — `40 000 XAF`. */
+  toXaf(amount: number): string {
+    return `${this.toGrouped(amount)} XAF`
+  }
+
   toYYYYMMDD(dateInput: string | Date): string | null {
     const date = dateInput instanceof Date ? dateInput : new Date(dateInput)
 

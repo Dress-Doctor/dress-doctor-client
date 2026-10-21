@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://www.dressdoctor.io/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/privacy" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/fr/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/privacy" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/terms" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/fr/terms</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/terms" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/terms" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/services" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/services" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/fr/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/services" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/services" />
+  </url>
+</urlset>

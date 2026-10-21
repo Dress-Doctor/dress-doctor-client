@@ -29,9 +29,18 @@ const clientApi = axios.create({
 /** One process serves every user, so nothing session-shaped may be module state. */
 const isServer = typeof window === 'undefined'
 
+/**
+ * Which portal this site is. The API keeps staff and customers as separate
+ * accounts, with their own cookies, and refuses a session on the wrong portal.
+ * Every request names it, the refresh included, so the customer cookies are the
+ * ones read and written and a staff session in the same browser is untouched.
+ */
+export const PORTAL = 'customer'
+
 const platformHeaders = () => ({
   'x-api-key': config.clientKey,
   'x-api-secret': config.clientSecret,
+  'x-portal': PORTAL,
   'Accept-Language': getLocale(),
 })
 

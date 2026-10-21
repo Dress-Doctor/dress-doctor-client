@@ -16,8 +16,10 @@ export default function getContext() {
       },
     },
     queryCache: new QueryCache({
-      onError: (err) => {
+      onError: (err, query) => {
         if (err instanceof Error && err.name === 'CancelledError') return
+        // A query that reports its own failure (`meta: { silent: true }`).
+        if (query.meta?.silent) return
         const { response } = err as ApiErrorDto
         // 401 is handled by the silent-refresh interceptor + route guard —
         // a toast here would double-report every expired session.
