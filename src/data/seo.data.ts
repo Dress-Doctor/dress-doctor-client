@@ -21,17 +21,36 @@ import type { Locale } from '#/paraglide/runtime'
 export const SITE_NAME = 'Dress Doctor'
 
 /**
- * Share images in `public/`, both exactly 1200 × 630 (1.91 : 1). They are
- * JPEGs to stay well under the size WhatsApp will show as a link preview.
- * Keep `width`, `height` and `type` in step with the files.
+ * Size and type of every share image in `public/`: exactly 1200 × 630
+ * (1.91 : 1) JPEGs, to stay well under the size WhatsApp will show as a link
+ * preview. Keep these in step with the files.
  */
 export const shareImages = {
-  openGraph: publicUrl('/opengraph-image.jpg'),
-  twitter: publicUrl('/twitter-image.jpg'),
   width: 1200,
   height: 630,
   type: 'image/jpeg',
 } as const
+
+/**
+ * The site's general share image, one per language because the words on it
+ * are translated. Keyed by `Locale`, so adding a language fails the typecheck
+ * until its images exist.
+ */
+const siteShareImages: Record<Locale, Omit<ShareImage, 'alt'>> = {
+  en: {
+    openGraph: publicUrl('/opengraph-image.jpg'),
+    twitter: publicUrl('/twitter-image.jpg'),
+  },
+  fr: {
+    openGraph: publicUrl('/opengraph-image-fr.jpg'),
+    twitter: publicUrl('/twitter-image-fr.jpg'),
+  },
+}
+
+/** The site's general share image in the visitor's language. */
+export function defaultShareImage(): ShareImage {
+  return { ...siteShareImages[getLocale()], alt: m.home_meta_ogImageAlt() }
+}
 
 /**
  * The About page's own share image, one per language because the heading on
@@ -109,11 +128,7 @@ export function pageHead({
   title,
   description,
   breadcrumbs,
-  image = {
-    openGraph: shareImages.openGraph,
-    twitter: shareImages.twitter,
-    alt: m.home_meta_ogImageAlt(),
-  },
+  image = defaultShareImage(),
 }: PageHeadOptions) {
   const url = localizedUrl(path)
 
@@ -183,7 +198,7 @@ export function homeStructuredData() {
         name: SITE_NAME,
         url: `${SITE_URL}/`,
         logo: publicUrl('/web-app-manifest-512x512.png'),
-        image: shareImages.openGraph,
+        image: defaultShareImage().openGraph,
         telephone: siteContact.phoneHref.replace('tel:', ''),
         email: siteContact.email,
         sameAs: [...siteSocials.map((social) => social.href), googleMapsUrl],
