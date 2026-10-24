@@ -4,6 +4,7 @@ import Reveal from '#/components/site/reveal'
 import SiteContainer from '#/components/site/site-container'
 import { homeStats } from '#/data/home.data'
 import { useCountUp } from '#/hooks/use-count-up'
+import { customersServedFrom, usePublicStats } from '#/hooks/use-public-stats'
 import type { HomeStatDto } from '#/interfaces/site.dto'
 
 const figureStyles: TextProps = {
@@ -37,6 +38,7 @@ function CountUpFigure({
 }
 
 function Stat({ stat, first }: { stat: HomeStatDto; first: boolean }) {
+  const { data } = usePublicStats()
   return (
     <Stack
       gap={1}
@@ -48,7 +50,11 @@ function Stat({ stat, first }: { stat: HomeStatDto; first: boolean }) {
         <Text {...figureStyles}>{stat.text}</Text>
       ) : (
         <CountUpFigure
-          value={stat.value}
+          value={
+            stat.id === 'customers'
+              ? customersServedFrom(data?.customersServed)
+              : stat.value
+          }
           decimals={stat.decimals}
           suffix={stat.suffix}
         />
