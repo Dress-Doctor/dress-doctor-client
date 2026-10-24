@@ -27,6 +27,7 @@ import shoesImage from '#/assets/imagery/shoes.webp'
 export const sitePaths = {
   home: '/',
   services: '/services',
+  about: '/about',
   washAndFold: '/services/wash-and-fold',
   washPerPiece: '/services/wash-per-piece',
   dryCleaning: '/services/dry-cleaning',
@@ -170,6 +171,7 @@ export const siteServices: SiteServiceDto[] = [
 ]
 
 export const footerCompanyLinks: SitePageLinkDto[] = [
+  { id: 'about', to: sitePaths.about, label: m.site_footer_link_about },
   {
     id: 'pricing',
     to: sitePaths.pricing,
