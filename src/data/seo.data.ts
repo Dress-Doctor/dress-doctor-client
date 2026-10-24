@@ -37,11 +37,12 @@ export const shareImages = {
  * The About page's own share image, one per language because the heading on
  * it is written in that language. Same size and type as `shareImages`.
  * Keyed by `Locale`, so adding a language fails the typecheck until its image
- * exists.
+ * exists. The `?v=` tag makes WhatsApp and Facebook fetch the image again;
+ * raise it whenever a file is replaced.
  */
 export const aboutShareImages: Record<Locale, string> = {
-  en: publicUrl('/opengraph-about-en.jpg'),
-  fr: publicUrl('/opengraph-about-fr.jpg'),
+  en: publicUrl('/opengraph-about-en.jpg?v=2'),
+  fr: publicUrl('/opengraph-about-fr.jpg?v=2'),
 }
 
 /** A page's share image, used for both the Open Graph and Twitter cards. */
