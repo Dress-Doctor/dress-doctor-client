@@ -2,7 +2,12 @@ import { DEFAULT_PLAN_BILLING, DEFAULT_PLAN_MODE } from '#/data/home.data'
 import type { EstimateModeDto } from '#/interfaces/site.dto'
 import { oneOf } from '#/libs/site-search'
 import type { SiteSearchDto } from '#/interfaces/booking.dto'
-import { SITE_NAME, homeStructuredData, shareImages } from '#/data/seo.data'
+import {
+  SITE_NAME,
+  defaultShareImage,
+  homeStructuredData,
+  shareImages,
+} from '#/data/seo.data'
 import {
   jsonLdScript,
   localizedLinks,
@@ -41,34 +46,39 @@ export const Route = createFileRoute('/_site/')({
     estimate: oneOf(search.estimate, ['kg', 'piece'] as const),
   }),
 
-  head: () => ({
-    meta: [
-      { title: m.home_meta_title() },
-      { name: 'description', content: m.home_meta_description() },
-      { name: 'robots', content: 'index, follow, max-image-preview:large' },
+  head: () => {
+    // The share image's words are translated, so it follows the language.
+    const image = defaultShareImage()
 
-      { property: 'og:type', content: 'website' },
-      { property: 'og:site_name', content: SITE_NAME },
-      { property: 'og:url', content: localizedUrl('/') },
-      { property: 'og:title', content: m.home_meta_ogTitle() },
-      { property: 'og:description', content: m.home_meta_description() },
-      { property: 'og:image', content: shareImages.openGraph },
-      { property: 'og:image:type', content: shareImages.type },
-      { property: 'og:image:width', content: String(shareImages.width) },
-      { property: 'og:image:height', content: String(shareImages.height) },
-      { property: 'og:image:alt', content: m.home_meta_ogImageAlt() },
-      ...ogLocaleMeta(),
+    return {
+      meta: [
+        { title: m.home_meta_title() },
+        { name: 'description', content: m.home_meta_description() },
+        { name: 'robots', content: 'index, follow, max-image-preview:large' },
 
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:url', content: localizedUrl('/') },
-      { name: 'twitter:title', content: m.home_meta_ogTitle() },
-      { name: 'twitter:description', content: m.home_meta_description() },
-      { name: 'twitter:image', content: shareImages.twitter },
-      { name: 'twitter:image:alt', content: m.home_meta_ogImageAlt() },
-    ],
-    links: localizedLinks('/'),
-    scripts: [jsonLdScript(homeStructuredData())],
-  }),
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: SITE_NAME },
+        { property: 'og:url', content: localizedUrl('/') },
+        { property: 'og:title', content: m.home_meta_ogTitle() },
+        { property: 'og:description', content: m.home_meta_description() },
+        { property: 'og:image', content: image.openGraph },
+        { property: 'og:image:type', content: shareImages.type },
+        { property: 'og:image:width', content: String(shareImages.width) },
+        { property: 'og:image:height', content: String(shareImages.height) },
+        { property: 'og:image:alt', content: image.alt },
+        ...ogLocaleMeta(),
+
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:url', content: localizedUrl('/') },
+        { name: 'twitter:title', content: m.home_meta_ogTitle() },
+        { name: 'twitter:description', content: m.home_meta_description() },
+        { name: 'twitter:image', content: image.twitter },
+        { name: 'twitter:image:alt', content: image.alt },
+      ],
+      links: localizedLinks('/'),
+      scripts: [jsonLdScript(homeStructuredData())],
+    }
+  },
 
   component: Home,
 })
