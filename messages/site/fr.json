@@ -55,10 +55,12 @@
   "site_footer_link_plans": "Formules mensuelles",
   "site_footer_legal_privacy": "Confidentialité",
   "site_footer_legal_terms": "Conditions",
-  "site_footer_legal_refund": "Remboursements & dommages",
-  "site_footer_legal_delivery": "Livraison",
   "site_footer_copyright": "© {year} Dress Doctor · Douala, Cameroun",
   "site_placeholder_body": "Cette page arrive bientôt.",
   "site_nav_logIn": "Connexion",
-  "site_nav_account": "Mon compte"
+  "site_nav_account": "Mon compte",
+  "site_notFound_title": "Nous ne trouvons pas cette page",
+  "site_notFound_body": "Le lien est peut-être faux, ou la page a changé de place. Revenons en arrière.",
+  "site_notFound_home": "Aller à l'accueil",
+  "site_notFound_services": "Voir nos services"
 }

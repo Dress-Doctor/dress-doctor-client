@@ -11,16 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as SiteIndexRouteImport } from './routes/_site/index'
+import { Route as SiteSplatRouteImport } from './routes/_site/$'
 import { Route as SiteAccountRouteImport } from './routes/_site/account'
 import { Route as SiteCatalogRouteImport } from './routes/_site/catalog'
 import { Route as SiteContactRouteImport } from './routes/_site/contact'
 import { Route as SiteCorporateRouteImport } from './routes/_site/corporate'
-import { Route as SiteDeliveryPolicyRouteImport } from './routes/_site/delivery-policy'
 import { Route as SiteLocationsRouteImport } from './routes/_site/locations'
 import { Route as SiteLoginRouteImport } from './routes/_site/login'
 import { Route as SitePricingRouteImport } from './routes/_site/pricing'
 import { Route as SitePrivacyRouteImport } from './routes/_site/privacy'
-import { Route as SiteRefundPolicyRouteImport } from './routes/_site/refund-policy'
 import { Route as SiteResourcesRouteImport } from './routes/_site/resources'
 import { Route as SiteTermsRouteImport } from './routes/_site/terms'
 import { Route as SiteAccountIndexRouteImport } from './routes/_site/account/index'
@@ -28,7 +27,12 @@ import { Route as SiteAccountPickupsRouteImport } from './routes/_site/account/p
 import { Route as SiteAccountSubscriptionRouteImport } from './routes/_site/account/subscription'
 import { Route as SiteIndustriesHotelsRouteImport } from './routes/_site/industries/hotels'
 import { Route as SiteServicesIndexRouteImport } from './routes/_site/services/index'
+import { Route as SiteServicesBeddingAndHomeRouteImport } from './routes/_site/services/bedding-and-home'
+import { Route as SiteServicesDryCleaningRouteImport } from './routes/_site/services/dry-cleaning'
+import { Route as SiteServicesIroningRouteImport } from './routes/_site/services/ironing'
+import { Route as SiteServicesShoeCareRouteImport } from './routes/_site/services/shoe-care'
 import { Route as SiteServicesWashAndFoldRouteImport } from './routes/_site/services/wash-and-fold'
+import { Route as SiteServicesWashPerPieceRouteImport } from './routes/_site/services/wash-per-piece'
 import { Route as SiteAccountOrdersIndexRouteImport } from './routes/_site/account/orders/index'
 import { Route as SiteAccountOrdersOrderCodeRouteImport } from './routes/_site/account/orders/$orderCode'
 
@@ -39,6 +43,11 @@ const SiteRoute = SiteRouteImport.update({
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteSplatRoute = SiteSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteAccountRoute = SiteAccountRouteImport.update({
@@ -61,11 +70,6 @@ const SiteCorporateRoute = SiteCorporateRouteImport.update({
   path: '/corporate',
   getParentRoute: () => SiteRoute,
 } as any)
-const SiteDeliveryPolicyRoute = SiteDeliveryPolicyRouteImport.update({
-  id: '/delivery-policy',
-  path: '/delivery-policy',
-  getParentRoute: () => SiteRoute,
-} as any)
 const SiteLocationsRoute = SiteLocationsRouteImport.update({
   id: '/locations',
   path: '/locations',
@@ -84,11 +88,6 @@ const SitePricingRoute = SitePricingRouteImport.update({
 const SitePrivacyRoute = SitePrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteRefundPolicyRoute = SiteRefundPolicyRouteImport.update({
-  id: '/refund-policy',
-  path: '/refund-policy',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteResourcesRoute = SiteResourcesRouteImport.update({
@@ -126,11 +125,38 @@ const SiteServicesIndexRoute = SiteServicesIndexRouteImport.update({
   path: '/services/',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteServicesBeddingAndHomeRoute =
+  SiteServicesBeddingAndHomeRouteImport.update({
+    id: '/services/bedding-and-home',
+    path: '/services/bedding-and-home',
+    getParentRoute: () => SiteRoute,
+  } as any)
+const SiteServicesDryCleaningRoute = SiteServicesDryCleaningRouteImport.update({
+  id: '/services/dry-cleaning',
+  path: '/services/dry-cleaning',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteServicesIroningRoute = SiteServicesIroningRouteImport.update({
+  id: '/services/ironing',
+  path: '/services/ironing',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteServicesShoeCareRoute = SiteServicesShoeCareRouteImport.update({
+  id: '/services/shoe-care',
+  path: '/services/shoe-care',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteServicesWashAndFoldRoute = SiteServicesWashAndFoldRouteImport.update({
   id: '/services/wash-and-fold',
   path: '/services/wash-and-fold',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteServicesWashPerPieceRoute =
+  SiteServicesWashPerPieceRouteImport.update({
+    id: '/services/wash-per-piece',
+    path: '/services/wash-per-piece',
+    getParentRoute: () => SiteRoute,
+  } as any)
 const SiteAccountOrdersIndexRoute = SiteAccountOrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
@@ -145,44 +171,52 @@ const SiteAccountOrdersOrderCodeRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
+  '/$': typeof SiteSplatRoute
   '/account': typeof SiteAccountRouteWithChildren
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
-  '/delivery-policy': typeof SiteDeliveryPolicyRoute
   '/locations': typeof SiteLocationsRoute
   '/login': typeof SiteLoginRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
-  '/refund-policy': typeof SiteRefundPolicyRoute
   '/resources': typeof SiteResourcesRoute
   '/terms': typeof SiteTermsRoute
   '/account/pickups': typeof SiteAccountPickupsRoute
   '/account/subscription': typeof SiteAccountSubscriptionRoute
   '/industries/hotels': typeof SiteIndustriesHotelsRoute
+  '/services/bedding-and-home': typeof SiteServicesBeddingAndHomeRoute
+  '/services/dry-cleaning': typeof SiteServicesDryCleaningRoute
+  '/services/ironing': typeof SiteServicesIroningRoute
+  '/services/shoe-care': typeof SiteServicesShoeCareRoute
   '/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/services/wash-per-piece': typeof SiteServicesWashPerPieceRoute
   '/account/': typeof SiteAccountIndexRoute
   '/services/': typeof SiteServicesIndexRoute
   '/account/orders/$orderCode': typeof SiteAccountOrdersOrderCodeRoute
   '/account/orders/': typeof SiteAccountOrdersIndexRoute
 }
 export interface FileRoutesByTo {
+  '/$': typeof SiteSplatRoute
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
-  '/delivery-policy': typeof SiteDeliveryPolicyRoute
   '/locations': typeof SiteLocationsRoute
   '/login': typeof SiteLoginRoute
   '/pricing': typeof SitePricingRoute
   '/privacy': typeof SitePrivacyRoute
-  '/refund-policy': typeof SiteRefundPolicyRoute
   '/resources': typeof SiteResourcesRoute
   '/terms': typeof SiteTermsRoute
   '/': typeof SiteIndexRoute
   '/account/pickups': typeof SiteAccountPickupsRoute
   '/account/subscription': typeof SiteAccountSubscriptionRoute
   '/industries/hotels': typeof SiteIndustriesHotelsRoute
+  '/services/bedding-and-home': typeof SiteServicesBeddingAndHomeRoute
+  '/services/dry-cleaning': typeof SiteServicesDryCleaningRoute
+  '/services/ironing': typeof SiteServicesIroningRoute
+  '/services/shoe-care': typeof SiteServicesShoeCareRoute
   '/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/services/wash-per-piece': typeof SiteServicesWashPerPieceRoute
   '/account': typeof SiteAccountIndexRoute
   '/services': typeof SiteServicesIndexRoute
   '/account/orders/$orderCode': typeof SiteAccountOrdersOrderCodeRoute
@@ -191,23 +225,27 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_site': typeof SiteRouteWithChildren
+  '/_site/$': typeof SiteSplatRoute
   '/_site/account': typeof SiteAccountRouteWithChildren
   '/_site/catalog': typeof SiteCatalogRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/corporate': typeof SiteCorporateRoute
-  '/_site/delivery-policy': typeof SiteDeliveryPolicyRoute
   '/_site/locations': typeof SiteLocationsRoute
   '/_site/login': typeof SiteLoginRoute
   '/_site/pricing': typeof SitePricingRoute
   '/_site/privacy': typeof SitePrivacyRoute
-  '/_site/refund-policy': typeof SiteRefundPolicyRoute
   '/_site/resources': typeof SiteResourcesRoute
   '/_site/terms': typeof SiteTermsRoute
   '/_site/': typeof SiteIndexRoute
   '/_site/account/pickups': typeof SiteAccountPickupsRoute
   '/_site/account/subscription': typeof SiteAccountSubscriptionRoute
   '/_site/industries/hotels': typeof SiteIndustriesHotelsRoute
+  '/_site/services/bedding-and-home': typeof SiteServicesBeddingAndHomeRoute
+  '/_site/services/dry-cleaning': typeof SiteServicesDryCleaningRoute
+  '/_site/services/ironing': typeof SiteServicesIroningRoute
+  '/_site/services/shoe-care': typeof SiteServicesShoeCareRoute
   '/_site/services/wash-and-fold': typeof SiteServicesWashAndFoldRoute
+  '/_site/services/wash-per-piece': typeof SiteServicesWashPerPieceRoute
   '/_site/account/': typeof SiteAccountIndexRoute
   '/_site/services/': typeof SiteServicesIndexRoute
   '/_site/account/orders/$orderCode': typeof SiteAccountOrdersOrderCodeRoute
@@ -217,44 +255,52 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$'
     | '/account'
     | '/catalog'
     | '/contact'
     | '/corporate'
-    | '/delivery-policy'
     | '/locations'
     | '/login'
     | '/pricing'
     | '/privacy'
-    | '/refund-policy'
     | '/resources'
     | '/terms'
     | '/account/pickups'
     | '/account/subscription'
     | '/industries/hotels'
+    | '/services/bedding-and-home'
+    | '/services/dry-cleaning'
+    | '/services/ironing'
+    | '/services/shoe-care'
     | '/services/wash-and-fold'
+    | '/services/wash-per-piece'
     | '/account/'
     | '/services/'
     | '/account/orders/$orderCode'
     | '/account/orders/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/$'
     | '/catalog'
     | '/contact'
     | '/corporate'
-    | '/delivery-policy'
     | '/locations'
     | '/login'
     | '/pricing'
     | '/privacy'
-    | '/refund-policy'
     | '/resources'
     | '/terms'
     | '/'
     | '/account/pickups'
     | '/account/subscription'
     | '/industries/hotels'
+    | '/services/bedding-and-home'
+    | '/services/dry-cleaning'
+    | '/services/ironing'
+    | '/services/shoe-care'
     | '/services/wash-and-fold'
+    | '/services/wash-per-piece'
     | '/account'
     | '/services'
     | '/account/orders/$orderCode'
@@ -262,23 +308,27 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_site'
+    | '/_site/$'
     | '/_site/account'
     | '/_site/catalog'
     | '/_site/contact'
     | '/_site/corporate'
-    | '/_site/delivery-policy'
     | '/_site/locations'
     | '/_site/login'
     | '/_site/pricing'
     | '/_site/privacy'
-    | '/_site/refund-policy'
     | '/_site/resources'
     | '/_site/terms'
     | '/_site/'
     | '/_site/account/pickups'
     | '/_site/account/subscription'
     | '/_site/industries/hotels'
+    | '/_site/services/bedding-and-home'
+    | '/_site/services/dry-cleaning'
+    | '/_site/services/ironing'
+    | '/_site/services/shoe-care'
     | '/_site/services/wash-and-fold'
+    | '/_site/services/wash-per-piece'
     | '/_site/account/'
     | '/_site/services/'
     | '/_site/account/orders/$orderCode'
@@ -303,6 +353,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof SiteIndexRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/$': {
+      id: '/_site/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SiteSplatRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/account': {
@@ -333,13 +390,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteCorporateRouteImport
       parentRoute: typeof SiteRoute
     }
-    '/_site/delivery-policy': {
-      id: '/_site/delivery-policy'
-      path: '/delivery-policy'
-      fullPath: '/delivery-policy'
-      preLoaderRoute: typeof SiteDeliveryPolicyRouteImport
-      parentRoute: typeof SiteRoute
-    }
     '/_site/locations': {
       id: '/_site/locations'
       path: '/locations'
@@ -366,13 +416,6 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof SitePrivacyRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/refund-policy': {
-      id: '/_site/refund-policy'
-      path: '/refund-policy'
-      fullPath: '/refund-policy'
-      preLoaderRoute: typeof SiteRefundPolicyRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/resources': {
@@ -424,11 +467,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteServicesIndexRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/services/bedding-and-home': {
+      id: '/_site/services/bedding-and-home'
+      path: '/services/bedding-and-home'
+      fullPath: '/services/bedding-and-home'
+      preLoaderRoute: typeof SiteServicesBeddingAndHomeRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/services/dry-cleaning': {
+      id: '/_site/services/dry-cleaning'
+      path: '/services/dry-cleaning'
+      fullPath: '/services/dry-cleaning'
+      preLoaderRoute: typeof SiteServicesDryCleaningRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/services/ironing': {
+      id: '/_site/services/ironing'
+      path: '/services/ironing'
+      fullPath: '/services/ironing'
+      preLoaderRoute: typeof SiteServicesIroningRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/services/shoe-care': {
+      id: '/_site/services/shoe-care'
+      path: '/services/shoe-care'
+      fullPath: '/services/shoe-care'
+      preLoaderRoute: typeof SiteServicesShoeCareRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/services/wash-and-fold': {
       id: '/_site/services/wash-and-fold'
       path: '/services/wash-and-fold'
       fullPath: '/services/wash-and-fold'
       preLoaderRoute: typeof SiteServicesWashAndFoldRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/services/wash-per-piece': {
+      id: '/_site/services/wash-per-piece'
+      path: '/services/wash-per-piece'
+      fullPath: '/services/wash-per-piece'
+      preLoaderRoute: typeof SiteServicesWashPerPieceRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/account/orders/': {
@@ -469,40 +547,48 @@ const SiteAccountRouteWithChildren = SiteAccountRoute._addFileChildren(
 )
 
 interface SiteRouteChildren {
+  SiteSplatRoute: typeof SiteSplatRoute
   SiteAccountRoute: typeof SiteAccountRouteWithChildren
   SiteCatalogRoute: typeof SiteCatalogRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteCorporateRoute: typeof SiteCorporateRoute
-  SiteDeliveryPolicyRoute: typeof SiteDeliveryPolicyRoute
   SiteLocationsRoute: typeof SiteLocationsRoute
   SiteLoginRoute: typeof SiteLoginRoute
   SitePricingRoute: typeof SitePricingRoute
   SitePrivacyRoute: typeof SitePrivacyRoute
-  SiteRefundPolicyRoute: typeof SiteRefundPolicyRoute
   SiteResourcesRoute: typeof SiteResourcesRoute
   SiteTermsRoute: typeof SiteTermsRoute
   SiteIndexRoute: typeof SiteIndexRoute
   SiteIndustriesHotelsRoute: typeof SiteIndustriesHotelsRoute
+  SiteServicesBeddingAndHomeRoute: typeof SiteServicesBeddingAndHomeRoute
+  SiteServicesDryCleaningRoute: typeof SiteServicesDryCleaningRoute
+  SiteServicesIroningRoute: typeof SiteServicesIroningRoute
+  SiteServicesShoeCareRoute: typeof SiteServicesShoeCareRoute
   SiteServicesWashAndFoldRoute: typeof SiteServicesWashAndFoldRoute
+  SiteServicesWashPerPieceRoute: typeof SiteServicesWashPerPieceRoute
   SiteServicesIndexRoute: typeof SiteServicesIndexRoute
 }
 
 const SiteRouteChildren: SiteRouteChildren = {
+  SiteSplatRoute: SiteSplatRoute,
   SiteAccountRoute: SiteAccountRouteWithChildren,
   SiteCatalogRoute: SiteCatalogRoute,
   SiteContactRoute: SiteContactRoute,
   SiteCorporateRoute: SiteCorporateRoute,
-  SiteDeliveryPolicyRoute: SiteDeliveryPolicyRoute,
   SiteLocationsRoute: SiteLocationsRoute,
   SiteLoginRoute: SiteLoginRoute,
   SitePricingRoute: SitePricingRoute,
   SitePrivacyRoute: SitePrivacyRoute,
-  SiteRefundPolicyRoute: SiteRefundPolicyRoute,
   SiteResourcesRoute: SiteResourcesRoute,
   SiteTermsRoute: SiteTermsRoute,
   SiteIndexRoute: SiteIndexRoute,
   SiteIndustriesHotelsRoute: SiteIndustriesHotelsRoute,
+  SiteServicesBeddingAndHomeRoute: SiteServicesBeddingAndHomeRoute,
+  SiteServicesDryCleaningRoute: SiteServicesDryCleaningRoute,
+  SiteServicesIroningRoute: SiteServicesIroningRoute,
+  SiteServicesShoeCareRoute: SiteServicesShoeCareRoute,
   SiteServicesWashAndFoldRoute: SiteServicesWashAndFoldRoute,
+  SiteServicesWashPerPieceRoute: SiteServicesWashPerPieceRoute,
   SiteServicesIndexRoute: SiteServicesIndexRoute,
 }
 
