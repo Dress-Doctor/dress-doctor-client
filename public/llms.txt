@@ -1,0 +1,29 @@
+# Dress Doctor
+
+> Laundry, dry cleaning and ironing in Douala, Cameroon. We pick up your clothes for free, clean them with care and bring them back to your door, usually in 24 to 72 hours. Express service is ready in 24 hours.
+
+Dress Doctor is a local laundry business. The website is in English and French. Pickup and delivery are free anywhere in Douala. Customers pay by cash, MTN Mobile Money or Orange Money. Prices are in XAF.
+
+## Services
+
+- Wash per kg: 1 000 XAF per kg
+- Wash per piece: from 700 XAF per piece
+- Dry cleaning: from 2 500 XAF
+- Ironing and pressing: from 500 XAF per piece
+- Bedding and home care: from 1 500 XAF
+- Shoes and sneakers: from 2 000 XAF per pair
+
+## Pages
+
+- [Home](https://www.dressdoctor.io/): services, prices, monthly plans, how it works and common questions
+- [Services](https://www.dressdoctor.io/services): the six services and how to choose
+- [Terms of Service](https://www.dressdoctor.io/terms): booking, prices, payment and what happens if something goes wrong
+- [Privacy Policy](https://www.dressdoctor.io/privacy): how we use your details
+- [French version](https://www.dressdoctor.io/fr/): the same site in French
+
+## Contact
+
+- WhatsApp and phone: +237 689 688 248
+- Email: info@dressdoctor.io
+- Opening hours: Monday to Saturday, 8am to 7pm. Closed on Sunday.
+- Area: Douala, Cameroon
