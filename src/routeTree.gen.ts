@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SiteRouteImport } from './routes/_site'
 import { Route as SiteIndexRouteImport } from './routes/_site/index'
 import { Route as SiteSplatRouteImport } from './routes/_site/$'
+import { Route as SiteAboutRouteImport } from './routes/_site/about'
 import { Route as SiteAccountRouteImport } from './routes/_site/account'
 import { Route as SiteCatalogRouteImport } from './routes/_site/catalog'
 import { Route as SiteContactRouteImport } from './routes/_site/contact'
@@ -48,6 +49,11 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
 const SiteSplatRoute = SiteSplatRouteImport.update({
   id: '/$',
   path: '/$',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteAboutRoute = SiteAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteAccountRoute = SiteAccountRouteImport.update({
@@ -172,6 +178,7 @@ const SiteAccountOrdersOrderCodeRoute =
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/$': typeof SiteSplatRoute
+  '/about': typeof SiteAboutRoute
   '/account': typeof SiteAccountRouteWithChildren
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
@@ -198,6 +205,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/$': typeof SiteSplatRoute
+  '/about': typeof SiteAboutRoute
   '/catalog': typeof SiteCatalogRoute
   '/contact': typeof SiteContactRoute
   '/corporate': typeof SiteCorporateRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_site': typeof SiteRouteWithChildren
   '/_site/$': typeof SiteSplatRoute
+  '/_site/about': typeof SiteAboutRoute
   '/_site/account': typeof SiteAccountRouteWithChildren
   '/_site/catalog': typeof SiteCatalogRoute
   '/_site/contact': typeof SiteContactRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$'
+    | '/about'
     | '/account'
     | '/catalog'
     | '/contact'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/$'
+    | '/about'
     | '/catalog'
     | '/contact'
     | '/corporate'
@@ -309,6 +320,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_site'
     | '/_site/$'
+    | '/_site/about'
     | '/_site/account'
     | '/_site/catalog'
     | '/_site/contact'
@@ -360,6 +372,13 @@ declare module '@tanstack/react-router' {
       path: '/$'
       fullPath: '/$'
       preLoaderRoute: typeof SiteSplatRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/about': {
+      id: '/_site/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof SiteAboutRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/account': {
@@ -548,6 +567,7 @@ const SiteAccountRouteWithChildren = SiteAccountRoute._addFileChildren(
 
 interface SiteRouteChildren {
   SiteSplatRoute: typeof SiteSplatRoute
+  SiteAboutRoute: typeof SiteAboutRoute
   SiteAccountRoute: typeof SiteAccountRouteWithChildren
   SiteCatalogRoute: typeof SiteCatalogRoute
   SiteContactRoute: typeof SiteContactRoute
@@ -571,6 +591,7 @@ interface SiteRouteChildren {
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteSplatRoute: SiteSplatRoute,
+  SiteAboutRoute: SiteAboutRoute,
   SiteAccountRoute: SiteAccountRouteWithChildren,
   SiteCatalogRoute: SiteCatalogRoute,
   SiteContactRoute: SiteContactRoute,

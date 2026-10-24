@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { breadcrumbData, homeStructuredData, pageHead } from './seo.data'
+import {
+  aboutStructuredData,
+  breadcrumbData,
+  homeStructuredData,
+  pageHead,
+} from './seo.data'
 
 describe('breadcrumbData', () => {
   it('numbers each step and gives each page its full address', () => {
@@ -54,5 +59,29 @@ describe('homeStructuredData', () => {
       longitude: 9.7183829,
     })
     expect(business.hasMap).toContain('google.com/maps')
+  })
+})
+
+describe('aboutStructuredData', () => {
+  const graph = aboutStructuredData()['@graph']
+
+  it('describes the page and ties it to the business on the home page', () => {
+    const page = graph.find((node) => node['@type'] === 'AboutPage')
+    expect(page).toMatchObject({
+      url: 'https://www.dressdoctor.io/about',
+      about: { '@id': 'https://www.dressdoctor.io/#business' },
+    })
+  })
+
+  it('lists the factory and the office as two places', () => {
+    const business = graph.find(
+      (node) => node['@type'] === 'DryCleaningOrLaundry',
+    ) as { '@id': string; location: { address: { streetAddress: string } }[] }
+
+    expect(business['@id']).toBe('https://www.dressdoctor.io/#business')
+    expect(business.location.map((p) => p.address.streetAddress)).toEqual([
+      '105, behind Château Bonaberi',
+      'Bépanda Bonabo, directly opposite Génie Militaire',
+    ])
   })
 })

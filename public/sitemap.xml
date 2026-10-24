@@ -48,4 +48,16 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/services" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/services" />
   </url>
+  <url>
+    <loc>https://www.dressdoctor.io/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/about" />
+  </url>
+  <url>
+    <loc>https://www.dressdoctor.io/fr/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.dressdoctor.io/about" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.dressdoctor.io/fr/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.dressdoctor.io/about" />
+  </url>
 </urlset>
