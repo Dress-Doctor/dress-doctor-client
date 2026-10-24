@@ -12,12 +12,17 @@ import { getLocale } from '#/paraglide/runtime'
 
 export const SITE_NAME = 'Dress Doctor'
 
-/** Share images in `public/`, both 1200 × 630. */
+/**
+ * Share images in `public/`, both exactly 1200 × 630 (1.91 : 1). They are
+ * JPEGs to stay well under the size WhatsApp will show as a link preview.
+ * Keep `width`, `height` and `type` in step with the files.
+ */
 export const shareImages = {
-  openGraph: publicUrl('/opengraph-image.png'),
-  twitter: publicUrl('/twitter-image.png'),
+  openGraph: publicUrl('/opengraph-image.jpg'),
+  twitter: publicUrl('/twitter-image.jpg'),
   width: 1200,
   height: 630,
+  type: 'image/jpeg',
 } as const
 
 /**
@@ -59,6 +64,7 @@ export function pageHead({ path, title, description }: PageHeadOptions) {
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
       { property: 'og:image', content: shareImages.openGraph },
+      { property: 'og:image:type', content: shareImages.type },
       { property: 'og:image:width', content: String(shareImages.width) },
       { property: 'og:image:height', content: String(shareImages.height) },
       { property: 'og:image:alt', content: m.home_meta_ogImageAlt() },

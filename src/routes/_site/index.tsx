@@ -53,6 +53,7 @@ export const Route = createFileRoute('/_site/')({
       { property: 'og:title', content: m.home_meta_ogTitle() },
       { property: 'og:description', content: m.home_meta_description() },
       { property: 'og:image', content: shareImages.openGraph },
+      { property: 'og:image:type', content: shareImages.type },
       { property: 'og:image:width', content: String(shareImages.width) },
       { property: 'og:image:height', content: String(shareImages.height) },
       { property: 'og:image:alt', content: m.home_meta_ogImageAlt() },
