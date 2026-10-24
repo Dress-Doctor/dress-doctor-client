@@ -1,5 +1,11 @@
 import { businessFacts, homeFaqs } from '#/data/home.data'
-import { siteContact, siteServices, siteSocials } from '#/data/site.data'
+import { aboutFounder, aboutPlaces } from '#/data/about.data'
+import {
+  siteContact,
+  sitePaths,
+  siteServices,
+  siteSocials,
+} from '#/data/site.data'
 import {
   SITE_URL,
   jsonLdScript,
@@ -207,6 +213,49 @@ export function homeStructuredData() {
           '@type': 'Question',
           name: faq.question(),
           acceptedAnswer: { '@type': 'Answer', text: faq.answer() },
+        })),
+      },
+    ],
+  }
+}
+
+/**
+ * JSON-LD for the About page: the page itself, and the factory and office as
+ * places of the same business the home page describes (matched by `@id`).
+ */
+export function aboutStructuredData() {
+  const pageUrl = localizedUrl(sitePaths.about)
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'AboutPage',
+        '@id': `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: m.about_meta_title(),
+        description: m.about_meta_description(),
+        inLanguage: getLocale(),
+        isPartOf: { '@id': ids.website },
+        about: { '@id': ids.business },
+      },
+      {
+        '@type': 'DryCleaningOrLaundry',
+        '@id': ids.business,
+        founder: {
+          '@type': 'Person',
+          name: aboutFounder.name,
+          jobTitle: m.about_story_role(),
+        },
+        location: aboutPlaces.map((place) => ({
+          '@type': 'Place',
+          name: `${SITE_NAME} — ${place.label()}`,
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: place.address(),
+            addressLocality: 'Douala',
+            addressCountry: 'CM',
+          },
         })),
       },
     ],
