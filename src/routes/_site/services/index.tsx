@@ -13,6 +13,10 @@ export const Route = createFileRoute('/_site/services/')({
       path: sitePaths.services,
       title: m.services_meta_title(),
       description: m.services_meta_description(),
+      breadcrumbs: [
+        { name: m.services_breadcrumb_home(), path: sitePaths.home },
+        { name: m.site_nav_services(), path: sitePaths.services },
+      ],
     }),
 
   component: ServicesPage,

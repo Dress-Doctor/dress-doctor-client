@@ -37,7 +37,7 @@ export const DEFAULT_PLAN_BILLING = 'monthly'
  * shown to customers and the rating is also sent as structured data.
  */
 export const businessFacts = {
-  customersServed: 118,
+  customersServed: 120,
   googleRating: 5,
   googleReviewCount: 7,
 } as const

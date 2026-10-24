@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Host: https://www.dressdoctor.io
 Sitemap: https://www.dressdoctor.io/sitemap.xml

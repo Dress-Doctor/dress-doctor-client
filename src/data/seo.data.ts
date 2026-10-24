@@ -2,6 +2,7 @@ import { businessFacts, homeFaqs } from '#/data/home.data'
 import { siteContact, siteServices, siteSocials } from '#/data/site.data'
 import {
   SITE_URL,
+  jsonLdScript,
   localizedLinks,
   localizedUrl,
   ogLocaleMeta,
@@ -12,17 +13,23 @@ import { getLocale } from '#/paraglide/runtime'
 
 export const SITE_NAME = 'Dress Doctor'
 
-/** Share images in `public/`, both 1200 × 630. */
+/**
+ * Share images in `public/`, both exactly 1200 × 630 (1.91 : 1). They are
+ * JPEGs to stay well under the size WhatsApp will show as a link preview.
+ * Keep `width`, `height` and `type` in step with the files.
+ */
 export const shareImages = {
-  openGraph: publicUrl('/opengraph-image.png'),
-  twitter: publicUrl('/twitter-image.png'),
+  openGraph: publicUrl('/opengraph-image.jpg'),
+  twitter: publicUrl('/twitter-image.jpg'),
   width: 1200,
   height: 630,
+  type: 'image/jpeg',
 } as const
 
 /**
  * Opening hours as shown in the footer (Mon–Sat, 8am–7pm). Keep the two in
  * step: structured data must match what visitors can read on the page.
+ * Sunday is left out on purpose: a day that is not listed means closed.
  */
 const openingHours = {
   days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -35,6 +42,28 @@ interface PageHeadOptions {
   path: string
   title: string
   description: string
+  /** The trail shown on the page, home first. Adds `BreadcrumbList` data. */
+  breadcrumbs?: BreadcrumbItem[]
+}
+
+export interface BreadcrumbItem {
+  name: string
+  /** Router path of the page, such as `/services`. */
+  path: string
+}
+
+/** `BreadcrumbList` data for a trail, with each link in the current language. */
+export function breadcrumbData(items: BreadcrumbItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: localizedUrl(item.path),
+    })),
+  }
 }
 
 /**
@@ -44,7 +73,12 @@ interface PageHeadOptions {
  * The home page builds its own because it also carries structured data; every
  * other page that simply wants to be found can use this one.
  */
-export function pageHead({ path, title, description }: PageHeadOptions) {
+export function pageHead({
+  path,
+  title,
+  description,
+  breadcrumbs,
+}: PageHeadOptions) {
   const url = localizedUrl(path)
 
   return {
@@ -59,6 +93,7 @@ export function pageHead({ path, title, description }: PageHeadOptions) {
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
       { property: 'og:image', content: shareImages.openGraph },
+      { property: 'og:image:type', content: shareImages.type },
       { property: 'og:image:width', content: String(shareImages.width) },
       { property: 'og:image:height', content: String(shareImages.height) },
       { property: 'og:image:alt', content: m.home_meta_ogImageAlt() },
@@ -72,8 +107,13 @@ export function pageHead({ path, title, description }: PageHeadOptions) {
       { name: 'twitter:image:alt', content: m.home_meta_ogImageAlt() },
     ],
     links: localizedLinks(path),
+    scripts: breadcrumbs ? [jsonLdScript(breadcrumbData(breadcrumbs))] : [],
   }
 }
+
+/** The shop's Google Maps listing ("Dress Doctor Laundry Service") and its pin. */
+const googleMapsUrl = 'https://www.google.com/maps?cid=14365337946916511723'
+const businessLocation = { latitude: 4.0733878, longitude: 9.7183829 }
 
 const ids = {
   website: `${SITE_URL}/#website`,
@@ -110,7 +150,9 @@ export function homeStructuredData() {
         image: shareImages.openGraph,
         telephone: siteContact.phoneHref.replace('tel:', ''),
         email: siteContact.email,
-        sameAs: siteSocials.map((social) => social.href),
+        sameAs: [...siteSocials.map((social) => social.href), googleMapsUrl],
+        hasMap: googleMapsUrl,
+        geo: { '@type': 'GeoCoordinates', ...businessLocation },
         address: {
           '@type': 'PostalAddress',
           addressLocality: 'Douala',
@@ -123,13 +165,6 @@ export function homeStructuredData() {
             dayOfWeek: openingHours.days,
             opens: openingHours.opens,
             closes: openingHours.closes,
-          },
-          // Closed all day: Google's format is opens and closes both 00:00.
-          {
-            '@type': 'OpeningHoursSpecification',
-            dayOfWeek: 'Sunday',
-            opens: '00:00',
-            closes: '00:00',
           },
         ],
         aggregateRating: {
