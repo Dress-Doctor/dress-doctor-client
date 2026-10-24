@@ -1,8 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { aboutStructuredData, pageHead } from '#/data/seo.data'
+import {
+  aboutShareImages,
+  aboutStructuredData,
+  pageHead,
+} from '#/data/seo.data'
 import { sitePaths } from '#/data/site.data'
 import { jsonLdScript } from '#/libs/seo'
 import { m } from '#/paraglide/messages'
+import { getLocale } from '#/paraglide/runtime'
 import AboutCta from './-components/about/about-cta'
 import AboutHero from './-components/about/about-hero'
 import AboutPeople from './-components/about/about-people'
@@ -13,7 +18,14 @@ import AboutStory from './-components/about/about-story'
 
 export const Route = createFileRoute('/_site/about')({
   head: () => {
+    // The founder's photo and the story heading, in the visitor's language.
+    const shareImage = aboutShareImages[getLocale()]
     const head = pageHead({
+      image: {
+        openGraph: shareImage,
+        twitter: shareImage,
+        alt: m.about_meta_ogImageAlt(),
+      },
       path: sitePaths.about,
       title: m.about_meta_title(),
       description: m.about_meta_description(),
