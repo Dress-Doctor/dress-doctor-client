@@ -16,6 +16,7 @@ import {
 } from '#/libs/seo'
 import { m } from '#/paraglide/messages'
 import { getLocale } from '#/paraglide/runtime'
+import type { Locale } from '#/paraglide/runtime'
 
 export const SITE_NAME = 'Dress Doctor'
 
@@ -31,6 +32,24 @@ export const shareImages = {
   height: 630,
   type: 'image/jpeg',
 } as const
+
+/**
+ * The About page's own share image, one per language because the heading on
+ * it is written in that language. Same size and type as `shareImages`.
+ * Keyed by `Locale`, so adding a language fails the typecheck until its image
+ * exists.
+ */
+export const aboutShareImages: Record<Locale, string> = {
+  en: publicUrl('/opengraph-about-en.jpg'),
+  fr: publicUrl('/opengraph-about-fr.jpg'),
+}
+
+/** A page's share image, used for both the Open Graph and Twitter cards. */
+export interface ShareImage {
+  openGraph: string
+  twitter: string
+  alt: string
+}
 
 /**
  * Opening hours as shown in the footer (Mon–Sat, 8am–7pm). Keep the two in
@@ -50,6 +69,11 @@ interface PageHeadOptions {
   description: string
   /** The trail shown on the page, home first. Adds `BreadcrumbList` data. */
   breadcrumbs?: BreadcrumbItem[]
+  /**
+   * The page's own share image. Must be 1200 × 630 JPEG like `shareImages`;
+   * leave it out to use the site's default image.
+   */
+  image?: ShareImage
 }
 
 export interface BreadcrumbItem {
@@ -84,6 +108,11 @@ export function pageHead({
   title,
   description,
   breadcrumbs,
+  image = {
+    openGraph: shareImages.openGraph,
+    twitter: shareImages.twitter,
+    alt: m.home_meta_ogImageAlt(),
+  },
 }: PageHeadOptions) {
   const url = localizedUrl(path)
 
@@ -98,19 +127,19 @@ export function pageHead({
       { property: 'og:url', content: url },
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
-      { property: 'og:image', content: shareImages.openGraph },
+      { property: 'og:image', content: image.openGraph },
       { property: 'og:image:type', content: shareImages.type },
       { property: 'og:image:width', content: String(shareImages.width) },
       { property: 'og:image:height', content: String(shareImages.height) },
-      { property: 'og:image:alt', content: m.home_meta_ogImageAlt() },
+      { property: 'og:image:alt', content: image.alt },
       ...ogLocaleMeta(),
 
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:url', content: url },
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
-      { name: 'twitter:image', content: shareImages.twitter },
-      { name: 'twitter:image:alt', content: m.home_meta_ogImageAlt() },
+      { name: 'twitter:image', content: image.twitter },
+      { name: 'twitter:image:alt', content: image.alt },
     ],
     links: localizedLinks(path),
     scripts: breadcrumbs ? [jsonLdScript(breadcrumbData(breadcrumbs))] : [],
