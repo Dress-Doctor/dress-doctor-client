@@ -45,6 +45,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: 'facebook-domain-verification',
           content: 'pbsnftyr8pobkiqv0ug6kka62r6glt',
         },
+        // Proves site ownership to Google Search Console.
+        {
+          name: 'google-site-verification',
+          content: 'tMWloQx1nVtHsguWrBB6eVhP2inu3y8QBr8XcWatf_8',
+        },
       ],
       links: [
         // PNG icons: the bundled favicon.ico is PNG data, so declaring it as
