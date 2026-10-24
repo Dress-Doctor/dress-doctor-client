@@ -1,29 +1,41 @@
 # Dress Doctor
 
-> Laundry, dry cleaning and ironing in Douala, Cameroon. We pick up your clothes for free, clean them with care and bring them back to your door, usually in 24 to 72 hours. Express service is ready in 24 hours.
+> Dress Doctor is a professional laundry service in Douala, Cameroon. We collect customers' laundry for free, clean it with care, and deliver it back to their door. Our standard turnaround is 24–72 hours, with a 24-hour express service.
 
-Dress Doctor is a local laundry business. The website is in English and French. Pickup and delivery are free anywhere in Douala. Customers pay by cash, MTN Mobile Money or Orange Money. Prices are in XAF.
+Dress Doctor offers laundry, wash-and-fold, washing and ironing, dry cleaning, shoe cleaning, and care for selected household fabrics. The website is available in English and French. Prices are in Central African CFA francs (XAF).
 
-## Services
+## What We Offer
 
-- Wash per kg: 1 000 XAF per kg
-- Wash per piece: from 700 XAF per piece
-- Dry cleaning: from 2 500 XAF
-- Ironing and pressing: from 500 XAF per piece
-- Bedding and home care: from 1 500 XAF
-- Shoes and sneakers: from 2 000 XAF per pair
+- **Wash and fold:** 700 XAF per kg, with a 5 kg minimum.
+- **Wash, dry and iron:** 1,000 XAF per kg for bulk laundry.
+- **Individual garments:** Prices depend on the item.
+- **Dry cleaning:** From 2,500 XAF per item.
+- **Shoe cleaning:** 3,500 XAF per pair.
+- **Monthly laundry plans:** Basic, Standard and Premium plans for regular customers.
+- **Pickup and delivery:** Free within our service area in Douala.
+- **Express service:** 24-hour turnaround.
 
-## Pages
+Customers can book laundry pickups online and use the website to view order details, track orders and receive updates.
 
-- [Home](https://www.dressdoctor.io/): services, prices, monthly plans, how it works and common questions
-- [Services](https://www.dressdoctor.io/services): the six services and how to choose
-- [Terms of Service](https://www.dressdoctor.io/terms): booking, prices, payment and what happens if something goes wrong
-- [Privacy Policy](https://www.dressdoctor.io/privacy): how we use your details
-- [French version](https://www.dressdoctor.io/fr/): the same site in French
+## Website Pages
+
+- [Home](https://www.dressdoctor.io/) — Overview of services, pricing, monthly plans and frequently asked questions.
+- [Services](https://www.dressdoctor.io/services) — Available services and information to help customers choose.
+- [Terms of Service](https://www.dressdoctor.io/terms) — Booking conditions, payments, service policies and issue resolution.
+- [Privacy Policy](https://www.dressdoctor.io/privacy) — How customer information is handled.
+- [French website](https://www.dressdoctor.io/fr/) — French-language version of the website.
 
 ## Contact
 
-- WhatsApp and phone: +237 689 688 248
-- Email: info@dressdoctor.io
-- Opening hours: Monday to Saturday, 8am to 7pm. Closed on Sunday.
-- Area: Douala, Cameroon
+- **Phone and WhatsApp:** +237 689 688 248
+- **Email:** info@dressdoctor.io
+- **Location:** Douala, Cameroon
+- **Opening hours:** Monday to Saturday, 8:00 am–7:00 pm; closed Sunday.
+
+## Payments
+
+Customers can pay using cash, MTN Mobile Money or Orange Money.
+
+## Additional Information
+
+For current prices, available services, booking conditions and other policies, consult the relevant pages on the official website. Where information differs, the current official website and applicable service terms should take precedence.
