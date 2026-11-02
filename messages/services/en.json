@@ -2,6 +2,7 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "services_meta_title": "Our laundry services in Douala | Dress Doctor",
   "services_meta_description": "Wash per kg, wash per piece, dry cleaning, ironing, bedding and shoe care. Free pickup and delivery anywhere in Douala.",
+  "services_meta_ogImageAlt": "Dress Doctor laundry services in Douala: wash per kg, wash per piece, dry cleaning, ironing, bedding and shoe care.",
   "services_a11y_breadcrumb": "You are here",
   "services_a11y_list": "Our services",
   "services_breadcrumb_home": "Home",
