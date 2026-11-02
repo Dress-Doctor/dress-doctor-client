@@ -79,6 +79,15 @@ export const termsShareImages: Record<Locale, string> = {
   fr: publicUrl('/opengraph-terms-fr.jpg'),
 }
 
+/**
+ * The Services page share image: its title and short intro beside the six
+ * services, in that language. Same size and type as `shareImages`.
+ */
+export const servicesShareImages: Record<Locale, string> = {
+  en: publicUrl('/opengraph-services-en.jpg'),
+  fr: publicUrl('/opengraph-services-fr.jpg'),
+}
+
 /** A page's own share image in the visitor's language, for `pageHead`. */
 export function localizedShareImage(
   images: Record<Locale, string>,
