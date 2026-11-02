@@ -1,6 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import CtaSection from '#/components/site/cta-section'
-import { pageHead } from '#/data/seo.data'
+import {
+  localizedShareImage,
+  pageHead,
+  servicesShareImages,
+} from '#/data/seo.data'
 import { sitePaths } from '#/data/site.data'
 import { m } from '#/paraglide/messages'
 import ServicesCompare from './-components/services-compare'
@@ -13,6 +17,10 @@ export const Route = createFileRoute('/_site/services/')({
       path: sitePaths.services,
       title: m.services_meta_title(),
       description: m.services_meta_description(),
+      image: localizedShareImage(
+        servicesShareImages,
+        m.services_meta_ogImageAlt(),
+      ),
       breadcrumbs: [
         { name: m.services_breadcrumb_home(), path: sitePaths.home },
         { name: m.site_nav_services(), path: sitePaths.services },
