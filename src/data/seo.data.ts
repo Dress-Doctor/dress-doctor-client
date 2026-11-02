@@ -64,6 +64,30 @@ export const aboutShareImages: Record<Locale, string> = {
   fr: publicUrl('/opengraph-about-fr.jpg?v=2'),
 }
 
+/**
+ * The Privacy Policy and Terms of Service share images: each page's title,
+ * short intro and its "short version" promises, in that language. Same size
+ * and type as `shareImages`.
+ */
+export const privacyShareImages: Record<Locale, string> = {
+  en: publicUrl('/opengraph-privacy-en.jpg'),
+  fr: publicUrl('/opengraph-privacy-fr.jpg'),
+}
+
+export const termsShareImages: Record<Locale, string> = {
+  en: publicUrl('/opengraph-terms-en.jpg'),
+  fr: publicUrl('/opengraph-terms-fr.jpg'),
+}
+
+/** A page's own share image in the visitor's language, for `pageHead`. */
+export function localizedShareImage(
+  images: Record<Locale, string>,
+  alt: string,
+): ShareImage {
+  const url = images[getLocale()]
+  return { openGraph: url, twitter: url, alt }
+}
+
 /** A page's share image, used for both the Open Graph and Twitter cards. */
 export interface ShareImage {
   openGraph: string
